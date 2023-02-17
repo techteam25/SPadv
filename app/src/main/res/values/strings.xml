@@ -378,5 +378,6 @@ and communicating with the user.</string>
 
     <!-- Snackbar Messages -->
     <string name="overwrite">Overwrite</string>
+    <string name="testyMcTest">placed here as a test</string>
 
 </resources>

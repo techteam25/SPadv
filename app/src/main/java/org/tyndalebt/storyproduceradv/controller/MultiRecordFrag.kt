@@ -41,8 +41,28 @@ abstract class MultiRecordFrag : SlidePhaseFrag(), PlayBackRecordingToolbar.Tool
         setToolbar()
 
         setupCameraAndEditButton()
+        makeCircleVisible();
 
         return rootView
+    }
+
+    /**
+     * adds test circle to translate and revise view.  Later to be visible only if comments are present
+     * This fragment is present in fragment_slide.xml
+    */
+
+    private fun makeCircleVisible() {
+
+        if(!(Workspace.activeStory.slides[slideNum].slideType == SlideType.NUMBEREDPAGE &&
+                    Workspace.activePhase.phaseType != PhaseType.TRANSLATE_REVISE)) {
+            if (Workspace.activeStory.slides[slideNum].slideType in
+                arrayOf(SlideType.FRONTCOVER, SlideType.LOCALSONG, SlideType.NUMBEREDPAGE)) {
+                val imageFab: ImageView =
+                    rootView!!.findViewById<View>(R.id.test_circle_view) as ImageView
+                imageFab.visibility = View.VISIBLE
+            }
+        }
+
     }
 
     /**
@@ -143,7 +163,6 @@ abstract class MultiRecordFrag : SlidePhaseFrag(), PlayBackRecordingToolbar.Tool
 
         }
     }
-
 
     /**
      * Change the picture behind the screen.
