@@ -7,4 +7,5 @@
     <item name="password_text_field" type="id" />
     <item name="edit_text_view" type="id" />
     <item name="edit_text_input" type="id" />
+    <item name="comment_icon" type="id" />
 </resources>

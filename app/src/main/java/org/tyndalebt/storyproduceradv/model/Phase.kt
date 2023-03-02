@@ -1,6 +1,8 @@
 package org.tyndalebt.storyproduceradv.model
 
 import android.content.Context
+import android.view.View
+import android.widget.ImageView
 import com.squareup.moshi.Json
 import org.tyndalebt.storyproduceradv.R
 import org.tyndalebt.storyproduceradv.controller.MainActivity
@@ -252,6 +254,25 @@ class Phase (val phaseType: PhaseType) {
             else -> null
         }
     }
+
+//    /**
+//     * adds test circle to translate and revise view.  Later to be visible only if comments are present
+//     * This fragment is present in fragment_slide.xml
+//     */
+//
+//    private fun makeCircleVisible() {
+//
+//        if(!(Workspace.activeStory.slides[slideNum].slideType == SlideType.NUMBEREDPAGE &&
+//                    Workspace.activePhase.phaseType != PhaseType.TRANSLATE_REVISE)) {
+//            if (Workspace.activeStory.slides[slideNum].slideType in
+//                arrayOf(SlideType.FRONTCOVER, SlideType.LOCALSONG, SlideType.NUMBEREDPAGE)) {
+//                val imageFab: ImageView =
+//                    rootView!!.findViewById<View>(R.id.test_circle_view) as ImageView
+//                imageFab.visibility = View.VISIBLE
+//            }
+//        }
+//
+//    }
 
     fun getPhaseDisplaySlideCount() : Int {
 

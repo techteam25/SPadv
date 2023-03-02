@@ -15,7 +15,8 @@ import org.tyndalebt.storyproduceradv.tools.toolbar.RecordingToolbar
  */
 class CommunityWorkFrag : MultiRecordFrag() {
     override var recordingToolbar: RecordingToolbar = RecordingToolbar()
-    private var dispList : RecordingsListAdapter.RecordingsListModal? = null
+    var dispList : RecordingsListAdapter.RecordingsListModal? = null
+//    private var isComment: Boolean = false;
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         rootView = inflater.inflate(R.layout.fragment_community_work, container, false)
@@ -28,6 +29,9 @@ class CommunityWorkFrag : MultiRecordFrag() {
         //This enables the "onStartedToolbarMedia" to be invoked.
         dispList?.setParentFragment(this)
         dispList?.show()
+//        if (dispList!!.displayNames.isNotEmpty()) {
+//            isComment = true;
+//        }
 
         setupCameraAndEditButton()
 

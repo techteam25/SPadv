@@ -19,6 +19,8 @@ import org.tyndalebt.storyproduceradv.BuildConfig
 import org.tyndalebt.storyproduceradv.model.*
 import org.tyndalebt.storyproduceradv.model.PROJECT_DIR
 import org.tyndalebt.storyproduceradv.model.SLIDE_NUM
+import org.tyndalebt.storyproduceradv.model.PhaseType;
+//import org.tyndalebt.storyproduceradv.controller.communitywork.CommunityWorkFrag;
 import org.tyndalebt.storyproduceradv.tools.file.copyToWorkspacePath
 import org.tyndalebt.storyproduceradv.tools.toolbar.MultiRecordRecordingToolbar
 import org.tyndalebt.storyproduceradv.tools.toolbar.PlayBackRecordingToolbar
@@ -33,6 +35,8 @@ abstract class MultiRecordFrag : SlidePhaseFrag(), PlayBackRecordingToolbar.Tool
 
     private var tempPicFile: File? = null
 
+    //is set to true if comment audio files are present on the community work slide
+    private var commentListIsNotEmpty: Boolean = false;
 
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -41,28 +45,30 @@ abstract class MultiRecordFrag : SlidePhaseFrag(), PlayBackRecordingToolbar.Tool
         setToolbar()
 
         setupCameraAndEditButton()
-        makeCircleVisible();
+
+        setCommentListIsNotEmpty();
+
+        setCommentCircleVisibility();
 
         return rootView
     }
 
+    //will set the commentListIsNotEmpty to true if there are comments present on the community phase
+    private fun setCommentListIsNotEmpty() {
+        commentListIsNotEmpty = Workspace.activeSlide!!.communityWorkAudioFiles.isNotEmpty();
+    }
+
     /**
-     * adds test circle to translate and revise view.  Later to be visible only if comments are present
+     * adds green circle indicating a present comment to translate and revise view.  Later to be visible only if comments are present
      * This fragment is present in fragment_slide.xml
     */
 
-    private fun makeCircleVisible() {
-
-        if(!(Workspace.activeStory.slides[slideNum].slideType == SlideType.NUMBEREDPAGE &&
-                    Workspace.activePhase.phaseType != PhaseType.TRANSLATE_REVISE)) {
-            if (Workspace.activeStory.slides[slideNum].slideType in
-                arrayOf(SlideType.FRONTCOVER, SlideType.LOCALSONG, SlideType.NUMBEREDPAGE)) {
-                val imageFab: ImageView =
-                    rootView!!.findViewById<View>(R.id.test_circle_view) as ImageView
-                imageFab.visibility = View.VISIBLE
-            }
+    private fun setCommentCircleVisibility() {
+        if (commentListIsNotEmpty && Workspace.activePhase.phaseType == PhaseType.TRANSLATE_REVISE) {
+            val commentImage: ImageView =
+                rootView.findViewById<View>(R.id.comment_icon) as ImageView;
+            commentImage.visibility = View.VISIBLE;
         }
-
     }
 
     /**
@@ -74,6 +80,10 @@ abstract class MultiRecordFrag : SlidePhaseFrag(), PlayBackRecordingToolbar.Tool
         // SP422 - DKH 5/6/2022 Enable images on all the slides to be swapped out via the camera tool
         // Add camera tool to numbered pages so that local images can be used in the story
         // If we have a numbered page, only show the camera on the Translate_Revise Phase
+        
+        /*
+            New guy's (Jeremy) note:  This if statement seems needlessly complicated but the logic below may be necessary.
+         */
         if(!(Workspace.activeStory.slides[slideNum].slideType == SlideType.NUMBEREDPAGE &&
                         Workspace.activePhase.phaseType != PhaseType.TRANSLATE_REVISE)) {
             if (Workspace.activeStory.slides[slideNum].slideType in
