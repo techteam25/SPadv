@@ -35,9 +35,6 @@ abstract class MultiRecordFrag : SlidePhaseFrag(), PlayBackRecordingToolbar.Tool
 
     private var tempPicFile: File? = null
 
-    //is set to true if comment audio files are present on the community work slide
-    private var commentListIsNotEmpty: Boolean = false;
-
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
@@ -46,25 +43,21 @@ abstract class MultiRecordFrag : SlidePhaseFrag(), PlayBackRecordingToolbar.Tool
 
         setupCameraAndEditButton()
 
-        setCommentListIsNotEmpty();
-
         setCommentCircleVisibility();
 
         return rootView
     }
 
-    //will set the commentListIsNotEmpty to true if there are comments present on the community phase
-    private fun setCommentListIsNotEmpty() {
-        commentListIsNotEmpty = Workspace.activeSlide!!.communityWorkAudioFiles.isNotEmpty();
-    }
-
     /**
-     * adds green circle indicating a present comment to translate and revise view.  Later to be visible only if comments are present
-     * This fragment is present in fragment_slide.xml
-    */
+     * adds green circle indicating a present comment to translate and revise view.
+     *
+     * This icon is present in fragment_slide.xml.  To be moved to the toolbar
+     *
+     * */
+
 
     private fun setCommentCircleVisibility() {
-        if (commentListIsNotEmpty && Workspace.activePhase.phaseType == PhaseType.TRANSLATE_REVISE) {
+        if (Workspace.commentsPresentInCommentList && Workspace.activePhase.phaseType == PhaseType.TRANSLATE_REVISE) {
             val commentImage: ImageView =
                 rootView.findViewById<View>(R.id.comment_icon) as ImageView;
             commentImage.visibility = View.VISIBLE;
@@ -235,7 +228,12 @@ abstract class MultiRecordFrag : SlidePhaseFrag(), PlayBackRecordingToolbar.Tool
 
         recordingToolbar.stopToolbarMedia()
     }
-    
+
+    /**
+     * Had to add a name to this companion to differentiate it from the other containing
+     * the comment circle function
+     *
+     * */
     companion object {
         private const val ACTIVITY_SELECT_IMAGE = 53
     }

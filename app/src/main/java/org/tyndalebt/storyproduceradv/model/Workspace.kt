@@ -14,6 +14,8 @@ import android.os.ParcelFileDescriptor
 import android.preference.PreferenceManager
 import android.provider.Settings.Secure
 import android.util.Log
+import android.view.View
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.content.ContextCompat.startActivity
 import androidx.documentfile.provider.DocumentFile
@@ -29,6 +31,7 @@ import org.tyndalebt.storyproduceradv.BuildConfig
 import org.tyndalebt.storyproduceradv.R
 import org.tyndalebt.storyproduceradv.activities.BaseActivity
 import org.tyndalebt.storyproduceradv.activities.DownloadActivity
+import org.tyndalebt.storyproduceradv.controller.MultiRecordFrag
 import org.tyndalebt.storyproduceradv.model.messaging.Approval
 import org.tyndalebt.storyproduceradv.model.messaging.MessageROCC
 import org.tyndalebt.storyproduceradv.tools.file.deleteWorkspaceFile
@@ -41,6 +44,7 @@ import java.sql.Timestamp
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.properties.Delegates
 
 internal const val SLIDE_NUM = "CurrentSlideNum"
 internal const val DEMO_FOLDER = "000 Unlocked demo story Storm"
@@ -107,6 +111,12 @@ object Workspace {
     var showMoreTemplates = false
     // To track if force quit is happening or just changing between activities
     var LastActivityEvent: String = ""
+
+    //used by MultiRecordFrag to display or not display the comment indicator icon
+    //Observable property seems to be the only way to do this
+    var commentsPresentInCommentList: Boolean by Delegates.observable(false) {
+        prop, old, new -> {};
+    } ;
 
     // word links
     lateinit var activeWordLink: WordLink
@@ -731,4 +741,18 @@ object Workspace {
             processStoryApproval()
         }
     }
+
+    /**
+     * sets the variable checked by MultiRecordFrag.setCommentCircleVisibility
+     *
+     * */
+    fun checkCommentListForComments() {
+        if (Workspace.activeSlide!!.communityWorkAudioFiles.isNotEmpty()) {
+            commentsPresentInCommentList = true;
+        }
+        if (Workspace.activeSlide!!.communityWorkAudioFiles.isEmpty()) {
+            commentsPresentInCommentList = false;
+        }
+    }
+
 }

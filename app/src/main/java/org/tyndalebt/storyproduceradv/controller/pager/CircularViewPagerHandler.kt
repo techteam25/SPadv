@@ -10,6 +10,7 @@ class CircularViewPagerHandler(private val mViewPager: androidx.viewpager.widget
 
     override fun onPageSelected(position: Int) {
         Workspace.activeSlideNum = position
+        Workspace.checkCommentListForComments();
     }
 
     override fun onPageScrollStateChanged(state: Int) {
