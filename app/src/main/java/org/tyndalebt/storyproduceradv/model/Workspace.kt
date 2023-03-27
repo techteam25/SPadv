@@ -112,12 +112,6 @@ object Workspace {
     // To track if force quit is happening or just changing between activities
     var LastActivityEvent: String = ""
 
-    //used by MultiRecordFrag to display or not display the comment indicator icon
-    //Observable property seems to be the only way to do this
-    var commentsPresentInCommentList: Boolean by Delegates.observable(false) {
-        prop, old, new -> {};
-    } ;
-
     // word links
     lateinit var activeWordLink: WordLink
     var termToWordLinkMap: MutableMap<String, WordLink> = mutableMapOf()
@@ -739,19 +733,6 @@ object Workspace {
                 lastReceivedTimeSent = approval.timeSent
             }
             processStoryApproval()
-        }
-    }
-
-    /**
-     * sets the variable checked by MultiRecordFrag.setCommentCircleVisibility
-     *
-     * */
-    fun checkCommentListForComments() {
-        if (Workspace.activeSlide!!.communityWorkAudioFiles.isNotEmpty()) {
-            commentsPresentInCommentList = true;
-        }
-        if (Workspace.activeSlide!!.communityWorkAudioFiles.isEmpty()) {
-            commentsPresentInCommentList = false;
         }
     }
 

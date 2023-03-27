@@ -3,9 +3,11 @@ package org.tyndalebt.storyproduceradv.controller
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import androidx.core.content.FileProvider
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +15,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import org.tyndalebt.storyproduceradv.R
 import org.tyndalebt.storyproduceradv.BuildConfig
@@ -26,6 +29,7 @@ import org.tyndalebt.storyproduceradv.tools.toolbar.MultiRecordRecordingToolbar
 import org.tyndalebt.storyproduceradv.tools.toolbar.PlayBackRecordingToolbar
 import org.tyndalebt.storyproduceradv.tools.toolbar.RecordingToolbar
 import java.io.File
+import kotlin.properties.Delegates
 
 /**
  * The fragment for the Draft view. This is where a user can draft out the story slide by slide
@@ -43,25 +47,7 @@ abstract class MultiRecordFrag : SlidePhaseFrag(), PlayBackRecordingToolbar.Tool
 
         setupCameraAndEditButton()
 
-        setCommentCircleVisibility();
-
         return rootView
-    }
-
-    /**
-     * adds green circle indicating a present comment to translate and revise view.
-     *
-     * This icon is present in fragment_slide.xml.  To be moved to the toolbar
-     *
-     * */
-
-
-    private fun setCommentCircleVisibility() {
-        if (Workspace.commentsPresentInCommentList && Workspace.activePhase.phaseType == PhaseType.TRANSLATE_REVISE) {
-            val commentImage: ImageView =
-                rootView.findViewById<View>(R.id.comment_icon) as ImageView;
-            commentImage.visibility = View.VISIBLE;
-        }
     }
 
     /**
@@ -236,5 +222,10 @@ abstract class MultiRecordFrag : SlidePhaseFrag(), PlayBackRecordingToolbar.Tool
      * */
     companion object {
         private const val ACTIVITY_SELECT_IMAGE = 53
+
+        //still can't access the view from this companion object.  The problem is never solved.
+        var commentPresentInCommentPhase: Boolean by Delegates.observable(false) {
+                _, _, _ -> ;
+        }
     }
 }

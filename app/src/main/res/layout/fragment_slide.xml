@@ -67,24 +67,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/comment_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/fragment_scripture_text"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:background="@color/black_semi_transparent"
-        android:clickable="false"
-        android:focusable="false"
-        android:padding="6dp"
-        android:src="@drawable/ic_comment_present_on_community_phase"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@id/seek_bar"
-        app:layout_constraintLeft_toLeftOf="parent" />
-
     <include
         android:id="@+id/seek_bar"
         layout="@layout/play_seek_number_bar"
