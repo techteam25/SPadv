@@ -4,6 +4,7 @@ import android.os.Bundle;
 import androidx.viewpager.widget.ViewPager;
 
 import org.tyndalebt.storyproduceradv.R;
+import org.tyndalebt.storyproduceradv.controller.accuracycheck.AccuracyCheckFrag;
 import org.tyndalebt.storyproduceradv.controller.phase.PhaseBaseActivity;
 import org.tyndalebt.storyproduceradv.model.Workspace;
 

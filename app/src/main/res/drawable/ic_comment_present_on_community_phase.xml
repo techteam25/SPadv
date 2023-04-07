@@ -2,10 +2,10 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:top="3dp"
-        android:bottom="3dp"
-        android:right="3dp"
-        android:left="3dp"
+        android:top="9dp"
+        android:bottom="9dp"
+        android:right="9dp"
+        android:left="9dp"
         >
 
 
@@ -17,8 +17,8 @@
 <!--    This icon will be present if the community phase contains a comment     -->
     <!-- if the bitmap does not have the same pixel config as the screen it enables dithering-->
     <size
-        android:width="42dp"
-        android:height="42dp"
+        android:width="30dp"
+        android:height="30dp"
         />
     <solid android:color="#859900" />
 

@@ -223,9 +223,5 @@ abstract class MultiRecordFrag : SlidePhaseFrag(), PlayBackRecordingToolbar.Tool
     companion object {
         private const val ACTIVITY_SELECT_IMAGE = 53
 
-        //still can't access the view from this companion object.  The problem is never solved.
-        var commentPresentInCommentPhase: Boolean by Delegates.observable(false) {
-                _, _, _ -> ;
-        }
     }
 }

@@ -32,6 +32,7 @@ import org.tyndalebt.storyproduceradv.R
 import org.tyndalebt.storyproduceradv.activities.BaseActivity
 import org.tyndalebt.storyproduceradv.activities.DownloadActivity
 import org.tyndalebt.storyproduceradv.controller.MultiRecordFrag
+import org.tyndalebt.storyproduceradv.controller.accuracycheck.AccuracyCheckFrag
 import org.tyndalebt.storyproduceradv.model.messaging.Approval
 import org.tyndalebt.storyproduceradv.model.messaging.MessageROCC
 import org.tyndalebt.storyproduceradv.tools.file.deleteWorkspaceFile
@@ -164,6 +165,14 @@ object Workspace {
             return "${activePhase.getFileSafeName()}${ activeSlideNum }"
         }
     }
+    /**
+    *The following two vars hold the slideNums for the slides adjacent to the active slide
+    *utilized for checking comment presence during left and right swipe events.
+     * Can likely be deleted
+    */
+    var slideNumLeftOfActive: Int = -1;
+    var slideNumRightOfActive: Int = -1;
+
 
     var activeSlideNum: Int = -1
     set(value){
@@ -173,6 +182,12 @@ object Workspace {
                 field = value
         }
     }
+
+    /*
+    This may be how you can retrieve a slide given a number,
+    in fact it seems to be that that's the case
+    */
+
     val activeSlide: Slide?
     get(){
         if(activeStory.title == "") return null
@@ -735,5 +750,4 @@ object Workspace {
             processStoryApproval()
         }
     }
-
 }

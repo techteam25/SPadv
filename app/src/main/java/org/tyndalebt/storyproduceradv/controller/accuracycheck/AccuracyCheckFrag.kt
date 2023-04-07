@@ -1,5 +1,6 @@
 package org.tyndalebt.storyproduceradv.controller.accuracycheck
 
+
 import android.content.Context
 import android.os.Bundle
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
@@ -26,10 +27,14 @@ import org.tyndalebt.storyproduceradv.model.Workspace
 class AccuracyCheckFrag : SlidePhaseFrag() {
 
     var logDialog: AlertDialog? = null
-    var greenCheckmark: VectorDrawableCompat ?= null
-    var grayCheckmark: VectorDrawableCompat ?= null
+    var greenCheckmark: VectorDrawableCompat? = null
+    var grayCheckmark: VectorDrawableCompat? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         greenCheckmark = VectorDrawableCompat.create(resources, R.drawable.ic_checkmark_green, null)
         grayCheckmark = VectorDrawableCompat.create(resources, R.drawable.ic_checkmark_gray, null)
 
@@ -40,6 +45,19 @@ class AccuracyCheckFrag : SlidePhaseFrag() {
             setReferenceText(rootView!!.findViewById(R.id.fragment_reference_text))
             setCheckmarkButton(findViewById<View>(R.id.concheck_checkmark_button) as ImageButton)
             setLogsButton(findViewById<View>(R.id.concheck_logs_button) as ImageButton)
+            setCommentIndicatorOnRender(findViewById<View>(R.id.comment_present_accuracy_check_indicator) as ImageView);
+        }
+    }
+
+
+    /**
+     * makes visible an indicator on this
+     * slide based on the presence or absence of comments
+     */
+    private fun setCommentIndicatorOnRender(commentIcon: ImageView) {
+        if (Workspace.activeStory.slides[Workspace.activeSlideNum].communityWorkAudioFiles.isNotEmpty()) {
+            commentIcon.visibility = View.VISIBLE;
+            Toast.makeText(this.context, "comments", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -117,9 +135,27 @@ class AccuracyCheckFrag : SlidePhaseFrag() {
         val learnCB = dialogLayout.findViewById<CheckBox>(R.id.LearnCheckBox)
         val draftCB = dialogLayout.findViewById<CheckBox>(R.id.DraftCheckBox)
         val comChkCB = dialogLayout.findViewById<CheckBox>(R.id.CommunityCheckCheckBox)
-        learnCB.setOnCheckedChangeListener { _, checked -> lla.updateList(checked, draftCB.isChecked, comChkCB.isChecked) }
-        draftCB.setOnCheckedChangeListener { _, checked -> lla.updateList(learnCB.isChecked, checked, comChkCB.isChecked) }
-        comChkCB.setOnCheckedChangeListener { _, checked -> lla.updateList(learnCB.isChecked, draftCB.isChecked, checked) }
+        learnCB.setOnCheckedChangeListener { _, checked ->
+            lla.updateList(
+                checked,
+                draftCB.isChecked,
+                comChkCB.isChecked
+            )
+        }
+        draftCB.setOnCheckedChangeListener { _, checked ->
+            lla.updateList(
+                learnCB.isChecked,
+                checked,
+                comChkCB.isChecked
+            )
+        }
+        comChkCB.setOnCheckedChangeListener { _, checked ->
+            lla.updateList(
+                learnCB.isChecked,
+                draftCB.isChecked,
+                checked
+            )
+        }
         alertDialog.setView(dialogLayout)
         logDialog = alertDialog.create()
         exit.setOnClickListener {
@@ -128,14 +164,15 @@ class AccuracyCheckFrag : SlidePhaseFrag() {
     }
 
 
-        /**
+    /**
      * Checks each slide of the story to see if all slides have been approved
      * @return true if all approved, otherwise false
      */
     private fun checkAllMarked(): Boolean {
         for (slide in Workspace.activeStory.slides) {
             if (!slide.isChecked && slide.slideType in
-                    arrayOf(SlideType.FRONTCOVER,SlideType.NUMBEREDPAGE,SlideType.LOCALSONG)) {
+                arrayOf(SlideType.FRONTCOVER, SlideType.NUMBEREDPAGE, SlideType.LOCALSONG)
+            ) {
                 return false
             }
         }
@@ -152,17 +189,18 @@ class AccuracyCheckFrag : SlidePhaseFrag() {
 
         // Programmatically set layout properties for edit text field
         val params = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT)
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.MATCH_PARENT
+        )
         // Apply layout properties
         password.layoutParams = params
         val passwordDialog = AlertDialog.Builder(context!!)
-                .setTitle(getString(R.string.consultant_password_title))
-                .setMessage(getString(R.string.consultant_password_message))
-                .setView(password)
-                .setNegativeButton(getString(R.string.cancel), null)
-                .setPositiveButton(getString(R.string.submit), null)
-                .create()
+            .setTitle(getString(R.string.consultant_password_title))
+            .setMessage(getString(R.string.consultant_password_message))
+            .setView(password)
+            .setNegativeButton(getString(R.string.cancel), null)
+            .setPositiveButton(getString(R.string.submit), null)
+            .create()
         // This is set to dismiss the keyboard manually on dialog dismiss
         passwordDialog.setOnDismissListener { toggleKeyboard(false, view) }
 
@@ -223,5 +261,6 @@ class AccuracyCheckFrag : SlidePhaseFrag() {
         val CONSULTANT_PREFS = "Consultant_Checks"
         val IS_CONSULTANT_APPROVED = "isApproved"
         private val PASSWORD = "appr00ved"
+        var slideNumHolder: Int? = null;
     }
 }
