@@ -21,6 +21,17 @@ open class MultiRecordRecordingToolbar: PlayBackRecordingToolbar() {
         rootView?.addView(multiRecordButton)
         
         rootView?.addView(toolbarButtonSpace())
+
+        /**
+         * Uncomment this to add the icon to the toolbar after the visibility issue is fixed.
+         */
+//        commentIcon = toolbarButton(R.drawable.ic_comment_present_on_community_phase, R.id.comment_icon);
+//        commentIcon.visibility = View.VISIBLE;
+//        checks the presence/absence of recorded comments on the community work phase and adds an icon if present
+//        if (Workspace.activeSlide!!.communityWorkAudioFiles.isNotEmpty() && Workspace.activePhase.phaseType != PhaseType.COMMUNITY_WORK) {
+//
+//        rootView?.addView(commentIcon);
+//        }
     }
 
     override fun showInheritedToolbarButtons() {

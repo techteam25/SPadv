@@ -36,11 +36,13 @@ class RecordingsListAdapter(val values: MutableList<String>?, private val listen
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater: LayoutInflater = LayoutInflater.from(parent.context)
+        //adds audio comment xml fragment to the community work phase
         val individualAudio = inflater.inflate(R.layout.audio_comment_list_item, parent, false)
 
         return ViewHolder(individualAudio)
     }
 
+    //seems to get the comment count?  No instances found when I hit "Find Usages"
     override fun getItemCount(): Int = values?.size ?: 0
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -86,6 +88,7 @@ class RecordingsListAdapter(val values: MutableList<String>?, private val listen
             }
         }
 
+        //handles deleting of the comments on the community work phase
         private fun showDeleteItemDialog(position: Int, text: String) {
             val dialog = AlertDialog.Builder(itemView.context)
                     .setTitle(itemView.context.getString(R.string.delete_audio_title))
@@ -145,7 +148,7 @@ class RecordingsListAdapter(val values: MutableList<String>?, private val listen
     class RecordingsListModal(private val context: Context, private val toolbar: RecordingToolbar?) : ClickListeners, Modal {
         private var rootView: ViewGroup? = null
         private var dialog: AlertDialog? = null
-        private var displayNames: MutableList<String> = mutableListOf()
+        var displayNames: MutableList<String> = mutableListOf()
         internal var recyclerView: androidx.recyclerview.widget.RecyclerView? = null
         private val audioPlayer: AudioPlayer = AudioPlayer()
         private var currentPlayingButton: ImageButton? = null
@@ -242,6 +245,7 @@ class RecordingsListAdapter(val values: MutableList<String>?, private val listen
                     stopAudio()
                 })
 
+                //gets recorded audio files based on the phase
                 if (storyRelPathExists(context, getRecordedAudioFiles()[pos])) {
                     audioPlayer.setStorySource(context, getRecordedAudioFiles()[pos])
                     audioPlayer.playAudio()

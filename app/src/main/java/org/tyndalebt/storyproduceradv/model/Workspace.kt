@@ -11,6 +11,8 @@ import android.os.*
 import android.preference.PreferenceManager
 import android.provider.Settings.Secure
 import android.util.Log
+import android.view.View
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.content.ContextCompat.startActivity
 import androidx.documentfile.provider.DocumentFile
@@ -26,6 +28,8 @@ import org.tyndalebt.storyproduceradv.BuildConfig
 import org.tyndalebt.storyproduceradv.R
 import org.tyndalebt.storyproduceradv.activities.BaseActivity
 import org.tyndalebt.storyproduceradv.activities.DownloadActivity
+import org.tyndalebt.storyproduceradv.controller.MultiRecordFrag
+import org.tyndalebt.storyproduceradv.controller.accuracycheck.AccuracyCheckFrag
 import org.tyndalebt.storyproduceradv.model.messaging.Approval
 import org.tyndalebt.storyproduceradv.model.messaging.MessageROCC
 import org.tyndalebt.storyproduceradv.tools.file.deleteWorkspaceFile
@@ -38,6 +42,7 @@ import java.sql.Timestamp
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.properties.Delegates
 
 internal const val SLIDE_NUM = "CurrentSlideNum"
 internal const val DEMO_FOLDER = "000 Unlocked demo story Storm"
@@ -169,6 +174,12 @@ object Workspace {
                 field = value
         }
     }
+
+    /*
+    This may be how you can retrieve a slide given a number,
+    in fact it seems to be that that's the case
+    */
+
     val activeSlide: Slide?
     get(){
         if(activeStory.title == "") return null

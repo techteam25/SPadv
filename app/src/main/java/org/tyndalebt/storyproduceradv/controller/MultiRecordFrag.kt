@@ -3,9 +3,11 @@ package org.tyndalebt.storyproduceradv.controller
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import androidx.core.content.FileProvider
 import android.view.LayoutInflater
 import android.view.View
@@ -13,17 +15,21 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import org.tyndalebt.storyproduceradv.R
 import org.tyndalebt.storyproduceradv.BuildConfig
 import org.tyndalebt.storyproduceradv.model.*
 import org.tyndalebt.storyproduceradv.model.PROJECT_DIR
 import org.tyndalebt.storyproduceradv.model.SLIDE_NUM
+import org.tyndalebt.storyproduceradv.model.PhaseType;
+//import org.tyndalebt.storyproduceradv.controller.communitywork.CommunityWorkFrag;
 import org.tyndalebt.storyproduceradv.tools.file.copyToWorkspacePath
 import org.tyndalebt.storyproduceradv.tools.toolbar.MultiRecordRecordingToolbar
 import org.tyndalebt.storyproduceradv.tools.toolbar.PlayBackRecordingToolbar
 import org.tyndalebt.storyproduceradv.tools.toolbar.RecordingToolbar
 import java.io.File
+import kotlin.properties.Delegates
 
 /**
  * The fragment for the Draft view. This is where a user can draft out the story slide by slide
@@ -33,7 +39,6 @@ abstract class MultiRecordFrag : SlidePhaseFrag(), PlayBackRecordingToolbar.Tool
 
     private var tempPicFile: File? = null
 
-
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
@@ -42,7 +47,21 @@ abstract class MultiRecordFrag : SlidePhaseFrag(), PlayBackRecordingToolbar.Tool
 
         setupCameraAndEditButton()
 
+        checkForCommentsOnCommunityPhase();
+
         return rootView
+    }
+
+    /**
+     * This function only exists to produce a toast until we can figure out
+     * the visibility issue.  The icon will be added to the toolbar eventually
+     */
+    private fun checkForCommentsOnCommunityPhase() {
+        if (Workspace.activeStory.slides[Workspace.activeSlideNum].communityWorkAudioFiles.isNotEmpty() &&
+            Workspace.activePhase.phaseType == PhaseType.TRANSLATE_REVISE) {
+//            commentIcon.visibility = View.VISIBLE;
+            Toast.makeText(this.context, "Comments present on Community Work Page", Toast.LENGTH_SHORT).show();
+        }
     }
 
     /**
@@ -54,6 +73,10 @@ abstract class MultiRecordFrag : SlidePhaseFrag(), PlayBackRecordingToolbar.Tool
         // SP422 - DKH 5/6/2022 Enable images on all the slides to be swapped out via the camera tool
         // Add camera tool to numbered pages so that local images can be used in the story
         // If we have a numbered page, only show the camera on the Translate_Revise Phase
+        
+        /*
+            New guy's (Jeremy) note:  This if statement seems needlessly complicated but the logic below may be necessary.
+         */
         if(!(Workspace.activeStory.slides[slideNum].slideType == SlideType.NUMBEREDPAGE &&
                         Workspace.activePhase.phaseType != PhaseType.TRANSLATE_REVISE)) {
             if (Workspace.activeStory.slides[slideNum].slideType in
@@ -144,7 +167,6 @@ abstract class MultiRecordFrag : SlidePhaseFrag(), PlayBackRecordingToolbar.Tool
         }
     }
 
-
     /**
      * Change the picture behind the screen.
      */
@@ -206,8 +228,14 @@ abstract class MultiRecordFrag : SlidePhaseFrag(), PlayBackRecordingToolbar.Tool
 
         recordingToolbar.stopToolbarMedia()
     }
-    
+
+    /**
+     * Had to add a name to this companion to differentiate it from the other containing
+     * the comment circle function
+     *
+     * */
     companion object {
         private const val ACTIVITY_SELECT_IMAGE = 53
+
     }
 }

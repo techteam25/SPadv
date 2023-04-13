@@ -1,5 +1,7 @@
 package org.tyndalebt.storyproduceradv.controller.pager
 
+import android.widget.Toast
+import org.tyndalebt.storyproduceradv.App
 import org.tyndalebt.storyproduceradv.model.Workspace
 
 /**
@@ -9,7 +11,15 @@ class CircularViewPagerHandler(private val mViewPager: androidx.viewpager.widget
     private var mScrollState: Int = 0
 
     override fun onPageSelected(position: Int) {
+        /**
+         * Will handle this with a Gesture listener on the appropriate phases
+         *
+        */
+
         Workspace.activeSlideNum = position
+//        Workspace.slideNumRightOfActive = position + 1;
+//        Workspace.slideNumLeftOfActive = position - 1;
+
     }
 
     override fun onPageScrollStateChanged(state: Int) {

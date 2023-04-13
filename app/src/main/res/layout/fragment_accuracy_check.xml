@@ -70,6 +70,18 @@
         app:lineHeight="24dp"
         tools:ignore="HardcodedText" />
 
+    <ImageView
+        android:id="@+id/comment_present_accuracy_check_indicator"
+        android:layout_width="48dp"
+        android:layout_height="47dp"
+        android:layout_margin="1dp"
+        android:visibility="invisible"
+        android:clickable="false"
+        android:src="@drawable/ic_comment_present_on_community_phase"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        />
+
     <com.getbase.floatingactionbutton.FloatingActionButton
         android:id="@+id/concheck_logs_button"
         android:layout_width="wrap_content"
