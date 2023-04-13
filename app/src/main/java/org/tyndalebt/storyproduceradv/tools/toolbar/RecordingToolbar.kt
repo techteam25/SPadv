@@ -165,15 +165,6 @@ open class RecordingToolbar : Fragment(){
 
         micButton = toolbarButton(R.drawable.ic_mic_white_48dp, R.id.start_recording_button)
 
-        commentIcon = toolbarButton(R.drawable.ic_comment_present_on_community_phase, R.id.comment_icon);
-        //checks the presence/absence of recorded comments on the community work phase and adds an icon if present
-        if (Workspace.activeSlide!!.communityWorkAudioFiles.isNotEmpty() && Workspace.activePhase.phaseType != PhaseType.COMMUNITY_WORK) {
-
-            rootView?.addView(commentIcon);
-
-            rootView?.addView(toolbarButtonSpace());
-        }
-
         rootView?.addView(micButton)
         
         rootView?.addView(toolbarButtonSpace())

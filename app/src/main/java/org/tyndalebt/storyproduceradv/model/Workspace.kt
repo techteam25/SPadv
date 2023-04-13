@@ -165,14 +165,6 @@ object Workspace {
             return "${activePhase.getFileSafeName()}${ activeSlideNum }"
         }
     }
-    /**
-    *The following two vars hold the slideNums for the slides adjacent to the active slide
-    *utilized for checking comment presence during left and right swipe events.
-     * Can likely be deleted
-    */
-    var slideNumLeftOfActive: Int = -1;
-    var slideNumRightOfActive: Int = -1;
-
 
     var activeSlideNum: Int = -1
     set(value){

@@ -79,7 +79,7 @@
         android:clickable="false"
         android:src="@drawable/ic_comment_present_on_community_phase"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         />
 
     <com.getbase.floatingactionbutton.FloatingActionButton

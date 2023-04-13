@@ -53,11 +53,12 @@ class AccuracyCheckFrag : SlidePhaseFrag() {
     /**
      * makes visible an indicator on this
      * slide based on the presence or absence of comments
+     * simply causes a toast until we have the visibility issue fixed
      */
     private fun setCommentIndicatorOnRender(commentIcon: ImageView) {
         if (Workspace.activeStory.slides[Workspace.activeSlideNum].communityWorkAudioFiles.isNotEmpty()) {
-            commentIcon.visibility = View.VISIBLE;
-            Toast.makeText(this.context, "comments", Toast.LENGTH_SHORT).show();
+//            commentIcon.visibility = View.VISIBLE;
+            Toast.makeText(this.context, "Comments present on Community Work Page", Toast.LENGTH_SHORT).show();
         }
     }
 

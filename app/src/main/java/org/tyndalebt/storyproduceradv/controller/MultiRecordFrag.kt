@@ -47,7 +47,21 @@ abstract class MultiRecordFrag : SlidePhaseFrag(), PlayBackRecordingToolbar.Tool
 
         setupCameraAndEditButton()
 
+        checkForCommentsOnCommunityPhase();
+
         return rootView
+    }
+
+    /**
+     * This function only exists to produce a toast until we can figure out
+     * the visibility issue.  The icon will be added to the toolbar eventually
+     */
+    private fun checkForCommentsOnCommunityPhase() {
+        if (Workspace.activeStory.slides[Workspace.activeSlideNum].communityWorkAudioFiles.isNotEmpty() &&
+            Workspace.activePhase.phaseType == PhaseType.TRANSLATE_REVISE) {
+//            commentIcon.visibility = View.VISIBLE;
+            Toast.makeText(this.context, "Comments present on Community Work Page", Toast.LENGTH_SHORT).show();
+        }
     }
 
     /**
