@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:top="2dp"
+        android:bottom="2dp"
+        android:right="2dp"
+        android:left="2dp"
+        >
+
+
+
+        <shape
+            android:shape="oval"
+            android:dither="false"
+            >
+            <!--    This icon will be present on the story in the story list if there is
+                 an approval or a message present    -->
+            <!-- if the bitmap does not have the same pixel config as the screen it enables dithering-->
+            <size
+                android:width="8dp"
+                android:height="8dp"
+                />
+            <solid android:color="@color/backT_phase" />
+
+        </shape>
+
+    </item>
+
+</layer-list>

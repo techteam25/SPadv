@@ -121,6 +121,14 @@ class StoryPageFragment : Fragment() {
         return lfView
     }
 
+    private fun checkForApproval() {
+        TODO("Not yet implemented")
+    }
+
+    private fun checkForMessage() {
+        TODO("Not yet implemented")
+    }
+
     /**
      * Updates ListAdapter to use the newly provided list. This is very helpful when filter options
      * are used.
@@ -229,6 +237,9 @@ class ListAdapter(context: Context,
                 }
             }
         }
+
+        //TODO: create check for message
+        //TODO: create check for approval
 
         return row
     }

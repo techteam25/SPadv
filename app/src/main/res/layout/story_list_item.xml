@@ -44,6 +44,19 @@
     </LinearLayout>
 
     <ImageView
+        android:id="@+id/message_or_approval_present"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_gravity="bottom"
+        android:layout_margin="1dp"
+        android:clickable="false"
+        android:contentDescription="TODO"
+        android:src="@drawable/ic_story_has_message"
+        android:visibility="invisible"
+        tools:ignore="ContentDescription,HardcodedText"
+        />
+
+    <ImageView
         android:id="@+id/progress_icon"
         android:layout_width="8dp"
         android:layout_height="match_parent"
