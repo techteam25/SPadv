@@ -11,8 +11,6 @@ import android.os.*
 import android.preference.PreferenceManager
 import android.provider.Settings.Secure
 import android.util.Log
-import android.view.View
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.content.ContextCompat.startActivity
 import androidx.documentfile.provider.DocumentFile
@@ -28,8 +26,6 @@ import org.tyndalebt.storyproduceradv.BuildConfig
 import org.tyndalebt.storyproduceradv.R
 import org.tyndalebt.storyproduceradv.activities.BaseActivity
 import org.tyndalebt.storyproduceradv.activities.DownloadActivity
-import org.tyndalebt.storyproduceradv.controller.MultiRecordFrag
-import org.tyndalebt.storyproduceradv.controller.accuracycheck.AccuracyCheckFrag
 import org.tyndalebt.storyproduceradv.model.messaging.Approval
 import org.tyndalebt.storyproduceradv.model.messaging.MessageROCC
 import org.tyndalebt.storyproduceradv.tools.file.deleteWorkspaceFile
@@ -42,7 +38,6 @@ import java.sql.Timestamp
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.properties.Delegates
 
 internal const val SLIDE_NUM = "CurrentSlideNum"
 internal const val DEMO_FOLDER = "000 Unlocked demo story Storm"
@@ -361,6 +356,11 @@ object Workspace {
         }
     }
 
+    fun replaceImportWordLinks(context: Context) {
+        var wordLinksDir = workdocfile.findFile(WORD_LINKS_DIR)
+        wordLinksDir!!.delete()
+        importWordLinks(context)
+    }
     private fun importWordLinks(context: Context) {
         var wordLinksDir = workdocfile.findFile(WORD_LINKS_DIR)
         var csvFileName : String? = null  // default is no csv file, later on, create one if none found
@@ -534,7 +534,9 @@ object Workspace {
 
         try {
             // open wordlinks.csv located in the APK
-            val instream = assetManager.open(csvFileName)
+            val langCode = readFromFile(context)
+            val shortCode = getLanguageCode(langCode!!)
+            val instream = assetManager.open(shortCode + "/" + csvFileName)
             // Create the worklinks.csv file in the wordlinks directory
             val outstream = getChildOutputStream(context, "$WORD_LINKS_DIR/$csvFileName")
             val buffer = ByteArray(1024)
@@ -548,7 +550,6 @@ object Workspace {
         } catch (e: Exception) {
             Log.e("workspace", "Failed to copy wordlinks CSV asset file: $csvFileName", e)
         }
-
     }
     fun pathOf(name: String): DocumentFile? {
         return workdocfile.listFiles().find { it.name == name }
