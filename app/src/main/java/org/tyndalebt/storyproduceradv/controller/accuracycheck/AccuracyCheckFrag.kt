@@ -16,10 +16,7 @@ import org.tyndalebt.storyproduceradv.R
 import org.tyndalebt.storyproduceradv.controller.SlidePhaseFrag
 import org.tyndalebt.storyproduceradv.controller.logging.LogListAdapter
 import org.tyndalebt.storyproduceradv.controller.phase.PhaseBaseActivity
-import org.tyndalebt.storyproduceradv.model.Phase
-import org.tyndalebt.storyproduceradv.model.PhaseType
-import org.tyndalebt.storyproduceradv.model.SlideType
-import org.tyndalebt.storyproduceradv.model.Workspace
+import org.tyndalebt.storyproduceradv.model.*
 
 /**
  * The fragment for the Consultant check view. The consultant can check that the draft is ok
@@ -49,16 +46,14 @@ class AccuracyCheckFrag : SlidePhaseFrag() {
         }
     }
 
-
     /**
      * makes visible an indicator on this
      * slide based on the presence or absence of comments
      * simply causes a toast until we have the visibility issue fixed
      */
     private fun setCommentIndicatorOnRender(commentIcon: ImageView) {
-        if (Workspace.activeStory.slides[Workspace.activeSlideNum].communityWorkAudioFiles.isNotEmpty()) {
-//            commentIcon.visibility = View.VISIBLE;
-            Toast.makeText(this.context, "Comments present on Community Work Page", Toast.LENGTH_SHORT).show();
+        if (Workspace.activeStory.slides[this.slideNum].communityWorkAudioFiles.isNotEmpty()) {
+            commentIcon.visibility = View.VISIBLE;
         }
     }
 
@@ -262,6 +257,5 @@ class AccuracyCheckFrag : SlidePhaseFrag() {
         val CONSULTANT_PREFS = "Consultant_Checks"
         val IS_CONSULTANT_APPROVED = "isApproved"
         private val PASSWORD = "appr00ved"
-        var slideNumHolder: Int? = null;
     }
 }

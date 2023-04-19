@@ -43,25 +43,17 @@ abstract class MultiRecordFrag : SlidePhaseFrag(), PlayBackRecordingToolbar.Tool
                               container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
 
+        setSlideNumHolder();
+
         setToolbar()
 
         setupCameraAndEditButton()
 
-        checkForCommentsOnCommunityPhase();
-
         return rootView
     }
 
-    /**
-     * This function only exists to produce a toast until we can figure out
-     * the visibility issue.  The icon will be added to the toolbar eventually
-     */
-    private fun checkForCommentsOnCommunityPhase() {
-        if (Workspace.activeStory.slides[Workspace.activeSlideNum].communityWorkAudioFiles.isNotEmpty() &&
-            Workspace.activePhase.phaseType == PhaseType.TRANSLATE_REVISE) {
-//            commentIcon.visibility = View.VISIBLE;
-            Toast.makeText(this.context, "Comments present on Community Work Page", Toast.LENGTH_SHORT).show();
-        }
+    private fun setSlideNumHolder() {
+        slideNumHolder = this.slideNum;
     }
 
     /**
@@ -236,6 +228,7 @@ abstract class MultiRecordFrag : SlidePhaseFrag(), PlayBackRecordingToolbar.Tool
      * */
     companion object {
         private const val ACTIVITY_SELECT_IMAGE = 53
-
+        //tells the toolbar the slideNum to set commentIcon visibility
+        var slideNumHolder: Int? = null;
     }
 }
