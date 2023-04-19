@@ -36,7 +36,7 @@ class Story(var title: String, var slides: List<Slide>){
     var storyToJasonAppVersionName = "" // default value - no value available
     var storyToJasonTimeStamp = ""  // default value - no value available
 
-    var isApproved: Boolean = false
+    var isApproved: Boolean = false;
     var learnAudioFile = ""
     var wholeStoryBackTAudioFile = ""
     var wholeStoryBackTranslationUploadState = UploadState.NOT_UPLOADED

@@ -2,6 +2,7 @@ package org.tyndalebt.storyproduceradv.controller.storylist
 
 import android.app.Activity
 import android.content.Context
+import android.media.Image
 import android.os.Build
 import android.os.Bundle
 import android.text.Html
@@ -121,14 +122,6 @@ class StoryPageFragment : Fragment() {
         return lfView
     }
 
-    private fun checkForApproval() {
-        TODO("Not yet implemented")
-    }
-
-    private fun checkForMessage() {
-        TODO("Not yet implemented")
-    }
-
     /**
      * Updates ListAdapter to use the newly provided list. This is very helpful when filter options
      * are used.
@@ -177,6 +170,11 @@ class ListAdapter(context: Context,
 
         if(position <= stories.size){
             val story = stories[position]
+
+            //for testing.  results inconclusive
+//            if (position == 3) {
+//                story.isApproved = true;
+//            }
 
             // 09/11/2021 - DKH: Update for Testing Abstraction #566
             // ALL_STORIES, IN_PROGRESS, COMPLETED are the tabs in the "Story Templates" view.
@@ -228,6 +226,8 @@ class ListAdapter(context: Context,
                 }
 
                 val progressIcon : ImageView = row.findViewById(R.id.progress_icon)
+                val commentIcon : ImageView = row.findViewById(R.id.comment_present);
+                val approvalIcon : ImageView = row.findViewById(R.id.approval_present);
 
                 if(color == null) {
                     progressIcon.visibility = View.INVISIBLE
@@ -235,13 +235,29 @@ class ListAdapter(context: Context,
                     progressIcon.visibility = View.VISIBLE
                     progressIcon.setBackgroundColor(context.getColor(color))
                 }
+
+                checkForComment(story, commentIcon);
+                checkForApproval(story, approvalIcon);
+
             }
         }
 
-        //TODO: create check for message
-        //TODO: create check for approval
+       return row
+    }
 
-        return row
+    private fun checkForApproval(story: Story, view: ImageView) {
+        if (story.isApproved) {
+            view.visibility = View.VISIBLE;
+        }
+    }
+
+    private fun checkForComment(story: Story, view: ImageView) {
+        for(slide in story.slides) {
+            if (slide.communityWorkAudioFiles.isNotEmpty()) {
+                view.visibility = View.VISIBLE;
+                break;
+            }
+        }
     }
 
     internal class FileHolder(view: View){

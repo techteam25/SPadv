@@ -2,6 +2,7 @@ package org.tyndalebt.storyproduceradv.controller
 
 import android.app.Activity
 import android.content.Context
+import android.media.Image
 import android.os.Build
 import android.os.Bundle
 import android.text.Html
@@ -57,6 +58,9 @@ class StoryListFrag : androidx.fragment.app.Fragment() {
 
 class ListAdapter(context: Context, private val resourceId: Int, private val stories: MutableList<Story>) : ArrayAdapter<Story>(context, resourceId, stories) {
 
+    //used to access the messages/approvals associated with stories for display in the storyList
+    val theStories: MutableList<Story> = stories;
+
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         var row = convertView
         val holder: FileHolder
@@ -73,6 +77,7 @@ class ListAdapter(context: Context, private val resourceId: Int, private val sto
 
         if(position <= stories.size){
             val story = stories[position]
+//
             holder.txtTitle.text = story.title
             //TODO put th number 25 in some configuration.  What if the images are different sizes?
             //Use the "second" image, because the first is just for the title screen.
