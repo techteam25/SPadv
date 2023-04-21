@@ -17,9 +17,6 @@ class CircularViewPagerHandler(private val mViewPager: androidx.viewpager.widget
         */
 
         Workspace.activeSlideNum = position
-//        Workspace.slideNumRightOfActive = position + 1;
-//        Workspace.slideNumLeftOfActive = position - 1;
-
     }
 
     override fun onPageScrollStateChanged(state: Int) {
