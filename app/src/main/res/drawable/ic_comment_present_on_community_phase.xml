@@ -2,13 +2,11 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:top="28dp"
-        android:bottom="4dp"
-        android:right="16dp"
-        android:left="16dp"
+        android:top="10dp"
+        android:bottom="10dp"
+        android:right="10dp"
+        android:left="10dp"
         >
-
-
 
     <shape
      android:shape="oval"
@@ -17,10 +15,17 @@
 <!--    This icon will be present if the community phase contains a comment     -->
     <!-- if the bitmap does not have the same pixel config as the screen it enables dithering-->
     <size
-        android:width="15dp"
-        android:height="15dp"
+        android:width="28dp"
+        android:height="28dp"
         />
-    <solid android:color="#859900" />
+    <gradient
+        android:startColor="#859900"
+        android:centerColor="#859900"
+        android:endColor="#FFFFFF"
+        android:gradientRadius="14dp"
+        android:type="radial"
+
+        />
 
 
 </shape>
