@@ -78,6 +78,7 @@ Translate and produce stories (starting with templates in a major language made 
        git merge main               // merge branch with the updated main, fix any conflicts
 
    4. Build and test your changes with the lates2 updates, then commit again
+      Run the unit tests
        git commit                    // commit your changes to the branch
 
    5. Push the changes to the repository
@@ -218,6 +219,22 @@ Translate and produce stories (starting with templates in a major language made 
       `FunctionName_When_[Condition]_Should_[DoExpectedBehavior]`
          **Example:** `OnCreate_When_WorkspaceDirectoryIsAlreadySet_Should_NotStartFileTreeActivity`
 
+   * The unit tests are written with two different test runners.  Simpler tests
+     have been written with MockitoJUnitRunner.  More complex tests are writtten
+     with RobolectricTestRunner and have been designed to work at the Activity
+     level.  For an example of the RobolectricTestRunner test, see 
+     TestParsePhotoStory or TestMainActivity.   Note: If you are writing a test
+     with RobolectricTestRunner, the main incompatibility encountered so far shows
+     up in file access, mainly with the usage of context.contentResolver which
+     uses the class ShadowContextResolver and gives different results from the
+     real version.  See FileIO.kt for some sample workarounds.
+     
+   * All unit tests should be run before merging your code int main. This is a 
+     good way to prevent regressions resulting from your changes.  Also, as you
+     develop new features and fix bugs, it is strongly suggested that you 
+     write a new test to verify your changes and prevent future regressions.
+
+
    To run the tests from Android Studio:
    1. Open the Story Publisher project (SPadv) in Android Studio.
    2. Set the "Project" tool window to show "Tests" from the project dropdown
@@ -239,21 +256,14 @@ Translate and produce stories (starting with templates in a major language made 
       *Note:* You may need to run the gradle wrapper with sudo or make the gradle 
       wrapper executable with `sudo chmod +x ./gradlew`
 
-   Issues (2/2/23):
-     - TestParsePhotoStory was written with XML file formats in mind.  The product 
-       code has been updated (to us json?) and the test needs to be updated.
-       Currently all the tests have been disabled.
-       
-     - Running the tests gives an error that the targetSdkVersion 31 is greater
-       than the maxSdkVersion 30.  Temporarily I modified the targetSdkVersion
-       to 30 to be able to proceed.
+   Issues (4/24/23):
     
-      - There are errors in TestRegistrationActivitybecause the state was
-        content.pm.action.REQUEST_PERMISSIONS rather than the expected states
-        
-      - There are errors in TestSplashScreenActivity.  One was another state
-        issue RegistrationActivity vs WelcomeActvity.  There was also a 
-        NullPointerException     
+      - TestRegistrationActivity
+       The startup order of operations has changed since this test was written.
+       Both the individual tests now result in a permissions request not the 
+       expected results.  Eventually we should  to write new tests actually testing
+       the registration operation.  For now disable the actions in these tests. 
+         
 
 
 ###

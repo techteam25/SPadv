@@ -12,11 +12,12 @@ import android.os.ParcelFileDescriptor
 import android.provider.DocumentsContract
 import android.util.LruCache
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import org.tyndalebt.storyproduceradv.model.WORD_LINKS_DIR
 import org.tyndalebt.storyproduceradv.model.Story
+import org.tyndalebt.storyproduceradv.model.WORD_LINKS_DIR
 import org.tyndalebt.storyproduceradv.model.Workspace
 import java.io.File
 import java.io.FileDescriptor
+import java.io.FileNotFoundException
 import java.io.InputStream
 import java.io.OutputStream
 import kotlin.math.max
@@ -170,19 +171,43 @@ fun getWordLinksChildOutputStream(context: Context, relPath: String, mimeType: S
 fun storyRelPathExists(context: Context, relPath: String, dirRoot: String = Workspace.activeDirRoot) : Boolean{
     if(relPath == "") return false
     val uri = getStoryUri(relPath,dirRoot) ?: return false
+    getFileType(context, uri) ?: return false;
+    return true
+}
+
+fun getFileType(context : Context, uri : Uri) : String?
+{
     var myGetType = context.contentResolver.getType(uri)
-    if ((myGetType == null) && Workspace.isUnitTest) 
-    {
-        // RK - 03-20-2023
-        // The unit tests use a ShadowContextResolver from the context
+    if ((myGetType == null) && Workspace.isUnitTest) {
+        // RK - 03-23-2023
+        // The unit tests for robolectric tests use a ShadowContextResolver from the context
         // which gives different result from resolver.getType()
         // This fix is intended to compensate for that difference in the unit test
-        // See TestParsePhotoStory.parsePhotoStoryTest()
+        // See TestParsePhotoStory.loadSaveJsonTest()
         val file = File(uri.path)
-        return file.exists() && file.isDirectory()
+        if (file.exists() && file.isDirectory()) {
+                myGetType = DocumentsContract.Document.MIME_TYPE_DIR
+        }
+        else if (file.exists()){
+            var extension = ""
+            val index = file.name.lastIndexOf('.')
+            if (index > 0) {
+                extension = file.name.substring(index + 1)
+            }
+            myGetType = when (extension) {
+                "json" ->  "application/json"
+                "jpg"  ->  "image/jpeg"
+                "mp3"  ->  "audio/mpeg"
+                "png"  ->  "image/png"
+                "htm"  ->  "text/html"
+                "html" ->  "text/html"
+                "css"  ->  "text/css"
+                "svg"  ->  "text/svg"
+                else   ->  null
+            }
+        }
     }
-    myGetType ?: return false;
-    return true
+    return myGetType
 }
 
 fun workspaceRelPathExists(context: Context, relPath: String) : Boolean{
@@ -272,7 +297,28 @@ fun getChildDocuments(context: Context,relPath: String) : MutableList<String>{
             cursor.moveToNext()
         } while ((!cursor.isAfterLast))
         cursor.close()
-    } catch (e: Exception) { childDocs = ArrayList() }
+    }
+    catch (e: Exception) {
+        childDocs = ArrayList()
+        if (Workspace.isUnitTest) {
+            // RK 03-27-2023  Unit test exception with previous handling
+            // Use old fashioned file techniques
+            // See TestParsePhotoStory.createStoryTest()
+            try {
+                val uri = Uri.parse(Workspace.workdocfile.uri.toString() + Uri.encode("/$relPath"))
+                val dir = File(uri.path)
+                if (dir.exists() && dir.isDirectory()) {
+                    val list = dir.listFiles()
+                    if (list != null) {
+                        for (file in list) {
+                            childDocs.add(file.name)
+                        }
+                    }
+                }
+            }
+            catch (e: Exception)  {}
+        }
+    }
 
     return childDocs
 }
@@ -286,11 +332,27 @@ fun getPFD(context: Context, relPath: String, mimeType: String = "", mode: Strin
         for (i in 0..segments.size - 2) {
             //TODO make this faster.
             val newUri = Uri.parse(uri.toString() + Uri.encode("/${segments[i]}"))
-            val isDirectory = context.contentResolver.getType(newUri)?.contains(DocumentsContract.Document.MIME_TYPE_DIR)
-                    ?: false
+
+            var isDirectory = getFileType(context, newUri)?.contains(DocumentsContract.Document.MIME_TYPE_DIR)
+                        ?: false
             if (!isDirectory) {
-                DocumentsContract.createDocument(context.contentResolver, uri,
-                        DocumentsContract.Document.MIME_TYPE_DIR, segments[i])
+                try {
+                    DocumentsContract.createDocument(context.contentResolver, uri,
+                            DocumentsContract.Document.MIME_TYPE_DIR, segments[i])
+                }
+                catch (e: Exception) {
+                    if (Workspace.isUnitTest) {
+                        // RK 3-27-2023
+                        // Directory create will throw because of incompatibility in contentResolver
+                        // in Robolectric test runner.  Create the directory the old fashioned way
+                        // See TestParsePhotStory.createStoryLoadBloomHtmlTest()
+                        val dir = File(newUri.path)
+                        if (!dir.mkdir())
+                            throw e
+                    }
+                    else
+                        throw e
+                }
             }
             uri = newUri
         }
@@ -301,25 +363,58 @@ fun getPFD(context: Context, relPath: String, mimeType: String = "", mode: Strin
     //create the file if it is needed
     val newUri = Uri.parse(uri.toString() + Uri.encode("/${segments.last()}"))
     //TODO replace with custom exists thing.
-    if(context.contentResolver.getType(newUri) == null){
+    if (getFileType(context, newUri) == null){
         //find the mime type by extension
         var mType = mimeType
         if(mType == "") {
-            mType = when (File(uri.path ?: "").extension) {
+            mType = when (File(newUri.path ?: "").extension) {
                 "json" -> "application/json"
                 //todo - use m4p.
                 "mp3"  -> "audio/x-mp3"
                 "wav" -> "audio/w-wav"
                 "txt" -> "plain/text"
+
+                "jpg"  ->  "image/jpeg"
+                "png"  ->  "image/png"
+                "htm"  ->  "text/html"
+                "html" ->  "text/html"
+                "css"  ->  "text/css"
+                "svg"  ->  "text/svg"
+
                 else -> "*/*"
             }
         }
-        DocumentsContract.createDocument(context.contentResolver,uri,mType,segments.last())
+
+        try {
+            DocumentsContract.createDocument(context.contentResolver, uri, mType, segments.last())
+        }
+        catch (e: Exception) {
+            if (Workspace.isUnitTest) {
+                // RK 3-27-2023
+                // Directory create will throw because of incompatibility in contentResolver
+                // in Robolectric test runner.  Create the directory the old fashioned way
+                // See TestDownloadActivity
+                val file = File(newUri.path)
+                if (!file.createNewFile())
+                    throw e
+            }
+            else
+                throw e
+        }
     }
     var pfd: ParcelFileDescriptor? = null
     try{
         pfd = context.contentResolver.openFileDescriptor(newUri,mode)
-    }catch(e:java.lang.Exception){}
+    }
+    catch(e:java.lang.Exception){
+        if (Workspace.isUnitTest) {  // do we realy neeed this one?
+            // manually create the file
+            val file = File(newUri.path)
+            ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY)
+        }
+        else
+            FirebaseCrashlytics.getInstance().recordException(e)
+    }
     return pfd
 }
 

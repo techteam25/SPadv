@@ -12,6 +12,7 @@ import android.widget.CheckedTextView;
 
 import org.tyndalebt.storyproduceradv.R;
 import org.tyndalebt.storyproduceradv.activities.DownloadActivity;
+import org.tyndalebt.storyproduceradv.model.Workspace;
 
 import java.util.ArrayList;
 
@@ -105,6 +106,13 @@ public class DownloadAdapter extends ArrayAdapter<DownloadDS> implements View.On
             ctv.setCompoundDrawables(img, null, null, null);
 //            ctv.setCheckMarkDrawable(R.drawable.ic_checkmark_green);
         }
+    }
+
+    public ArrayList<DownloadDS> getArray() {  // for testing purposes, see TestDownloadActivity
+        if (Workspace.INSTANCE.isUnitTest()) {
+            return dataSetArray;
+        }
+        return null;
     }
 
 }

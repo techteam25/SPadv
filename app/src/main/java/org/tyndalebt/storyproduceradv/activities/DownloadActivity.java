@@ -1,7 +1,14 @@
 package org.tyndalebt.storyproduceradv.activities;
 
+import 	android.os.storage.StorageManager;
+import 	android.os.storage.StorageVolume;
+import java.util.List;
+
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.StatFs;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -217,16 +224,130 @@ public class DownloadActivity extends BaseActivity {
     View.OnClickListener clickListener = new View.OnClickListener() {
         public void onClick(View v) {
             if (v.equals(pDownloadImage)) {
-                // Build urlList then download
-                String urlList[] = BuildURLList();
-                setContentView(R.layout.activity_download);
-
-                pText = (TextView) findViewById(R.id.pProgressText);
-                pBar = (ProgressBar) findViewById(R.id.progressBar);
-                at.execute(urlList);
+                // Check for enough empty space
+                checkAvailableSpaceThenDownload();
             }
         }
     };
+
+    /**
+     * RK 04/18/2023
+     * Issue #98:  Evaluate space on phone before download templates
+     *
+     * Test how much free space is on the phone before downloading templates.
+     * Checks for free space available, at 1gb per selected template or at
+     * least 4gb.  If the space is below the minimun give them a warning dialog with
+     * how much space they have and recommend to them to free up some space
+     * before proceeding. If the user has selected more than 4 templates to
+     * download, the minimum space is calculated as 1gb per template.
+
+     * Note: The slightly tricky part of this feature is to determine whether the
+     * space we need is from the SD card or the main memory.  To do that, we
+     * utilizes the API StorageVolume.getDirectory() which does
+     * not exist in Android 10 and earlier.  So the feature is disabled for those
+     * platforms.
+     */
+    private void checkAvailableSpaceThenDownload() {
+        // Build urlList then download
+        String urlList[] = BuildURLList();
+        if (urlList != null) {
+            long size = getAvailableSpace();
+            if (size >= 0) {  // getAvailableSpace returns -1 for Android 10 and earlier
+                size = size / 1000000; // in mbytes
+
+                long minSize = urlList.length * 1000;  // in mb
+                minSize = (minSize < 4000) ? 4000 : minSize;
+
+                if (size < minSize) {
+                // if (size > 0) {  // For debug
+
+                    DialogInterface.OnClickListener onClick = new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dlg, int value) {
+                            dlg.dismiss();
+                            if (value == -1) {  // cancel is value == -2
+                                doDownload(urlList);
+                            }
+                        }
+                    };
+
+                    String spaceMsg = getString(R.string.template_space_message) + getSizeMessage(size);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setTitle(getString(R.string.template_space_title));
+                    builder.setMessage(spaceMsg);
+                    builder.setNegativeButton(getString(R.string.cancel), onClick);
+                    builder.setPositiveButton(getString(R.string.ok), onClick);
+                    AlertDialog dlg = builder.create();
+                    dlg.show();
+                }
+            } else {
+                doDownload(urlList);
+            }
+        }
+    }
+
+    public long getAvailableSpace() {
+        // Fetching internal memory information
+
+        try {
+            StorageManager storage = getSystemService(StorageManager.class);
+            List<StorageVolume> volumes = storage.getStorageVolumes();
+            if ((volumes != null) && (volumes.size() > 0)) {
+                int volumeNo = 0;
+                if (volumes.size() > 1) {
+                    // which to use?
+                    // is workdocfile in the primary memory or on the SD?
+                    String segment = Workspace.INSTANCE.getWorkDocFile().getUri().getLastPathSegment();
+                    int primaryIndex = volumes.get(0).isPrimary() ? 0 : 1;
+                    int sdIndex = volumes.get(0).isPrimary() ? 1 : 0;
+                    volumeNo = (segment.indexOf("primary") == 0) ? primaryIndex : sdIndex;
+                }
+
+                File file = null;
+                try {
+                    file = volumes.get(volumeNo).getDirectory();
+                } catch (Throwable ex) {
+                    // StorageVolume.getDirectory() does not exist in Android 10 and earlier.
+                    // disable the feature in that case
+                    return -1;
+                }
+
+                if (file.exists()) {
+                    StatFs stat = new StatFs(file.getPath());
+                    long blockSize = stat.getBlockSizeLong();
+                    long availableBlocks = stat.getAvailableBlocksLong();
+                    long totalBlocks = stat.getBlockCountLong();
+                    long availableSpace = availableBlocks * blockSize;
+                    long totalSpace = totalBlocks * blockSize;
+                    return availableSpace;
+                }
+            }
+        }
+        catch(Throwable ex){
+            //ex.printStackTrace();
+        }
+        return -1;
+    }
+
+    private String getSizeMessage(long mbSize)  {
+        if (mbSize < 1) {
+            return getString(R.string.space_less_than_one_meg);
+        }
+        if (mbSize > 1000) {
+            long gbSize = mbSize / 1000;
+            mbSize = mbSize - (gbSize * 1000);
+            mbSize = mbSize / 10;
+            return gbSize + "." + mbSize + getString(R.string.space_gb);
+        }
+        return "" + mbSize + getString(R.string.space_mb);
+    }
+
+    private void doDownload(String urlList[]) {
+        setContentView(R.layout.activity_download);
+
+        pText = (TextView) findViewById(R.id.pProgressText);
+        pBar = (ProgressBar) findViewById(R.id.progressBar);
+        at.execute(urlList);
+    }
 
     public boolean folderExists(Context con, String pURL) {
         String fName = pURL.substring(pURL.lastIndexOf("/") + 1);
@@ -256,7 +377,7 @@ public class DownloadActivity extends BaseActivity {
                 pURLs = pURLs + dataModel.getURL();
             }
         }
-        return pURLs.split("\\|");
+        return (pURLs == "") ? null : pURLs.split("\\|");
     }
 
     public String URLEncodeUTF8(String pSource) {
@@ -445,4 +566,5 @@ public class DownloadActivity extends BaseActivity {
         return true;
 
     }
+
 }

@@ -90,6 +90,12 @@
     <string name="registration_SPadv_email"></string>
     <string name="registration_robin_rempel_email">SPapp.training@gmail.com</string>
     <string name="rename_title">Choose a new name</string><!-- Default instructions on how to enter data -->
+    <string name="template_space_title">Warning: Available Space</string>
+    <string name="template_space_message">"It is best to have 1gb of space available per template you will be working on. If you have less than that, you may want to free up some space before proceeding.\n\n   Available space: "</string>
+    <string name="space_less_than_one_meg">"Less than 1mb"</string>
+    <string name="space_mb">"mb"</string>
+    <string name="space_gb">"gb"</string>
+        
     <!-- For Word links, give user more instruction on how to enter the data -->
     <string name="rename_title_wordlinks">Type a back translation or spell the name.</string>
     <string name="recordings_title">Recordings</string>
