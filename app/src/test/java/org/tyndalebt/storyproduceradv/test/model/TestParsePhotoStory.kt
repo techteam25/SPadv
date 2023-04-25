@@ -4,180 +4,248 @@ import android.os.Build
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
-import org.robolectric.shadows.ShadowLooper
-import org.tyndalebt.storyproduceradv.controller.SplashScreenActivity
-import org.tyndalebt.storyproduceradv.model.PhaseType
-import org.tyndalebt.storyproduceradv.model.Workspace
-import org.tyndalebt.storyproduceradv.model.Story
-import org.tyndalebt.storyproduceradv.model.Workspace.registration
-import java.io.File
+import org.tyndalebt.storyproduceradv.model.*
 
 
 @RunWith(RobolectricTestRunner::class)
+
 @Config(sdk = [Build.VERSION_CODES.R])    // our robolectric version (4.5.1) is not updated to 31 yet
-class TestParsePhotoStory {
-    @Test
-    fun parsePhotoStoryTest() {
-        setupWorkspace()
-       val myStory = loadStory()
-       Assert.assertNotNull("Unable to open story", myStory)
-       checkStoryContents(myStory)
+class TestParsePhotoStory : BaseActivityTest() {
 
-       // Future: may want to edit the data, resave story.json, reload, and check
-       // the modified contents.
-       //
-       // If so, may want to make a copy of the data directory and operate
-       // on the copy in order to preserve the test data to be used for
-       // other tests.
-    }
+   val cTranslatedContent = "In the beginning was the word!"
+   val cCredits = "Contact: Bob\nTranslator: Larry"
 
-    private fun setupWorkspace() {
+   //
+   // Test: loadSaveJsonTest
+   //
+   // Purpose:
+   //    Tests loading, editing, and saving of story.json
+   //
+   // Steps:
+   //    1. Initialize existing project files
+   //    2. Open the existing project and check for accurate
+   //       loading of the project.
+   //    3. Modify the loaded project
+   //    4. Save the changes to the project
+   //    5. Re-open the project and check that the changes were
+   //       properly persisted and loaded
+   //
+   // Author: Ray Kaestner 03-23-2023
+   //
 
-       //Workspace.initializeWorkspace(ctx)  // will this work?
+   @Test
+   fun loadSaveJsonTest() {
 
-       var df = androidx.documentfile.provider.DocumentFile.fromFile(File("app/sampledata"))
-       if (!df.isDirectory) {
-          df = androidx.documentfile.provider.DocumentFile.fromFile(File("sampledata"))
-       }
+      // init environment
+      initProjectFiles(false)
+      val learnActivity = startLearnActivity()
 
-       Workspace.workdocfile = df
-       Workspace.isUnitTest = true
-    }
+      // test loading
 
-   private fun loadStory() : Story? {
-      var df2 = androidx.documentfile.provider.DocumentFile.fromFile(File("app/sampledata/002 Lost Coin"))
-      if (!df2.isDirectory) {
-         df2 = androidx.documentfile.provider.DocumentFile.fromFile(File("002 Lost Coin"))
-      }
+      val myStory = loadStory(learnActivity)
+      Assert.assertNotNull("Unable to open story", myStory)
+      checkStoryContents(myStory, false, false)
 
-      val splashScreenActivity = startSplashScreenActivity()
-      val myStory = Workspace.buildStory(splashScreenActivity, df2)
-      return myStory
+      // test edit and save
+      modifyStoryContents(myStory)
+      saveStory(learnActivity, myStory)
+
+      val myStory2 = loadStory(learnActivity)
+      checkStoryContents(myStory2, true, false)
    }
 
-    private fun checkStoryContents(myStory: Story?) {
-       // Testing that the story contents have been properly loaded
-        checkStoryContentsGeneral(myStory);
-        checkStoryContentsBeginningSlide(myStory);
-        checkStoryContentsNextSlide(myStory);
-    }
-    
-    private fun checkStoryContentsGeneral(myStory: Story?) {
-        Assert.assertFalse("Story should not be approved.", myStory!!.isApproved)
-        Assert.assertTrue("Story lastSlideNum should be 0.",  myStory.lastSlideNum == 0)
-        Assert.assertTrue("Story lastPhase should be LEARN.", myStory!!.lastPhaseType == PhaseType.LEARN)
-        Assert.assertTrue("Expected number of slides should be 8.", myStory!!.slides.size.toInt() == 8)
-    }
-            
- 
-     private fun checkStoryContentsBeginningSlide(myStory: Story?) {
-        val slide = myStory!!.slides[0]
-        val pageNo = 0;
-         
-        Assert.assertEquals("Image file should be blank.  Slide: " + pageNo, slide.imageFile, "")
-        Assert.assertEquals("Text file should be blank.  Slide: " + pageNo, slide.textFile, "")
-        Assert.assertEquals("Title should be blank.  Slide: " + pageNo, slide.title, "")
-        Assert.assertEquals("SubTitle should be blank.  Slide: " + pageNo, slide.subtitle, "Luke 15")
+   //
+   // Test: createStoryLoadBloomHtmlTest
+   //
+   // Purpose:
+   //    Tests creating story object from the bloom html file,
+   //    then saving and editing, story.json
+   //
+   // Steps:
+   //    1. Initialize existing project files, ensure project directory removed
+   //    2. Open the new project and check for accurate.  Since the story.json
+   //       file has been removed, it should be loaded from the bloom html file
+   //    3. Modify the loaded project
+   //    4. Save the changes to the project
+   //    5. Re-open the project and check that the changes were
+   //       properly persisted and loaded
+   //
+   // Author: Ray Kaestner 03-23-2023
+   //
 
-        Assert.assertTrue("Width value incorrect.  Slide: " + pageNo, slide.width.toInt() == -1)
-        Assert.assertTrue("Height value incorrect.  Slide: " + pageNo, slide.height.toInt() == -1)
+   @Test
+   fun createStoryLoadBloomHtmlTest() {
 
-        val reference = "Luke 15:1-2, 15:8-10";
-        val content = "Title Ideas:\nGod is happy when a person repents.\nThe Lost Coin.\nWhen God celebrates!"
-        val narrationFile = "audio/5484e7a9-65ab-4108-8850-d6d240318254.mp3"
-        Assert.assertEquals("Reference is not correct.  Slide: " + pageNo, slide.reference, reference)
-        Assert.assertEquals("Content is not correct.  Slide: " + pageNo, slide.content, content)
-        Assert.assertEquals("Narration file is not correct.  Slide: " + pageNo, slide.narrationFile, narrationFile)
+      // init environment
+      initProjectFiles(true)
+      val learnActivity = startLearnActivity()
 
-        Assert.assertTrue("Volume value incorrect.  Slide: " + pageNo, 
-                (slide.volume.toDouble() >= .3) && (slide.volume.toDouble() < .4))       
+      // test loading
+
+      val myStory = loadStory(learnActivity)  // story will be loaded and saved
+      Assert.assertNotNull("Unable to open story", myStory)
+      checkStoryContents(myStory, false, true)
+
+      // test edit and save
+      modifyStoryContents(myStory)
+      saveStory(learnActivity, myStory)
+
+      val myStory2 = loadStory(learnActivity)
+      checkStoryContents(myStory2, true, true)
+   }
+
+
+/////////////////////////////////////
+/////////////////////////////////////
+
+   fun modifyStoryContents(myStory : Story?) {
+      // modified in PhaseBaseActivity.onPause()
+      myStory!!.lastSlideNum++
+      myStory.lastPhaseType = PhaseType.TRANSLATE_REVISE
+       
+      // Also modify the first slide a little bit 
+      val slide = myStory.slides[0]
+      slide.translatedContent = cTranslatedContent
+             
+      // Add some credits to our project
+      myStory.localCredits = cCredits
+        
+   }
+
+   protected var storyValuesDefault = arrayOf(
+
+           arrayOf("isApproved", "false"),
+           arrayOf("lastSlideNum", "0"),
+           arrayOf("lastPhaseType", PhaseType.LEARN.toString()),
+           arrayOf("localCredits", ""))
+
+   protected var storyValuesEdit = arrayOf(
+
+           arrayOf("isApproved", "false"),
+           arrayOf("lastSlideNum", "1"),
+           arrayOf("lastPhaseType", PhaseType.TRANSLATE_REVISE.toString()),
+           arrayOf("localCredits", cCredits))
+
+   protected var defaultSlideValues = arrayOf(
+           arrayOf("imageFile", ""),
+           arrayOf("textFile", ""),
+           arrayOf("title", ""),
+           arrayOf("subtitle", "Luke 15"),
+           arrayOf("width", "-1"),
+           arrayOf("height", "-1"),
+           arrayOf("reference", "Luke 15:1-2, 15:8-10"),
+           arrayOf("content", "Title Ideas:\nGod is happy when a person repents.\nThe Lost Coin.\nWhen God celebrates!"),
+           arrayOf("narrationFile", "audio/5484e7a9-65ab-4108-8850-d6d240318254.mp3"),
+           arrayOf("volume", "0.3"),
+           arrayOf("crop", null),
+           arrayOf("startMotion", "Rect(0, 0 - -1, -1)"),
+           arrayOf("endMotion", "Rect(0, 0 - -1, -1)"),
+           arrayOf("translatedContent", ""))
+
+   protected var firstSlideValuesBloom = arrayOf(
+
+           arrayOf("width", "0"),
+           arrayOf("height", "0"),
+           arrayOf("startMotion", "Rect(0, 0 - 0, 0)"),
+           arrayOf("endMotion", "Rect(0, 0 - 0, 0)"))
+
+   protected var firstSlideValuesEdit = arrayOf(
+
+           arrayOf("translatedContent", "In the beginning was the word!"))
+
+   protected var secondSlideValues = arrayOf(
+           arrayOf("imageFile", "1.jpg"),
+           arrayOf("textFile", ""),
+           arrayOf("title", "Title Slide 1"),
+           arrayOf("subtitle", "Subtitle Slide 1"),
+           arrayOf("width", "1185"),
+           arrayOf("height", "1005"),
+           arrayOf("reference", "Luke 15:1-2"),
+           arrayOf("volume", "0.0"),
+           arrayOf("content", "One day, Jesus was teaching the people. Some of those people were critical that Jesus ate and spoke with others [other people] who did bad things. So Jesus told this story:"),
+           arrayOf("narrationFile", "audio/narration1.mp3"),
+           arrayOf("startMotion", "Rect(244, 0 - 1020, 657)"),
+           arrayOf("endMotion", "Rect(70, 0 - 1112, 882)"))
+
+   protected var secondSlideValuesBloom = arrayOf(
+           arrayOf("title", ""),
+           arrayOf("subtitle", ""))
+
+   protected var secondSlideValuesEdit = arrayOf(
+           arrayOf("subtitle", ""))
+
+   private fun getExpectedSlideDefaultValueMap(): HashMap<String?, String?> {
+      val slideValues: HashMap<String?, String?> = HashMap<String?, String?>()
+      for (i in defaultSlideValues.indices) {
+         slideValues[defaultSlideValues[i][0]] = defaultSlideValues[i][1]
+      }
+      return slideValues
+   }
    
-        Assert.assertNull("Crop should be null.  Slide: " + pageNo, slide.crop)                  
-        // Assert.assertEquals(20, slide.crop!!.left.toLong())   // crop == null
-        // Assert.assertEquals(40, slide.crop!!.top.toLong())
-        // Assert.assertEquals(720, slide.crop!!.right.toLong())
-        // Assert.assertEquals(540, slide.crop!!.bottom.toLong())
+   private fun checkStoryContents(myStory: Story?, bModified : Boolean, bBloom : Boolean) {
+      // Testing that the story contents have been properly loaded
+      val storyValues = getExpectedStoryValueMap(bModified)     
+      checkStoryContentsGeneral(myStory, storyValues);
 
-        Assert.assertEquals("Start motion left value incorrect.  Slide: " + pageNo, 0, slide.startMotion!!.left.toLong())  // 0
-        Assert.assertEquals("Start motion top value incorrect.  Slide: " + pageNo, 0, slide.startMotion!!.top.toLong())   // 0
-        Assert.assertEquals("Start motion right value incorrect.  Slide: " + pageNo, -1, slide.startMotion!!.right.toLong())  // -1
-        Assert.assertEquals("Start motion bottom value incorrect.  Slide: " + pageNo, -1, slide.startMotion!!.bottom.toLong())  // -1
-        Assert.assertEquals("End motion left value incorrect.  Slide: " + pageNo, 0, slide.endMotion!!.left.toLong())  // 0
-        Assert.assertEquals("End motion left value incorrect.  Slide: " + pageNo, 0, slide.endMotion!!.top.toLong()) // 0
-        Assert.assertEquals("End motion left value incorrect.  Slide: " + pageNo, -1, slide.endMotion!!.right.toLong())  // -1
-        Assert.assertEquals("End motion left value incorrect.  Slide: " + pageNo, -1, slide.endMotion!!.bottom.toLong())  // -1
-    }
+      checkSlideContents(myStory!!.slides[0], getExpectedSlideValueMap(0, bModified, bBloom), 0)
+      checkSlideContents(myStory.slides[1], getExpectedSlideValueMap(1, bModified, bBloom), 1)
+   }
 
-
-     private fun checkStoryContentsNextSlide(myStory: Story?) {
-        val slide = myStory!!.slides[1]
-        val pageNo = 1;
-        val content2 = slide.content  // "One day, Jesus was teaching the people. Some of those people were critical that Jesus ate and spoke with others [other people] who did bad things. So Jesus told this story:"
-        val musicFile = myStory!!.slides[1].musicFile  // "continueSoundtrack"
  
-         
-        Assert.assertEquals("Image file value is incorrect.  Slide: " + pageNo, slide.imageFile, "1.jpg")  
-        Assert.assertEquals("Text file should be blank.  Slide: " + pageNo, slide.textFile, "")
-        Assert.assertEquals("Title is incorrect.  Slide: " + pageNo, slide.title,  "Title Slide 1")
-        Assert.assertEquals("SubTitle is incorrect.  Slide: " + pageNo, slide.subtitle, "Subtitle Slide 1")
+    private fun getExpectedStoryDefaultValueMap(): HashMap<String?, String?> {
+      val storyValueMap: HashMap<String?, String?> = HashMap<String?, String?>()
+      for (i in storyValuesDefault.indices) {
+         storyValueMap[storyValuesDefault[i][0]] = storyValuesDefault[i][1]
+      }
+      return storyValueMap
+   }
 
-        Assert.assertTrue("Width value incorrect.  Slide: " + pageNo, slide.width.toInt() == 1185)
-        Assert.assertTrue("Height value incorrect.  Slide: " + pageNo, slide.height.toInt() == 1005)
-
-        val reference = "Luke 15:1-2";
-        val content = "One day, Jesus was teaching the people. Some of those people were critical that Jesus ate and spoke with others [other people] who did bad things. So Jesus told this story:"
-        val narrationFile = "audio/narration1.mp3"
-        Assert.assertEquals("Reference is not correct.  Slide: " + pageNo, slide.reference, reference)
-        Assert.assertEquals("Content is not correct.  Slide: " + pageNo, slide.content, content)
-        Assert.assertEquals("Narration file is not correct.  Slide: " + pageNo, slide.narrationFile, narrationFile)
-
-        Assert.assertTrue("Volume value incorrect.  Slide: " + pageNo, (slide.volume.toInt() == 0))
+   private fun getExpectedStoryValueMap(bModified : Boolean) : HashMap<String?, String?> {
+      val valueMap = getExpectedStoryDefaultValueMap()
+      if (bModified) {
+         addMapValues(valueMap, storyValuesEdit)
+      }
+      return valueMap
+   }
    
-        Assert.assertNull("Crop should be null.  Slide: " + pageNo, slide.crop)                  
+   
+   private fun getExpectedSlideValueMap(pageNo : Int, bModified : Boolean, bBloom : Boolean) : HashMap<String?, String?> {
+      val slideValueMap = getExpectedSlideDefaultValueMap()
+      if (pageNo == 1) {
+         addMapValues(slideValueMap, secondSlideValues)
+         if (bBloom) {
+            addMapValues(slideValueMap, secondSlideValuesBloom)
+         }
+         //if (bModified) {
+         //   addMapValues(slideValueMap, secondSlideValuesEdit)
+         //}
+      }
+      else {
+         //addMapValues(slideValueMap, firstSlideValues)
+         if (bBloom) {
+            addMapValues(slideValueMap, firstSlideValuesBloom)
+         }
+         if (bModified) {
+            addMapValues(slideValueMap, firstSlideValuesEdit)
+         }
+      }
+      return slideValueMap
+   }
+  
+   /*
 
-        Assert.assertEquals("Start motion left value incorrect.  Slide: " + pageNo, 244, slide.startMotion!!.left.toLong())  
-        Assert.assertEquals("Start motion top value incorrect.  Slide: " + pageNo, 0, slide.startMotion!!.top.toLong())   
-        Assert.assertEquals("Start motion right value incorrect.  Slide: " + pageNo, 1020, slide.startMotion!!.right.toLong())  
-        Assert.assertEquals("Start motion bottom value incorrect.  Slide: " + pageNo, 657, slide.startMotion!!.bottom.toLong())  
-        Assert.assertEquals("End motion left value incorrect.  Slide: " + pageNo, 70, slide.endMotion!!.left.toLong())  // 0
-        Assert.assertEquals("End motion left value incorrect.  Slide: " + pageNo, 0, slide.endMotion!!.top.toLong()) // 0
-        Assert.assertEquals("End motion left value incorrect.  Slide: " + pageNo, 1112, slide.endMotion!!.right.toLong())  // -1
-        Assert.assertEquals("End motion left value incorrect.  Slide: " + pageNo, 882, slide.endMotion!!.bottom.toLong())  // -1
-    }
+   @Test
+   fun parsePhotoStoryXML_When_StoryHasNoSlides_Should_ReturnNull() {
+      setupWorkspace()
+      val storyPath = Mockito.mock(androidx.documentfile.provider.DocumentFile::class.java)
+      Mockito.`when`(storyPath.name).thenReturn("StoryWithNoSlides")
 
-    fun startSplashScreenActivity() : SplashScreenActivity {
-        registration.complete = true
-        val splashScreenActivity = Robolectric.buildActivity(SplashScreenActivity::class.java).create().get()
-        ShadowLooper.runUiThreadTasksIncludingDelayedTasks()
-        return splashScreenActivity
-    }
-    
-    /*
+      val result = parsePhotoStoryXML(ApplicationProvider.getApplicationContext(), storyPath)
 
-    @Test
-    fun parsePhotoStoryXML_When_StoryFolderDoesNotExist_Should_ReturnNull() {
-        setupWorkspace()
-        val storyPath = Mockito.mock(androidx.documentfile.provider.DocumentFile::class.java)
-        Mockito.`when`(storyPath.name).thenReturn("IDoNotExist")
-
-        val result = parsePhotoStoryXML(ApplicationProvider.getApplicationContext(), storyPath)
-
-        Assert.assertNull(result)
-    }
-
-    @Test
-    fun parsePhotoStoryXML_When_StoryHasNoSlides_Should_ReturnNull() {
-        setupWorkspace()
-        val storyPath = Mockito.mock(androidx.documentfile.provider.DocumentFile::class.java)
-        Mockito.`when`(storyPath.name).thenReturn("StoryWithNoSlides")
-
-        val result = parsePhotoStoryXML(ApplicationProvider.getApplicationContext(), storyPath)
-
-        Assert.assertNull(result)
-    }
+      Assert.assertNull(result)
+   }
 */
 
 

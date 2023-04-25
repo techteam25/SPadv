@@ -248,6 +248,9 @@ fun unzipIfZipped(context: Context, file: DocumentFile, existingFolders: Array<a
                 val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
                 inputStream!!.close()
                 workspaceBloomExits = true
+                if (Workspace.isUnitTest) {
+                    workspaceBloomExits = false;  // copyToFilesDir will fail
+                }
             } catch (e: java.lang.Exception) {
                 workspaceBloomExits = false
             }

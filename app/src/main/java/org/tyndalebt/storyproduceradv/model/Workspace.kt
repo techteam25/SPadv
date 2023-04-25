@@ -8,6 +8,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.*
+import android.os.storage.StorageManager
 import android.preference.PreferenceManager
 import android.provider.Settings.Secure
 import android.util.Log
@@ -38,6 +39,7 @@ import java.sql.Timestamp
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 internal const val SLIDE_NUM = "CurrentSlideNum"
 internal const val DEMO_FOLDER = "000 Unlocked demo story Storm"
@@ -289,10 +291,7 @@ object Workspace {
                     }
                     delay(500) // pause 1/2 second between checks
                 } catch (ex: Exception) {
-                    Log.e(
-                        "@pwhite",
-                        "websocket iteration failed: ${ex} ${ex.message}. Closing old websocket."
-                    )
+                    Log.e("@pwhite", "websocket iteration failed: ${ex} ${ex.message}. Closing old websocket.")
                     ex.printStackTrace();
                     reconnect()
                     delay(5000)
@@ -348,12 +347,11 @@ object Workspace {
         }
     }
 
-    fun replaceImportWordLinks(context: Context) {
-        var wordLinksDir = workdocfile.findFile(WORD_LINKS_DIR)
-        wordLinksDir!!.delete()
-        importWordLinks(context)
+    fun getWorkDocFile() : DocumentFile {  // for access from DownloadActivity.java
+        return workdocfile
     }
-    private fun importWordLinks(context: Context) {
+
+     private fun importWordLinks(context: Context) {
         var wordLinksDir = workdocfile.findFile(WORD_LINKS_DIR)
         var csvFileName : String? = null  // default is no csv file, later on, create one if none found
 
@@ -521,14 +519,12 @@ object Workspace {
         // During compile time, the file app/src/main/assets/wordlinks.csv is compiled into
         // the APK.  This routine extracts that file and places that file in the
         // Worklinks directory.
-        // This routine is called anytime a ".csv" file cannot be found in the wordlinks directory
+        // This routine is called anytime a ".csv" file cannot be found in the workdlinks directory
         val assetManager = context.assets
 
         try {
             // open wordlinks.csv located in the APK
-            val langCode = readFromFile(context)
-            val shortCode = getLanguageCode(langCode!!)
-            val instream = assetManager.open(shortCode + "/" + csvFileName)
+            val instream = assetManager.open(csvFileName)
             // Create the worklinks.csv file in the wordlinks directory
             val outstream = getChildOutputStream(context, "$WORD_LINKS_DIR/$csvFileName")
             val buffer = ByteArray(1024)
@@ -542,6 +538,7 @@ object Workspace {
         } catch (e: Exception) {
             Log.e("workspace", "Failed to copy wordlinks CSV asset file: $csvFileName", e)
         }
+
     }
     fun pathOf(name: String): DocumentFile? {
         return workdocfile.listFiles().find { it.name == name }
@@ -580,12 +577,10 @@ object Workspace {
                 ?.let { story -> migrateStory(context, story) }
     }
 
-    fun buildPhases(context: Context): List<Phase> {
+    fun buildPhases(): List<Phase> {
         //update phases based upon registration selection
-        val remoteString: String = context.getString(R.string.location_type_list_remote)
-
         return when(registration.getString("consultant_location_type")) {
-            remoteString -> Phase.getRemotePhases()
+            "Remote" -> Phase.getRemotePhases()
             else -> Phase.getLocalPhases()
         }
     }
@@ -743,55 +738,5 @@ object Workspace {
             }
             processStoryApproval()
         }
-    }
-
-    fun getLanguageCode(pChosenLanguage: String): String {
-        var Lang: String
-        if (pChosenLanguage == "Bislama") {
-            Lang = ""
-        } else if (pChosenLanguage == "French") {
-            Lang = "fr"
-        } else if (pChosenLanguage == "Indonesian") {
-            Lang = "id"
-        } else if (pChosenLanguage == "Khmer") {
-            Lang = ""
-        } else if (pChosenLanguage == "Portuguese") {
-            Lang = "por"
-        } else if (pChosenLanguage == "Spanish") {
-            Lang = "es"
-        } else if (pChosenLanguage == "Swahili") {
-            Lang = "sw"
-        } else if (pChosenLanguage == "Tok Pisin") {
-            Lang = "tpi"
-        } else if (pChosenLanguage == "") {
-            Lang = ""
-        }
-        else {   // English or not defined
-            Lang = "en"
-        }
-        return Lang
-    }
-
-    fun readFromFile(context: Context): String? {
-        var ret = ""
-        try {
-            val inputStream: InputStream = context.openFileInput("config.txt")
-            if (inputStream != null) {
-                val inputStreamReader = InputStreamReader(inputStream)
-                val bufferedReader = BufferedReader(inputStreamReader)
-                var receiveString: String? = ""
-                val stringBuilder = StringBuilder()
-                while (bufferedReader.readLine().also({ receiveString = it }) != null) {
-                    stringBuilder.append(receiveString)
-                }
-                inputStream.close()
-                ret = stringBuilder.toString()
-            }
-        } catch (e: FileNotFoundException) {
-            Log.e("login activity", "File not found: " + e.toString())
-        } catch (e: IOException) {
-            Log.e("login activity", "Can not read file: $e")
-        }
-        return ret
     }
 }
