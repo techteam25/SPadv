@@ -137,6 +137,12 @@
 
   "fill_with_audio_comment": "jaza faili hii kwakutumia maoni katika nia ya audio",
 
+  "template_space_title": "Tahadhari: Nafasi inapatikana",
+  "template_space_message": "Ni bora kuwa na nafasi ya 1GB kwa kila kiolezo cha hadithi ambacho utakuwa unashughulikia. Ikiwa una nafasi ndogo kuliko hiyo, huenda programu isiweze kuchakata kazi yako na kuhamisha video zako.\n\nNafasi inayopatikana: ",
+  "space_less_than_one_meg": "Chini ya MB 1",
+  "space_mb": "MB",
+  "space_gb": "GB",
+       
   "learn_phase_practice": "iongee hadhithi yote katika ligha yenu!",
   "learn_phase_overwrite": "unahakika unataka kuandika rekodingi za sasa",
 
