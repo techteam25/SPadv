@@ -137,6 +137,12 @@
 
   "fill_with_audio_comment": "Isi dengan Komentar Audio",
 
+  "template_space_title": "Peringatan: Ruang tersedia",
+  "template_space_message": "Yang terbaik adalah menyediakan ruang 1GB untuk setiap templat cerita yang akan Anda kerjakan. Jika Anda memiliki ruang kurang dari itu, aplikasi mungkin tidak dapat memproses pekerjaan Anda dan mengekspor video Anda.\n\nRuang yang tersedia: ",
+  "space_less_than_one_meg": "Kurang dari 1MB",
+  "space_mb": "MB",
+  "space_gb": "GB",
+       
   "learn_phase_practice": "Ceritakan kembali dalam bahasamu!",
   "learn_phase_overwrite": "Yakin ingin menimpa rekaman Anda saat ini?",
 

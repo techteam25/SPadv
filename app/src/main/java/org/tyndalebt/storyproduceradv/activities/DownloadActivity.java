@@ -251,7 +251,8 @@ public class DownloadActivity extends BaseActivity {
         // Build urlList then download
         String urlList[] = BuildURLList();
         if (urlList != null) {
-            long size = getAvailableSpace();
+            File dir = getWorkDocStorageDir();
+            long size = getAvailableSpace(dir);
             if (size >= 0) {  // getAvailableSpace returns -1 for Android 10 and earlier
                 size = size / 1000000; // in mbytes
 
@@ -278,16 +279,16 @@ public class DownloadActivity extends BaseActivity {
                     builder.setPositiveButton(getString(R.string.ok), onClick);
                     AlertDialog dlg = builder.create();
                     dlg.show();
+                } else {  // if enough space
+                    doDownload(urlList);
                 }
-            } else {
+            } else {  // if indeterminant, do the download
                 doDownload(urlList);
             }
         }
     }
 
-    public long getAvailableSpace() {
-        // Fetching internal memory information
-
+    public File getWorkDocStorageDir() {
         try {
             StorageManager storage = getSystemService(StorageManager.class);
             List<StorageVolume> volumes = storage.getStorageVolumes();
@@ -296,30 +297,54 @@ public class DownloadActivity extends BaseActivity {
                 if (volumes.size() > 1) {
                     // which to use?
                     // is workdocfile in the primary memory or on the SD?
+                    volumeNo = -1;
                     String segment = Workspace.INSTANCE.getWorkDocFile().getUri().getLastPathSegment();
-                    int primaryIndex = volumes.get(0).isPrimary() ? 0 : 1;
-                    int sdIndex = volumes.get(0).isPrimary() ? 1 : 0;
-                    volumeNo = (segment.indexOf("primary") == 0) ? primaryIndex : sdIndex;
+                    boolean isPrimary = segment.indexOf("primary") == 0;
+                    for (int i=0; i < volumes.size(); i++) {
+                        if (isPrimary && volumes.get(i).isPrimary()) {
+                            volumeNo = i;
+                            break;
+                        }
+                        if (segment.indexOf(volumes.get(i).getDirectory().getName() +':') == 0) {
+                            volumeNo = i;
+                            break;
+                        }
+                    }
+
+                    if (volumeNo < 0) {
+                        return null;
+                    }
                 }
 
                 File file = null;
                 try {
                     file = volumes.get(volumeNo).getDirectory();
+                    return file;
                 } catch (Throwable ex) {
                     // StorageVolume.getDirectory() does not exist in Android 10 and earlier.
                     // disable the feature in that case
-                    return -1;
+                    return null;
                 }
+            }
+        }
+        catch(Throwable ex){
+            //ex.printStackTrace();
+        }
+        return null;
+    }
 
-                if (file.exists()) {
-                    StatFs stat = new StatFs(file.getPath());
-                    long blockSize = stat.getBlockSizeLong();
-                    long availableBlocks = stat.getAvailableBlocksLong();
-                    long totalBlocks = stat.getBlockCountLong();
-                    long availableSpace = availableBlocks * blockSize;
-                    long totalSpace = totalBlocks * blockSize;
-                    return availableSpace;
-                }
+    public long getAvailableSpace(File dir) {
+        // Fetching internal memory information
+
+        try {
+             if ((dir != null) && dir.exists()) {
+                StatFs stat = new StatFs(dir.getPath());
+                long blockSize = stat.getBlockSizeLong();
+                long availableBlocks = stat.getAvailableBlocksLong();
+                long totalBlocks = stat.getBlockCountLong();
+                long availableSpace = availableBlocks * blockSize;
+                long totalSpace = totalBlocks * blockSize;
+                return availableSpace;
             }
         }
         catch(Throwable ex){

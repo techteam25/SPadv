@@ -137,6 +137,12 @@
 
   "fill_with_audio_comment": "Preencher com comentário de áudio",
 
+  "template_space_title": "Aviso: espaço disponível",
+  "template_space_message": "É melhor ter 1 GB de espaço disponível para cada modelo de história em que você trabalhará. Se você tiver menos espaço do que isso, o aplicativo pode não conseguir processar seu trabalho e exportar seus vídeos.\n\nEspaço disponível: ",
+  "space_less_than_one_meg": "Menos de 1 MB",
+  "space_mb": " MB",
+  "espaço_gb": " GB",
+       
   "learn_phase_practice": "Reconte toda a história no seu idioma!",
   "learn_phase_overwrite": "Tem certeza de que deseja substituir sua gravação atual?",
 

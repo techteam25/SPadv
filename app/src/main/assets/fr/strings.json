@@ -137,6 +137,12 @@
 
   "fill_with_audio_comment": "Saisir un commentaire sur l'enregistrement audio",
 
+  "template_space_title": "Attention : Espace disponible",
+  "template_space_message": "Il est préférable d'avoir 1 Go d'espace disponible pour chaque modèle d'histoire sur lequel vous allez travailler. Si vous disposez de moins d'espace que cela, l'application peut ne pas être en mesure de traiter votre travail et d'exporter vos vidéos.\n\nEspace disponible : ",
+  "space_less_than_one_meg": "Moins de 1 Mo",
+  "space_mb": " Mo",
+  "space_gb": " Go",
+       
   "learn_phase_practice": "Racontez le récit entier dans votre langue!",
   "learn_phase_overwrite": "Voulez-vous vraiment écraser votre enregistrement actuel?",
 
