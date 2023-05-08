@@ -45,25 +45,25 @@
 
     <ImageView
         android:id="@+id/comment_present"
-        android:layout_width="15dp"
-        android:layout_height="15dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_gravity="bottom"
         android:layout_margin="1dp"
         android:clickable="false"
         android:contentDescription="TODO"
-        android:src="@drawable/ic_story_has_message"
+        android:src="@drawable/comment_icon"
         android:visibility="invisible"
         tools:ignore="ContentDescription,HardcodedText" />
 
     <ImageView
         android:id="@+id/approval_present"
-        android:layout_width="15dp"
-        android:layout_height="15dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_gravity="bottom"
         android:layout_margin="1dp"
         android:clickable="false"
         android:contentDescription="TODO"
-        android:src="@drawable/ic_story_has_approval"
+        android:src="@drawable/approval_icon"
         android:visibility="invisible"
         tools:ignore="ContentDescription,HardcodedText"
         />

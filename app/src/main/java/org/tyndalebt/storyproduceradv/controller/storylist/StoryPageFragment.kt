@@ -245,9 +245,16 @@ class ListAdapter(context: Context,
        return row
     }
 
+    /*
+    * Remember to delete unused icons from drawable folder
+    * */
+
     private fun checkForApproval(story: Story, view: ImageView) {
-        if (story.isApproved) {
-            view.visibility = View.VISIBLE;
+        for(slide in story.slides) {
+            if (slide.isApproved) {
+                view.visibility = View.VISIBLE;
+                break;
+            }
         }
     }
 

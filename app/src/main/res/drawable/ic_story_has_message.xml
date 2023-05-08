@@ -18,10 +18,18 @@
                  an approval or a message present    -->
             <!-- if the bitmap does not have the same pixel config as the screen it enables dithering-->
             <size
-                android:width="8dp"
-                android:height="8dp"
+                android:width="20dp"
+                android:height="20dp"
                 />
-            <solid android:color="@color/backT_phase" />
+
+            <gradient
+                android:startColor="@color/backT_phase"
+                android:centerColor="@color/backT_phase"
+                android:endColor="#FFFFFF"
+                android:gradientRadius="12dp"
+                android:type="radial"
+
+                />
 
         </shape>
 
