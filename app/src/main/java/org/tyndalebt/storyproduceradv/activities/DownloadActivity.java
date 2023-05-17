@@ -284,7 +284,7 @@ public class DownloadActivity extends BaseActivity {
 
     public void setChosenLanguage(String pNativeLanguage) {
         String DisplayLine[] = pNativeLanguage.split("/");
-        this.chosenLanguage = getEnglishLangName(DisplayLine[0]);
+        this.chosenLanguage = getEnglishLangName(DisplayLine[0].trim());
     }
 
     public boolean copyFile(String outFile) {

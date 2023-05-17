@@ -6,6 +6,11 @@
             "displayname": "Bislama"
         },
         {
+            "filename": "Chinese",
+            "roman": "no",
+            "displayname": "普通话"
+        },
+        {
             "filename": "English",
             "roman": "yes",
             "displayname": "English"
@@ -16,6 +21,11 @@
             "displayname": "Français"
         },
         {
+            "filename": "Hindi",
+            "roman": "no",
+            "displayname": "हिंदी"
+        },
+        {
             "filename": "Indonesian",
             "roman": "yes",
             "displayname": "Bahasa Indonesian"
@@ -24,6 +34,11 @@
             "filename": "Khmer",
             "roman": "no",
             "displayname": "ខ្មែរ"
+        },
+        {
+            "filename": "Odia",
+            "roman": "no",
+            "displayname": "ଓଡ଼ିଆ"
         },
         {
             "filename": "Portuguese",
@@ -39,6 +54,11 @@
             "filename": "Swahili",
             "roman": "yes",
             "displayname": "KiSwahili"
+        },
+        {
+            "filename": "Telugu",
+            "roman": "no",
+            "displayname": "తెలుగు"
         },
         {
             "filename": "Tok Pisin",
