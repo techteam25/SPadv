@@ -86,6 +86,11 @@
   "registration_SPadv_email": "",
   "registration_robin_rempel_email": "SPapp.training@gmail.com",
   "rename_title": "Raitim nupela nem blg stori",
+  "template_space_title": "Tok lukaut long spes i stap long pon",
+  "template_space_message": "Sapos yu laik tanim planti ol stori na kamapim vidio, yu mas i gat planti spes long pon bilong yu.  1pela GB spes mas i stap long tanim wanwan stori.  Ating yu nogat planti spes long pon ya. Rausim sampela ol poto na vidio long kamapim spes o putim gutpela SD kat.\n\n   Available space: ",
+  "space_less_than_one_meg": "Sori, spes i pinis long pon bilong yu. Nogat 1pela MB i stap.",
+  "space_mb": "MB",
+  "space_gb": "GB",
 
   "rename_title_wordlinks": "Tainim bek mining blg tok o raitim nem long tokples.",
   "recordings_title": "Lista blg ol tanim tok",

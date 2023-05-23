@@ -86,6 +86,11 @@
   "registration_SPadv_email": "",
   "registration_robin_rempel_email": "SPapp.training@gmail.com",
   "rename_title": "Choose a new name",
+  "template_space_title": "Warning: Available Space",
+  "template_space_message": "It is best to have 1gb of space available per template you will be working on. If you have less than that, you may want to free up some space before proceeding.\n\n   Available space: ",
+  "space_less_than_one_meg": "Less than 1mb",
+  "space_mb": "mb",
+  "space_gb": "gb",
 
   "rename_title_wordlinks": "Type a back translation or spell the name.",
   "recordings_title": "Recordings",
