@@ -171,22 +171,17 @@ fun getWordLinksChildOutputStream(context: Context, relPath: String, mimeType: S
 fun storyRelPathExists(context: Context, relPath: String, dirRoot: String = Workspace.activeDirRoot) : Boolean{
     if(relPath == "") return false
     val uri = getStoryUri(relPath,dirRoot) ?: return false
-    getFileType(context, uri) ?: return false;
-    return true
-}
-
-fun getFileType(context : Context, uri : Uri) : String?
-{
     var myGetType = context.contentResolver.getType(uri)
-    if ((myGetType == null) && Workspace.isUnitTest) {
-        // RK - 03-23-2023
-        // The unit tests for robolectric tests use a ShadowContextResolver from the context
+    if ((myGetType == null) && Workspace.isUnitTest)
+    {
+        // RK - 03-20-2023
+        // The unit tests use a ShadowContextResolver from the context
         // which gives different result from resolver.getType()
         // This fix is intended to compensate for that difference in the unit test
-        // See TestParsePhotoStory.loadSaveJsonTest()
+        // See TestParsePhotoStory.parsePhotoStoryTest()
         val file = File(uri.path)
         if (file.exists() && file.isDirectory()) {
-                myGetType = DocumentsContract.Document.MIME_TYPE_DIR
+            myGetType = DocumentsContract.Document.MIME_TYPE_DIR
         }
         else if (file.exists()){
             var extension = ""
@@ -207,7 +202,8 @@ fun getFileType(context : Context, uri : Uri) : String?
             }
         }
     }
-    return myGetType
+    myGetType ?: return false;
+    return true
 }
 
 fun workspaceRelPathExists(context: Context, relPath: String) : Boolean{
@@ -333,8 +329,9 @@ fun getPFD(context: Context, relPath: String, mimeType: String = "", mode: Strin
             //TODO make this faster.
             val newUri = Uri.parse(uri.toString() + Uri.encode("/${segments[i]}"))
 
-            var isDirectory = getFileType(context, newUri)?.contains(DocumentsContract.Document.MIME_TYPE_DIR)
-                        ?: false
+            val isDirectory = context.contentResolver.getType(newUri)?.contains(DocumentsContract.Document.MIME_TYPE_DIR)
+                ?: false
+
             if (!isDirectory) {
                 try {
                     DocumentsContract.createDocument(context.contentResolver, uri,
@@ -363,7 +360,8 @@ fun getPFD(context: Context, relPath: String, mimeType: String = "", mode: Strin
     //create the file if it is needed
     val newUri = Uri.parse(uri.toString() + Uri.encode("/${segments.last()}"))
     //TODO replace with custom exists thing.
-    if (getFileType(context, newUri) == null){
+
+    if(context.contentResolver.getType(newUri) == null){
         //find the mime type by extension
         var mType = mimeType
         if(mType == "") {
