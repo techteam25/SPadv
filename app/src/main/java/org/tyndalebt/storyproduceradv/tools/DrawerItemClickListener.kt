@@ -57,13 +57,20 @@ class DrawerItemClickListener(private val activity: BaseActivity) : AdapterView.
                 activity.showSelectTemplatesFolderDialog()
             }
             5 -> {
-                activity.showChooseLanguage()
+                activity.showVideos()
             }
             6 -> {
+                activity.showVideos()
+                //activity.showBackup()
+            }
+            7 -> {
+                activity.showChooseLanguage()
+            }
+            8 -> {
                 //Workspace.addDemoToWorkspace(activity)
                 goToURL(activity, Workspace.URL_FOR_WEBSITE)
             }
-            7 -> {
+            9 -> {
                 activity.showAboutDialog()
             }
         }

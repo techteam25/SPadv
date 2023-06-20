@@ -12,6 +12,7 @@ import org.tyndalebt.storyproduceradv.controller.export.ShareActivity
 import org.tyndalebt.storyproduceradv.controller.learn.LearnActivity
 import org.tyndalebt.storyproduceradv.controller.pager.PagerBaseActivity
 import org.tyndalebt.storyproduceradv.controller.wordlink.WordLinksActivity
+import org.tyndalebt.storyproduceradv.controller.export.VideoActivity
 import java.io.*
 
 /**
@@ -34,7 +35,8 @@ enum class PhaseType {
     @Json(name="CONSULTANT_CHECK") ACCURACY_CHECK,
     @Json(name="DRAMATIZATION") VOICE_STUDIO,
     @Json(name="CREATE") FINALIZE,
-    @Json(name="SHARE") SHARE
+    @Json(name="SHARE") SHARE,
+    @Json(name="COPY_VIDEOS") COPY_VIDEOS
 }
 
 /**
@@ -231,6 +233,7 @@ class Phase (val phaseType: PhaseType) {
             PhaseType.VOICE_STUDIO     -> PagerBaseActivity::class.java
             PhaseType.FINALIZE         -> FinalizeActivity::class.java
             PhaseType.SHARE            -> ShareActivity::class.java
+            PhaseType.COPY_VIDEOS      -> VideoActivity::class.java
         }
     }
 

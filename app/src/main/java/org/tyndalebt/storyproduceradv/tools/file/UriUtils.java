@@ -1,5 +1,10 @@
 package org.tyndalebt.storyproduceradv.tools.file;
 
+import android.hardware.usb.UsbConstants;
+import android.hardware.usb.UsbDevice;
+import android.hardware.usb.UsbManager;
+import android.os.storage.StorageManager;
+import android.os.storage.StorageVolume;
 import android.provider.DocumentsContract;
 import android.text.TextUtils;
 import android.provider.OpenableColumns;
@@ -13,6 +18,11 @@ import java.io.File;
 import android.os.Build;
 import android.os.Environment;
 import java.io.FileOutputStream;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
+
 import android.provider.MediaStore;
 import android.util.Log;
 
@@ -33,7 +43,7 @@ public class UriUtils {
                 final String[] split = docId.split(":");
                 final String type = split[0];
 
-                String fullPath = getPathFromExtSD(split);
+                String fullPath = getPathFromUriData(context, uri, split);
                 if (fullPath != "") {
                     return fullPath;
                 } else {
@@ -90,7 +100,7 @@ public class UriUtils {
                                 Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
 
                     } catch (NumberFormatException e) {
-                        e.printStackTrace();
+                        FirebaseCrashlytics.getInstance().recordException(e);
                     }
                     if (contentUri != null) {
                         return getDataColumn(context, contentUri, null, null);
@@ -138,8 +148,12 @@ public class UriUtils {
             }
         }
         // File
-        else if ("file".equalsIgnoreCase(uri.getScheme())) {
-            return uri.getPath();
+        else if ("file".equalsIgnoreCase(uri.getScheme())) {  // used for unit tests
+            File file = new File(uri.getPath());
+            if (file.exists()) {
+                return uri.getPath();
+            }
+            return null;
         }
         return null;
     }
@@ -150,29 +164,119 @@ public class UriUtils {
         return file.exists();
     }
 
-    private static String getPathFromExtSD(String[] pathData) {
+    private static String getPathFromUriData(Context context, Uri uri, String[] pathData) {
+
         final String type = pathData[0];
         final String relativePath = "/" + pathData[1];
         String fullPath = "";
 
-        if ("primary".equalsIgnoreCase(type)) {
-            fullPath = Environment.getExternalStorageDirectory() + relativePath;
-            if (fileExists(fullPath)) {
-                return fullPath;
+        String testPath = getStorageDir(context, uri);
+        if (testPath != null) {
+            // This will return an accurate path, but not necessarily a 
+            // user friendly path
+            return testPath + relativePath;
+        }
+        return "";
+    }
+    
+    // RK 6-20-2023
+    // Uses Android utilities to translate the uri to an
+    // actual file system storage location.  StorageManager
+    // contains the storage for internal and sdcard (at least in 
+    // more recent versions of android) memory, but
+    // not for external USB files.
+    // DownloadActivity.getWorkDocStorageDir.......
+    public static String getStorageDir(Context context, Uri uri) {
+        try {
+            // StorageManager covers internal drive and sdcard but not
+            // external usb thumb drive
+            StorageManager storage = context.getSystemService(StorageManager.class);
+            List<StorageVolume> volumes = storage.getStorageVolumes();
+            if ((volumes != null) && (volumes.size() > 0)) {
+                int volumeNo = 0;
+                String sdId = null;
+                if (volumes.size() > 1) {
+                    // which to use?
+                    // is workdocfile in the primary memory or on the SD?
+                    volumeNo = -1;
+                    String segment = uri.getLastPathSegment();
+                    boolean isPrimary = segment.indexOf("primary") == 0;
+                    for (int i=0; i < volumes.size(); i++) {
+                        if (isPrimary && volumes.get(i).isPrimary()) {
+                            volumeNo = i;
+                            break;
+                        }
+                        int index = segment.indexOf(':');
+                        if (index > 0) {
+                            // id should look like 1E0C-350C
+                            sdId = segment.substring(0, index);
+                            // toString should look like "StorageVolume:SDCARD(1E0C-350C)"
+                            if (volumes.get(i).toString().indexOf(sdId) >= 0) {
+                                volumeNo = i;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (volumeNo < 0) {
+                        // this is not on the internal or sdcard
+                        // check for a usb drive
+                        return getUSBStorageDir(context, uri);
+                    }
+                }
+
+                File file = null;
+                try {
+                    file = volumes.get(volumeNo).getDirectory();
+
+                    // note that this file only include the sdcard id, not the full path
+
+                    return file.getPath();
+                } catch (Throwable ex) {
+                    // StorageVolume.getDirectory() does not exist in Android 10 and earlier.
+                    // try getPath() or disable the feature
+                    return "/mnt/media_rw/" + sdId;
+                }
             }
         }
-
-        fullPath = System.getenv("SECONDARY_STORAGE") + relativePath;
-        if (fileExists(fullPath)) {
-            return fullPath;
+        catch(Throwable ex){
+            FirebaseCrashlytics.getInstance().recordException(ex);
         }
+        return null;
+    }
 
-        fullPath = System.getenv("EXTERNAL_STORAGE") + relativePath;
-        if (fileExists(fullPath)) {
-            return fullPath;
+    // RK = 06-20-2023
+    // this is called as a last resort if we could not find the uri
+    // on either the internal memory or sdcard.
+    private static String getUSBStorageDir(Context context, Uri uri) {
+        try {
+            // First, check that file actually exists.
+            // if the file exists, then see if there is a usb drive installed.
+
+            if (FileIO.getFileType(context, uri) != null) {  // check if file exists
+
+                // the following will find a Usb storage device
+                // but I am still looking for a way to connect the UsbDevice
+                // to a specific file or directory URI.
+                // If there are multiple usb devices, it is not clear
+                // how to differentiate which is the correct one.
+                UsbManager manager = (UsbManager) context.getSystemService(Context.USB_SERVICE);
+                HashMap<String, UsbDevice> deviceList = manager.getDeviceList();
+                Iterator<UsbDevice> deviceIterator = deviceList.values().iterator();
+                while (deviceIterator.hasNext()) {
+                    UsbDevice device = deviceIterator.next();
+                    String deviceName = device.getDeviceName();
+                    if ((device.getInterfaceCount() > 0) && (device.getInterface(0) != null) &&
+                            (device.getInterface(0).getInterfaceClass() == UsbConstants.USB_CLASS_MASS_STORAGE)) {
+                        return deviceName;  // + " " + device.getProductName() + " " + device.getDeviceClass() + " " + device.getInterfaceCount();
+                    }
+                }
+            }
         }
-
-        return fullPath;
+        catch(Throwable ex){
+            FirebaseCrashlytics.getInstance().recordException(ex);
+        }
+        return null;
     }
 
     private static String getDriveFilePath(Uri uri, Context context) {
@@ -244,7 +348,6 @@ public class UriUtils {
         }
         return file.getPath();
     }
-
 
     private static String getDataColumn(Context context, Uri uri,
                                         String selection, String[] selectionArgs) {

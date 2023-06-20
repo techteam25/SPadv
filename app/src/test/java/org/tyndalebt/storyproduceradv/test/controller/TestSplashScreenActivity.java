@@ -14,12 +14,15 @@ import org.robolectric.shadows.ShadowLooper;
 import org.tyndalebt.storyproduceradv.activities.WelcomeDialogActivity;
 import org.tyndalebt.storyproduceradv.controller.MainActivity;
 import org.tyndalebt.storyproduceradv.controller.SplashScreenActivity;
+import org.tyndalebt.storyproduceradv.controller.export.VideoListHelper;
 import org.tyndalebt.storyproduceradv.model.Workspace;
 import org.tyndalebt.storyproduceradv.test.model.BaseActivityTest;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = 30)    // our robolectric version (4.5.1) is not updated to 31 yet
 public class TestSplashScreenActivity extends BaseActivityTest {
+    //private VideoListHelper mHelper = new VideoListHelper();
+
     @Test
     public void OnCreate_When_RegistrationIsIncomplete_Should_StartRegistrationActivity() {
         Workspace.INSTANCE.getRegistration().setComplete(false);
