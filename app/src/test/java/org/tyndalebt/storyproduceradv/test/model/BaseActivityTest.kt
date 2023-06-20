@@ -37,16 +37,16 @@ open class BaseActivityTest {
    val cTestDir = cProjectDir + "/test"
    var baseDocUri : Uri? = null
 
-   fun loadStory(learnActivity : LearnActivity) : Story? {
+   fun loadStory(baseActivity : BaseActivity) : Story? {
       val storyUri =  Uri.parse(Workspace.workdocfile.uri.toString() + "/" + Uri.encode(cProjectName))
       var df2 = androidx.documentfile.provider.DocumentFile.fromFile(File(storyUri.path!!))
-      val myStory = Workspace.buildStory(learnActivity, df2)
+      val myStory = Workspace.buildStory(baseActivity, df2)
       return myStory
    }
 
-   fun saveStory(learnActivity : LearnActivity, myStory : Story?) {
-      FirebaseApp.initializeApp(learnActivity)
-      myStory!!.toJson(learnActivity)
+   fun saveStory(baseActivity : BaseActivity, myStory : Story?) {
+      FirebaseApp.initializeApp(baseActivity)
+      myStory!!.toJson(baseActivity)
    }
     
 
@@ -128,7 +128,7 @@ open class BaseActivityTest {
       return learnActivity
    }
     
-   fun initProjectFiles(bCreateStory : Boolean) {
+   open fun initProjectFiles(bCreateStory : Boolean) {
       setupWorkspace()
       copyStory(cProjectNameOrig, cProjectName, bCreateStory)
    }

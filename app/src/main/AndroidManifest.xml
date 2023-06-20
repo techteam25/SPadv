@@ -10,6 +10,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
+
     <!-- put android:usesCleartextTraffic="true" below if debugging on 248 -->
     <application
         android:name="org.tyndalebt.storyproduceradv.App"
@@ -87,6 +88,11 @@
         <activity
             android:name="org.tyndalebt.storyproduceradv.activities.WelcomeDialogActivity"
             android:screenOrientation="portrait" /> <!-- Learn -->
+
+        <activity
+            android:name="org.tyndalebt.storyproduceradv.controller.export.VideoActivity"
+            android:screenOrientation="portrait" /> <!-- Videos -->
+
         <activity
             android:name="org.tyndalebt.storyproduceradv.controller.learn.LearnActivity"
             android:screenOrientation="portrait" /> <!-- Create -->

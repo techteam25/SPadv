@@ -17,6 +17,7 @@ import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import io.reactivex.disposables.CompositeDisposable
 import org.tyndalebt.storyproduceradv.R
+import org.tyndalebt.storyproduceradv.controller.export.VideoActivity
 import org.tyndalebt.storyproduceradv.controller.BaseController
 import org.tyndalebt.storyproduceradv.controller.MainActivity
 import org.tyndalebt.storyproduceradv.controller.RegistrationActivity
@@ -97,6 +98,18 @@ open class BaseActivity : AppCompatActivityMTT(), BaseActivityView {
         finish()
     }
 
+    override fun showVideos() {
+        try {
+            startActivity(Intent(this, VideoActivity::class.java))
+            //Workspace.startedMain = true
+            //Workspace.processReceivedApprovals()
+            //finish()
+        }
+        catch (ex : Throwable) {
+            ex.printStackTrace()
+        }
+    }
+    
     override fun showChooseLanguage() {
         startActivity(Intent(this, ChooseLangActivity::class.java))
         //Workspace.startedMain = true
