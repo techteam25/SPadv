@@ -37,7 +37,7 @@
   "accuracy_check_title": "Accuracy Check",
   "voice_studio_title": "Voice Studio",
   "finalize_title": "Finalize",
-  "share_title": "Share",
+  "share_title": "View + Share",
   "whole_story_title": "Story Tell-Back",
   "back_translation_title": "Slide Tell-Back",
   "title_activity_story_templates": "Story Templates",
@@ -173,7 +173,7 @@
   "delete_video_title": "Delete Video file?",
   "delete_video_message": "Do you want to delete this video?",
   "view_video_folder_path": "Videos Folder",
-  "view_video_folder_message": "Using a file manager app, video files can be accessed at:",
+  "view_video_folder_message": "Using a file manager app, video files can be accessed at:\n\n",
 
   "wsbt_alert_title": "Finish Draft Phase",
   "wsbt_alert_text": "Please record a translation for each slide.",
@@ -212,8 +212,8 @@
   "export_include_text": "Include Story Text (Tx)",
   "export_include_song": "Include Local Song (Sg)",
   "export_include_KBFX": "Enable Picture Movement (Mv)",
-  "export_dumbphone": "(3gp) is for ",
-  "export_smartphone": "(mp4) is for ",
+  "export_dumbphone": "3gp for ",
+  "export_smartphone": "mp4 for ",
 
   "export_local_credits_unchanged": "Edit Local Credits",
   "local_credits_check_mark_description": "check mark indicating if the local credits have been updated",

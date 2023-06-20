@@ -88,6 +88,14 @@ object Workspace {
             field = value
             prefs?.edit()?.putString("workspace", field.uri.toString())?.apply()
         }
+    var videoCopyPath = DocumentFile.fromFile(File(""))
+        set(value) {
+            field = value
+
+            // persists the copy path for usage in the next session
+            prefs?.edit()?.putString("videoCopyPath", field.uri.toString())?.apply()
+        }
+
     val Stories: MutableList<Story> = mutableListOf()
     var registration: Registration = Registration()
     var phases: List<Phase> = ArrayList()
@@ -217,9 +225,15 @@ object Workspace {
     val WORKSPACE_KEY = "org.tyndalebt.storyproduceradv.model.workspace"
 
     fun initializeWorkspace(context: Context) {
-        //first, see if there is already a workspace in shared preferences
+
         prefs = context.getSharedPreferences(WORKSPACE_KEY, Context.MODE_PRIVATE)
+
+        //first, load the previoously persisted workspace path, if it exists
         setupWorkspacePath(context, Uri.parse(prefs!!.getString("workspace", "")))
+
+        // load the previously persisted copy path, if it exists
+        setupVideoCopyPath(context, Uri.parse(prefs!!.getString("videoCopyPath", "")))
+
         isInitialized = true
         parseLanguage = ""
         firebaseAnalytics = FirebaseAnalytics.getInstance(context)
@@ -322,6 +336,17 @@ object Workspace {
 
             // load in the Word Links
             importWordLinks(context)
+        } catch (e: Exception) {
+            Log.e("setupWorkspacePath", "Error setting up new workspace path!", e)
+        }
+    }
+
+    fun setupVideoCopyPath(context: Context, uri: Uri) {
+        try {
+
+            // Initiate new workspace path
+            videoCopyPath = DocumentFile.fromTreeUri(context, uri)!!
+
         } catch (e: Exception) {
             Log.e("setupWorkspacePath", "Error setting up new workspace path!", e)
         }

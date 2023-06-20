@@ -206,11 +206,51 @@ fun storyRelPathExists(context: Context, relPath: String, dirRoot: String = Work
     return true
 }
 
+fun getFileType(context : Context, uri : Uri) : String?
+{
+    var myGetType = context.contentResolver.getType(uri)
+    if ((myGetType == null) && Workspace.isUnitTest) {
+        // RK - 03-23-2023
+        // The unit tests for robolectric tests use a ShadowContextResolver from the context
+        // which gives different result from resolver.getType()
+        // This fix is intended to compensate for that difference in the unit test
+        // See TestParsePhotoStory.loadSaveJsonTest()
+        val file = File(uri.path)
+        if (file.exists() && file.isDirectory()) {
+            myGetType = DocumentsContract.Document.MIME_TYPE_DIR
+        }
+        else if (file.exists()){
+            myGetType = getFileTypeFromExtension(uri)
+        }
+    }
+    return myGetType
+}
+
+fun getFileTypeFromExtension(newUri : Uri) : String?
+{
+    var mType = when (File(newUri.path ?: "").extension) {
+        "json" -> "application/json"
+        "mp3" -> "audio/x-mp3"
+        "wav" -> "audio/w-wav"
+        "mp4" -> "video/mp4"
+        "3gp" -> "video/3gpp"
+        "txt" -> "plain/text"
+        "jpg" -> "image/jpeg"
+        "png" -> "image/png"
+        "htm" -> "text/html"
+        "html" -> "text/html"
+        "css" -> "text/css"
+        "svg" -> "text/svg"
+        else -> null
+    }
+    return mType
+}
+
 fun workspaceRelPathExists(context: Context, relPath: String) : Boolean{
     if(relPath == "") return false
     //if we can get the type, it exists.
     val uri: Uri = getWorkspaceUri(relPath) ?: return false
-    context.contentResolver.getType(uri) ?: return false
+    getFileType(context, uri) ?: return false
     return true
 }
 
@@ -329,7 +369,7 @@ fun getPFD(context: Context, relPath: String, mimeType: String = "", mode: Strin
             //TODO make this faster.
             val newUri = Uri.parse(uri.toString() + Uri.encode("/${segments[i]}"))
 
-            val isDirectory = context.contentResolver.getType(newUri)?.contains(DocumentsContract.Document.MIME_TYPE_DIR)
+            val isDirectory = getFileType(context, newUri)?.contains(DocumentsContract.Document.MIME_TYPE_DIR)
                 ?: false
 
             if (!isDirectory) {
@@ -361,43 +401,30 @@ fun getPFD(context: Context, relPath: String, mimeType: String = "", mode: Strin
     val newUri = Uri.parse(uri.toString() + Uri.encode("/${segments.last()}"))
     //TODO replace with custom exists thing.
 
-    if(context.contentResolver.getType(newUri) == null){
+    if (getFileType(context, newUri) == null) {
         //find the mime type by extension
-        var mType = mimeType
+        var mType : String? = mimeType
         if(mType == "") {
-            mType = when (File(newUri.path ?: "").extension) {
-                "json" -> "application/json"
-                //todo - use m4p.
-                "mp3"  -> "audio/x-mp3"
-                "wav" -> "audio/w-wav"
-                "txt" -> "plain/text"
-
-                "jpg"  ->  "image/jpeg"
-                "png"  ->  "image/png"
-                "htm"  ->  "text/html"
-                "html" ->  "text/html"
-                "css"  ->  "text/css"
-                "svg"  ->  "text/svg"
-
-                else -> "*/*"
+            mType = getFileTypeFromExtension(newUri)
+            if (mType == null) {
+                mType = "*/*"
             }
         }
-
         try {
-            DocumentsContract.createDocument(context.contentResolver, uri, mType, segments.last())
+            DocumentsContract.createDocument(context.contentResolver, uri, mType!!, segments.last())
         }
-        catch (e: Exception) {
+        catch (ex: Throwable) {
             if (Workspace.isUnitTest) {
-                // RK 3-27-2023
-                // Directory create will throw because of incompatibility in contentResolver
-                // in Robolectric test runner.  Create the directory the old fashioned way
-                // See TestDownloadActivity
+                // RK 06-15-23
+                // File create will throw because of incompatibility in contentResolver
+                // in Robolectric test runner.  Create the file the old fashioned way
+                // See TestParsePhotStory.createStoryLoadBloomHtmlTest()
                 val file = File(newUri.path)
                 if (!file.createNewFile())
-                    throw e
+                    throw ex
             }
             else
-                throw e
+                throw ex
         }
     }
     var pfd: ParcelFileDescriptor? = null
@@ -442,7 +469,21 @@ fun deleteStoryFile(context: Context, relPath: String, dirRoot: String = Workspa
 fun deleteWorkspaceFile(context: Context, relPath: String) : Boolean {
     if(workspaceRelPathExists(context, relPath)){
         val uri: Uri  = getWorkspaceUri(relPath) ?: return false
-        return DocumentsContract.deleteDocument(context.contentResolver,uri)
+        try {
+            return DocumentsContract.deleteDocument(context.contentResolver, uri)
+        }
+        catch (ex : Throwable) {
+            if (Workspace.isUnitTest) {
+                // RK 3-27-2023
+                // Directory create will throw because of incompatibility in contentResolver
+                // in Robolectric test runner.  Create the directory the old fashioned way
+                // See TestParsePhotStory.createStoryLoadBloomHtmlTest()
+                val file = File(uri.path)
+                return file.delete()
+            }
+            else
+                throw ex
+        }
     }
     return false
 }

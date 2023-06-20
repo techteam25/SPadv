@@ -37,23 +37,27 @@ class TestParsePhotoStory : BaseActivityTest() {
 
    @Test
    fun loadSaveJsonTest() {
+      try {
+         // init environment
+         initProjectFiles(false)
+         val learnActivity = startLearnActivity()
 
-      // init environment
-      initProjectFiles(false)
-      val learnActivity = startLearnActivity()
+         // test loading
 
-      // test loading
+         val myStory = loadStory(learnActivity)
+         Assert.assertNotNull("Unable to open story", myStory)
+         checkStoryContents(myStory, false, false)
 
-      val myStory = loadStory(learnActivity)
-      Assert.assertNotNull("Unable to open story", myStory)
-      checkStoryContents(myStory, false, false)
+         // test edit and save
+         modifyStoryContents(myStory)
+         saveStory(learnActivity, myStory)
 
-      // test edit and save
-      modifyStoryContents(myStory)
-      saveStory(learnActivity, myStory)
-
-      val myStory2 = loadStory(learnActivity)
-      checkStoryContents(myStory2, true, false)
+         val myStory2 = loadStory(learnActivity)
+         checkStoryContents(myStory2, true, false)
+      }
+      catch (ex : Throwable) {
+         Assert.assertNull("Unable to finish test", ex)
+      }
    }
 
    //
@@ -77,23 +81,27 @@ class TestParsePhotoStory : BaseActivityTest() {
 
    @Test
    fun createStoryLoadBloomHtmlTest() {
+      try {
+         // init environment
+         initProjectFiles(true)
+         val learnActivity = startLearnActivity()
 
-      // init environment
-      initProjectFiles(true)
-      val learnActivity = startLearnActivity()
+         // test loading
 
-      // test loading
+         val myStory = loadStory(learnActivity)  // story will be loaded and saved
+         Assert.assertNotNull("Unable to open story", myStory)
+         checkStoryContents(myStory, false, true)
 
-      val myStory = loadStory(learnActivity)  // story will be loaded and saved
-      Assert.assertNotNull("Unable to open story", myStory)
-      checkStoryContents(myStory, false, true)
+         // test edit and save
+         modifyStoryContents(myStory)
+         saveStory(learnActivity, myStory)
 
-      // test edit and save
-      modifyStoryContents(myStory)
-      saveStory(learnActivity, myStory)
-
-      val myStory2 = loadStory(learnActivity)
-      checkStoryContents(myStory2, true, true)
+         val myStory2 = loadStory(learnActivity)
+         checkStoryContents(myStory2, true, true)
+      }
+      catch (ex : Throwable) {
+         Assert.assertNull("Unable to finish test", ex)
+      }
    }
 
 

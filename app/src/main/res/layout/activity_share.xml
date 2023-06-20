@@ -77,13 +77,13 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/open_videos_path"
+                android:id="@+id/copy_share_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:layout_gravity="center_horizontal|center_vertical"
                 android:background="@drawable/button"
-                android:text="@string/view_video_folder_path" />
+                android:text="@string/video_copy" />
         </LinearLayout>
 
     </LinearLayout>
