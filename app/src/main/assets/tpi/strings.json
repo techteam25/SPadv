@@ -29,6 +29,9 @@
   "stage_locked": "samting i pas",
   "edit_image": "senisim piksa",
   "edit_text": "senisim tok",
+  
+  "exit_application": " Lusim app?",
+  "quit_question": " Tru tru yu laik lusim app?",
 
   "registration_title": "Salim Tok Save Nem",
   "learn_title": "Lainim Stori",
@@ -172,9 +175,21 @@
 
   "delete_video_title": "Delete Video file?",
   "delete_video_message": "Do you want to delete this video?",
-  "view_video_folder_path": "Videos Folder",
-  "view_video_folder_message": "Using a file manager app, video files can be accessed at:",
+  "video_copy": "Lukim folda we olgeta video i stap",
+  "copy_video_files": "Kopiim",
+  "overwrite_video_title": "Rausim ol video i stap pinis na kopiim ol nupela video?",
+  "overwrite_video_message": "Sampla ol video yu makim i stap pinis long folda. Yu laik rausim ol video i stap pinis na kopim nupela i go long folda?",
+  "use_copy_folder_message": "Kopim ol video i go long folda:\n\n",
+  "change_copy_folder": "Senisim o makim narapela folda?",    
+  "copy_folder_not_found_message": "Folda we yu bin kopim ol video bipo i no stap. Yu laik makim narapela folda?",
+  "export_dumbphone_cb": "3gp",
+  "export_smartphone_cb": "mp4",
+  "select_all_text": "Makim olgeta:",
 
+  "sdcard": "spes i stap long SD kat",
+  "internal": "spes i stap long pon",
+  "external": "spes i stap long samting ausait long pon",  
+  
   "wsbt_alert_title": "Finish Draft Phase",
   "wsbt_alert_text": "Please record a translation for each slide.",
 
@@ -212,8 +227,8 @@
   "export_include_text": "Include Story Text (Tx)",
   "export_include_song": "Include Local Song (Sg)",
   "export_include_KBFX": "Enable Picture Movement (Mv)",
-  "export_dumbphone": "(3gp) is for ",
-  "export_smartphone": "(mp4) is for ",
+  "export_dumbphone": "3gp ni kwa ",
+  "export_smartphone": "mp4 ni kwa ",
 
   "export_local_credits_unchanged": "Edit Local Credits",
   "local_credits_check_mark_description": "check mark indicating if the local credits have been updated",
@@ -257,7 +272,8 @@
   "more_templates": "Kisim moa stori sel",
   "change_language": "Sensim Tok",
   "spadv_website": "SPadv - website",
-
+  "video_share": "Nakili/Shiriki Faili za Video",
+  
   "all_stories_tab": "Olgeta Stori",
   "in_progress_tab": "Stori i Gohet",
   "completed_tab": "Stori i Pinis",

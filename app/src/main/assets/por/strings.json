@@ -29,6 +29,9 @@
   "stage_locked": "Etapa bloqueada",
   "edit_image": "editar imagem",
   "edit_text": "editar texto",
+  
+  "exit_application": "Sair da aplicação?",
+  "quit_question": "Você tem certeza que quer sair?",  
 
   "registration_title": "Registrar",
   "learn_title": "Aprender",
@@ -37,7 +40,7 @@
   "accuracy_check_title": "Precisão de Revisão",
   "voice_studio_title": "Estúdio de Dramatização",
   "finalize_title": "Finalizar",
-  "share_title": "Revisar e Distribuir",
+  "share_title": "Ver + Compartilhar",
   "whole_story_title": "Diga a História",
   "back_translation_title": "Diga a Página",
   "title_activity_story_templates": "Modelos de histórias",
@@ -173,9 +176,21 @@
 
   "delete_video_title": "Deletar arquivo de vídeo?",
   "delete_video_message": "Deseja deletar esse vídeo?",
-  "view_video_folder_path": "Pasta de Vídeos",
-  "view_video_folder_message": "Usando um aplicativo gerenciador de arquivos, os arquivos de vídeo podem ser acessados ​​em:",
-
+  "video_copy": "Ir para a pasta de vídeos",
+  "copy_video_files": "cópia de",
+  "overwrite_video_title": "Substituir arquivos?",
+  "overwrite_video_message": "Um ou mais dos arquivos de vídeo selecionados já existem na pasta de cópia. Deseja substituir os arquivos?",
+  "use_copy_folder_message": "Copie os arquivos para a pasta:\n\n",
+  "change_copy_folder": "Mudar pasta",    
+  "copy_folder_not_found_message": "A pasta de cópia não foi encontrada. Gostaria de especificar um novo?\n\n", 
+  "export_dumbphone_cb": "3gp",
+  "export_smartphone_cb": "mp4",
+  "select_all_text": "Selecionar tudo:",
+  
+  "sdcard": "cartão SD",
+  "internal": "interna",
+  "external": "externa",    
+  
   "wsbt_alert_title": "Finalizar Fase de Rascunho",
   "wsbt_alert_text": "Por favor grave a tradução para cada slide.",
 
@@ -258,6 +273,7 @@
   "more_templates": "Baixar mais modelos",
   "change_language": "Mudar idioma",
   "spadv_website": "SPadv - website",
+  "video_share": "Copiar/compartilhar arquivos de vídeo",
 
   "all_stories_tab": "Tudo",
   "in_progress_tab": "Em Progresso",

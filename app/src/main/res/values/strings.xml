@@ -226,11 +226,12 @@
     <string name="overwrite_video_title">Overwrite Files?</string>
     <string name="overwrite_video_message">One or more of the selected video files already exists in the copy folder.  Do you want to overwrite the files?</string>
     <string name="use_copy_folder_message">Copy files to the folder:\n\n</string>
-    <string name="change_copy_folder">Change folder\n\n</string>    
+    <string name="change_copy_folder">Change folder</string>    
     <string name="copy_folder_not_found_message">The copy folder was not found.  Would you like to specify a new one?\n\n</string>   
     <string name="export_dumbphone_cb">3gp </string>
     <string name="export_smartphone_cb">mp4 </string>
     <string name="select_all_text">Select all:</string>
+        
     <string name="sdcard">sdcard</string>
     <string name="internal">internal</string>
     <string name="external">external</string>
@@ -292,7 +293,7 @@
     <string name="export_start">Create Video</string>
     <string name="export_cancel">Cancel</string>
     <string name="export_cancel_comment">Do not leave this screen until the video is complete.</string>
-
+video_share
     <!-- ListView -->
     <string name="title_activity_splash_screen">Story Publisher Adv</string>
 
