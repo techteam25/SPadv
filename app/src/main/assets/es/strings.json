@@ -29,6 +29,9 @@
   "stage_locked": "etapa bloqueada",
   "edit_image": "editar imagen",
   "edit_text": "editar texto",
+  
+  "exit_application": "¿Salir de la aplicación?",
+  "quit_question": "¿Estás segura de que quieres dejar de fumar?",
 
   "registration_title": "Registro",
   "learn_title": "Aprender",
@@ -37,7 +40,7 @@
   "accuracy_check_title": "Verificación Bíblica",
   "voice_studio_title": "Grabación Final",
   "finalize_title": "Finalizar",
-  "share_title": "Compartir",
+  "share_title": "Ver + Compartir",
   "whole_story_title": "Recontar Completo",
   "back_translation_title": "Recontar Diapositivas",
   "title_activity_story_templates": "Plantillas de Historias",
@@ -172,9 +175,22 @@
   "draft_play_narration_audio": "Reproducir audio de narración",
 
   "delete_video_title": "¿Eliminar el vídeo?",
-  "delete_video_message": "¿Desea eliminar este vídeo?",
-  "view_video_folder_path": "Carpeta de Vídeos",
-  "view_video_folder_message": "Con una aplicación, administrador de archivos, se puede acceder vídeos en:",
+  "delete_video_message": "¿Desea eliminar este vídeo?", 
+  
+  "video_copy": "Ir a la carpeta de videos",
+  "copy_video_files": "Copiar",
+  "overwrite_video_title": "¿Sobrescribir archivos?",
+  "overwrite_video_message": "Uno o más de los archivos de video seleccionados ya existen en la carpeta de copia. ¿Quieres sobrescribir los archivos?",
+  "use_copy_folder_message": "Copie los archivos a la carpeta:\n\n",
+  "change_copy_folder": "Cambiar carpeta",    
+  "copy_folder_not_found_message": "No se encontró la carpeta de copia. ¿Desea especificar uno nuevo?\n\n",
+  "export_dumbphone_cb": "3gp",
+  "export_smartphone_cb": "mp4",
+  "select_all_text": "Seleccionar todo:",
+  
+  "sdcard": "tarjeta SD",
+  "internal": "interna",
+  "external": "externa",  
 
   "wsbt_alert_title": "Finalizar Etapa de Redacción",
   "wsbt_alert_text": "Registre una traducción para cada diapositiva.",
@@ -258,6 +274,7 @@
   "more_templates": "Descargar más plantillas",
   "change_language": "Cambiar idioma",
   "spadv_website": "PHadv - sitio web",
+  "video_share": "Copiar/Compartir Archivos de Video",
 
   "all_stories_tab": "Todas las historias",
   "in_progress_tab": "En Curso",
