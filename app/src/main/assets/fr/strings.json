@@ -30,6 +30,9 @@
   "edit_image": "éditer l'image",
   "edit_text": "èditer le texte",
 
+  "exit_application": "Quitter l'application ?",
+  "quit_question": "Êtes-vous sûr de vouloir quitter?",
+  
   "registration_title": "Inscription",
   "learn_title": "Apprendre",
   "translate_revise_title": "Traduire + réviser",
@@ -37,7 +40,7 @@
   "accuracy_check_title": "Vérification d'exactitude",
   "voice_studio_title": "Studio audio",
   "finalize_title": "Finaliser",
-  "share_title": "Partager",
+  "share_title": "Voir + Partager",
   "whole_story_title": "Raconter le récit",
   "back_translation_title": "Raconter la diapo",
   "title_activity_story_templates": "Modèles de récit",
@@ -173,9 +176,21 @@
 
   "delete_video_title": "Supprimer le fichier vidèo?",
   "delete_video_message": "Désirez-vous supprimer cette video?",
-  "view_video_folder_path": "Fichier de video",
-  "view_video_folder_message": "Utilisant un gestionnaire de fichier, accédez aux fichiers vidéos dans:",
+  "video_copy": "Aller au dossier des vidéos",
+  "copy_video_files": "Copie",
+  "overwrite_video_title": "Ecraser les fichiers ?",
+  "overwrite_video_message": "Un ou plusieurs des fichiers vidéo sélectionnés existent déjà dans le dossier de copie. Voulez-vous écraser les fichiers ?",
+  "use_copy_folder_message": "Copiez les fichiers dans le dossier :\n\n",
+  "change_copy_folder": "Changer de dossier",    
+  "copy_folder_not_found_message": "The copy folder was not found.  Would you like to specify a new one?\n\n",   
+  "export_dumbphone_cb": "3gp",
+  "export_smartphone_cb": "mp4",
+  "select_all_text": "Tout sélectionner:",
 
+  "sdcard": "carte SD",
+  "internal": "interne",
+  "external": "externe",  
+  
   "wsbt_alert_title": "Compléter la Phase brouillon",
   "wsbt_alert_text": "Veuillez enregistrer une traduction de chaque diapo.",
 
@@ -258,6 +273,7 @@
   "more_templates": "Télécharger plus de modèles",
   "change_language": "Changer de langue",
   "spadv_website": "SPadv - site de toile",
+  "video_share": "Copier/partager des fichiers vidéo",
 
   "all_stories_tab": "Toutes les histoires",
   "in_progress_tab": "En cours",

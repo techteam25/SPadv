@@ -33,7 +33,6 @@ import java.io.OutputStream
 /**
  * Created by annmcostantino on 10/1/2017.
  */
-//TODO: Cleanup all the useless stuff here
 class VideoListHelper : RefreshViewListener, OnCheckedChangeListener {
     var mActivity: BaseActivity? = null
     var mStory: Story? = null
@@ -96,16 +95,13 @@ class VideoListHelper : RefreshViewListener, OnCheckedChangeListener {
             var copyBtn: Button = mActivity!!.findViewById(R.id.copy_files)
             var gpBtn: CheckBox = mActivity!!.findViewById(R.id.dumbphone_3gp)
             var mp4Btn: CheckBox = mActivity!!.findViewById(R.id.smartphone_mp4)
-            //xx  var selectText: TextView = mActivity!!.findViewById(R.id.select_all_text)
 
-            //copyBtn!!.visibility = View.GONE  // start off invisible until edit mode
             copyBtn!!.setEnabled(false)  // start off invisible until edit mode
 
             if (!exportedVideos.isNotEmpty()) {
                 gpBtn!!.visibility = View.GONE
                 mp4Btn!!.visibility = View.GONE
                 copyBtn!!.visibility = View.GONE
-                //xx  selectText!!.visibility = View.GONE
             }
 
             // RK 6-13-2023 - See issue #75 for more details on the copy button
@@ -522,7 +518,6 @@ class VideoListHelper : RefreshViewListener, OnCheckedChangeListener {
                 // if file does not exist, create it
                 // if we came from the directory dialog, we have permission to write.
                 // if not, then we need to get permission to write
-                // XXXXXX????? checkWritePermission(videoUriOut)
                 if (getFileType(mActivity!!, videoUriOut) == null) {
 
                     var mType = getFileType(mActivity!!, videoUri)

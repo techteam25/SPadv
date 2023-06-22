@@ -30,6 +30,9 @@
   "edit_image": "Ubah Gambar",
   "edit_text": "Ubah Teks",
 
+  "exit_application": "Keluar dari Aplikasi?",
+  "quit_question": "Apakah Anda yakin ingin berhenti?",
+  
   "registration_title": "Registrasi",
   "learn_title": "Mempelajari",
   "translate_revise_title": "Menerjemahkan+Revisi",
@@ -37,7 +40,7 @@
   "accuracy_check_title": "Pemeriksaan Akurasi",
   "voice_studio_title": "Voice Studio",
   "finalize_title": "Menyelesaikan",
-  "share_title": "Bagikan",
+  "share_title": "Lihat + Bagikan",
   "whole_story_title": "Bercerita Kembali",
   "back_translation_title": "Menerjemahkan Kembali",
   "title_activity_story_templates": "Templat Cerita",
@@ -173,8 +176,20 @@
 
   "delete_video_title": "Hapus file video?",
   "delete_video_message": "Apakah anda ingin menghapus video ini?",
-  "view_video_folder_path": "Folder Video",
-  "view_video_folder_message": "Menggunakan aplikasi pengelola file, file video dapat diakses di:",
+  "video_copy": "Buka folder video",
+  "copy_video_files": "Menyalin",
+  "overwrite_video_title": "Timpa File?",
+  "overwrite_video_message": "Satu atau lebih file video yang dipilih sudah ada di folder salin. Apakah Anda ingin menimpa file?",
+  "use_copy_folder_message": "Salin file ke folder:\n\n",
+  "change_copy_folder": "Ubah map",    
+  "copy_folder_not_found_message": "Folder salinan tidak ditemukan. Apakah Anda ingin menentukan yang baru?\n\n",
+  "export_dumbphone_cb": "3gp",
+  "export_smartphone_cb": "mp4",
+  "select_all_text": "Pilih Semua:",
+
+  "sdcard": "kartu SD",
+  "internal": "intern",
+  "external": "luar",  
 
   "wsbt_alert_title": "Selesaikan Fase Draf",
   "wsbt_alert_text": "Harap rekam terjemahan untuk setiap slide.",
@@ -258,6 +273,7 @@
   "more_templates": "Unduh Lebih Banyak Templat",
   "change_language": "Change Language",
   "spadv_website": "SPadv - website",
+  "video_share": "Salin/Bagikan File Video",
 
   "all_stories_tab": "Semua Cerita",
   "in_progress_tab": "Dalam Proses",

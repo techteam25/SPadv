@@ -29,6 +29,9 @@
   "stage_locked": "hatua imefungwa",
   "edit_image": "rekebisha picha",
   "edit_text": "rekebisha maandishi",
+  
+  "exit_application": "Ungependa Kufunga Programu?",
+  "quit_question": "Una uhakika unataka kuacha?",  
 
   "registration_title": "Registration",
   "learn_title": "Soma",
@@ -37,7 +40,7 @@
   "accuracy_check_title": "Angalia kwa Umakini",
   "voice_studio_title": "Studio ya Sauti",
   "finalize_title": "Kamilisha",
-  "share_title": "Kagua + Shiriki",
+  "share_title": "Tazama + Shiriki",
   "whole_story_title": "Eleza Kuhusu Hadithi",
   "back_translation_title": "Utafsiri Rejeshi",
   "title_activity_story_templates": "muongozo wa hadithi",
@@ -173,8 +176,20 @@
 
   "delete_video_title": "futa faili ya video",
   "delete_video_message": " je wataka kufuta video hii",
-  "view_video_folder_path": "folda ya video",
-  "view_video_folder_message": "kutumia program ya faili manager, faili za video zaweza patikana kwa:",
+  "video_copy": "Nenda kwenye folda ya video",
+  "copy_video_files": "Nakili",
+  "overwrite_video_title": "Je, ungependa kufuta faili?",
+  "overwrite_video_message": "Faili moja au zaidi za video zilizochaguliwa tayari zipo kwenye folda ya kunakili. Je, ungependa kubatilisha faili?",
+  "use_copy_folder_message": "Nakili faili kwenye folda:\n\n",
+  "change_copy_folder": "Badilisha folda",    
+  "copy_folder_not_found_message": "Folda ya kunakili haikupatikana. Je, ungependa kubainisha mpya?\n\n",   
+  "export_dumbphone_cb": "3gp",
+  "export_smartphone_cb": "mp4",
+  "select_all_text": "Chagua zote:",
+  
+  "sdcard": "kadi ya sd",
+  "internal": "ndani",
+  "external": "ya nje",  
 
   "wsbt_alert_title": "maliza rasimu ya awamu",
   "wsbt_alert_text": "tafadhali rekodi utafsiri wa kila slaidi",
@@ -258,6 +273,7 @@
   "more_templates": "Pakua violezo zaidi",
   "change_language": "Badilisha lugha",
   "spadv_website": "SPadv - website",
+  "video_share": "Nakili/Shiriki Faili za Video",
 
   "all_stories_tab": "hadithi zote",
   "in_progress_tab": "inaendelea",
