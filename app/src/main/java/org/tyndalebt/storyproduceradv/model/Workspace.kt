@@ -782,6 +782,8 @@ object Workspace {
             Lang = ""
         } else if (pChosenLanguage == "French") {
             Lang = "fr"
+        } else if (pChosenLanguage == "Hindi") {
+            Lang = "hi"
         } else if (pChosenLanguage == "Indonesian") {
             Lang = "id"
         } else if (pChosenLanguage == "Khmer") {
