@@ -23,6 +23,9 @@
             android:id="@+id/video_share"
             android:title="@string/video_share" />
         <item
+            android:id="@+id/backup_restore"
+            android:title="@string/backup_restore" />
+        <item
             android:id="@+id/nav_spadv_website"
             android:title="@string/spadv_website" />
         <item

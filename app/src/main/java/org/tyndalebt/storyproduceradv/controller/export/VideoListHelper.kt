@@ -19,6 +19,7 @@ import androidx.documentfile.provider.DocumentFile
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import org.tyndalebt.storyproduceradv.R
 import org.tyndalebt.storyproduceradv.activities.BaseActivity
+import org.tyndalebt.storyproduceradv.activities.MainBaseActivity
 import org.tyndalebt.storyproduceradv.model.Story
 import org.tyndalebt.storyproduceradv.model.VIDEO_DIR
 import org.tyndalebt.storyproduceradv.model.Workspace
@@ -109,14 +110,13 @@ class VideoListHelper : RefreshViewListener, OnCheckedChangeListener {
                 val builder: AlertDialog.Builder = AlertDialog.Builder(mActivity!!)
                 if (!Workspace.videoCopyPath.uri.path.equals("/")) {
 
-                    val copyDirPath = getUIPathText(Workspace.videoCopyPath.uri)
+                    val copyDirPath = UriUtils.getUIPathText(mActivity!! as MainBaseActivity, Workspace.videoCopyPath.uri)
                     if (copyDirPath == null) {
                         // previous copy path was specified but it doesn't exist.
                         // Perhaps the usb drive has been removed.
                         // instruct the user to pick a new one
-                        val docId = DocumentsContract.getDocumentId(Workspace.videoCopyPath.uri)
-                        val pathData = docId.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-                        val pathStr = "[" + pathData.get(0) + "]/" + pathData.get(1)
+
+                        val pathStr = UriUtils.getUIPathTextAlways(mActivity!! as MainBaseActivity, Workspace.videoCopyPath.uri )
                         var textStr = "${mActivity!!.getString(R.string.copy_folder_not_found_message)}" + pathStr + "\n"
 
                         builder.setMessage(textStr)
@@ -124,7 +124,7 @@ class VideoListHelper : RefreshViewListener, OnCheckedChangeListener {
                                 .setPositiveButton(mActivity!!.getString(R.string.ok)) { _, _ ->
                                     copyController.openDocumentTree(
                                             SelectCopyFolderController.SELECT_COPY_FOLDER,
-                                            this)
+                                            this, null)
                                 }
                     }
                     else {
@@ -136,7 +136,7 @@ class VideoListHelper : RefreshViewListener, OnCheckedChangeListener {
                                 .setNegativeButton(mActivity!!.getString(R.string.change_copy_folder)) { _, _ ->
                                     copyController.openDocumentTree(
                                             SelectCopyFolderController.SELECT_COPY_FOLDER,
-                                            this)
+                                            this, Workspace.videoCopyPath.uri)
                                 }
                                 .setPositiveButton(mActivity!!.getString(R.string.ok)) { _, _ ->
                                     checkForExistingFilesAndCopy(Workspace.videoCopyPath.uri)
@@ -153,7 +153,7 @@ class VideoListHelper : RefreshViewListener, OnCheckedChangeListener {
                             .setPositiveButton(mActivity!!.getString(R.string.ok)) { _, _ ->
                                 copyController.openDocumentTree(
                                         SelectCopyFolderController.SELECT_COPY_FOLDER,
-                                        this)
+                                        this, null)
                             }
                 }
                 val alert: AlertDialog = builder.create()
@@ -216,55 +216,6 @@ class VideoListHelper : RefreshViewListener, OnCheckedChangeListener {
     fun getVideosListView(): ListView? { // used by unit tests
         return mVideosListView
     }
-
-    fun getUIPathText(uri: Uri?): String? {
-        // translates the uri path to a ui string to display for the copy folder
-        var uriStr = UriUtils.getPathFromUri(mActivity, uri!!)
-        if (uriStr != null) {
-            uriStr = getUIPathTextInternal(uri, uriStr)
-            var uiUri = Uri.parse(uriStr)
-            return uiUri.path!!
-        }
-        return null
-    }
-
-    fun getUIPathTextInternal(uri: Uri, uriStr: String): String {
-
-        // At this point the videoFileUriStr will look something like this: /storage/emulated/0/
-        // This is the actual path. However, it needs be changed to the SD Card (/sdcard/)
-        // which is a symbolic link to the emulated storage path.
-        // sdcard/: Is a symlink to...
-        //      /storage/sdcard0 (Android 4.0+)
-        // In Story Publisher Adv, the version will never be less than Android 4.0
-        // We will instead show it as an optional [sdcard]
-        // The below code will change: /storage/emulated/0/ to /storage/[sdcard]/
-        val replaceStr = getStorageText(uri, uriStr)
-        var retVal = uriStr.replace(Regex("(/storage\\/emulated\\/)\\d+"), replaceStr)
-
-        // Also, the SD-Card could show up as /storage/####-####/ where # is a hexidecimal value
-        retVal = retVal.replace(Regex("(/storage)\\/[0-9a-fA-F]{4}-[0-9a-fA-F]{4}"), replaceStr)
-
-        // Also, the SD-Card could show up as /mnt/media_rw/####-####/ where # is a hexidecimal value for earlier android releases
-        retVal = retVal.replace(Regex("(/mnt/media_rw)\\/[0-9a-fA-F]{4}-[0-9a-fA-F]{4}"), replaceStr)
-
-        // Also, this is for a usb memory stick
-        retVal = retVal.replace(Regex("(/dev/bus/usb)\\/[0-9]{3}\\/[0-9]{3}"), replaceStr)
-        return retVal
-    }
-
-    fun getStorageText(uri: Uri, uriStr: String): String {
-        val segment = uri.lastPathSegment
-        val isPrimary = (segment!!.indexOf("primary") == 0) ||
-                (segment!!.indexOf("raw") == 0)
-        if (isPrimary) {
-            return "[" + mActivity!!.getString(R.string.internal) + "]"
-        }
-        else if (uriStr.indexOf("usb") >= 0) {
-            return "[" + mActivity!!.getString(R.string.external) + "]"
-        }
-        return "[" + mActivity!!.getString(R.string.sdcard) + "]"
-    }
-
 
     /**
      * Get handles to all necessary views and add some listeners.

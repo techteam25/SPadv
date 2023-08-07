@@ -73,20 +73,36 @@ class TestMainActivity : BaseActivityTest() {
          Assert.assertEquals("Incorrect number of available storyPageViePager.items", 3, itemCount)
 
          val storyPageAdapter = mainActivity.storyPageViewPager.adapter as org.tyndalebt.storyproduceradv.controller.storylist.StoryPageAdapter
-         var frag = startStoryPageFragment(mainActivity)
-         Assert.assertNotNull(frag)
+         var frag = startStoryPageFragment(mainActivity, 0)
+         var testFrag : StoryPageFragment? = null
          for (i in 1 until storyPageAdapter.itemCount) {
-            var testFrag = startStoryPageFragment(mainActivity)
-            Assert.assertNotNull(testFrag)
+            testFrag = startStoryPageFragment(mainActivity, i)
+            Assert.assertNotNull("Could not find fragment: " + i, testFrag)
          }
+         checkFragment(frag, 0, 2, 2)
 
-         // check the story list fragment to see that it contains the proper number of stories
-         // StoryPageFragment.onCreateView will load the story list
-         // storyPageTab.getStoryList()
          // try to switch to the story to see if it goes to the right place in the story
+         // test filters
       }
       finally {
          cleanTempDirectories(mainActivity)
+      }
+   }
+
+   fun checkFragment (fragment : StoryPageFragment, position : Int, storyCount : Int, listCount : Int) {
+      Assert.assertNotNull("Unable to find fragment: " + position, fragment)
+      Assert.assertNotNull("Unable to find fragment listView: " + position, fragment.listView)
+      Assert.assertNotNull("Unable to find fragment adapter: " + position, fragment.adapter)
+      Assert.assertEquals("Current story list is incorrect size." , fragment.CurrentStoryList.size, storyCount)
+      Assert.assertEquals("Incorrect number of stories in fragment.", fragment.adapter.stories.size, storyCount)
+
+      if (listCount > 0) {
+         // check a few more details
+         fragment.adapter.getView(position, null, fragment.listView)
+         val fileHolder = fragment.adapter.getFileHolderAt(0)
+         Assert.assertNotNull("Unable to find fileHolder(0): " + position, fileHolder)
+         Assert.assertNull("Should be no checkbox for mainActivity", fileHolder!!.checkBox)
+         Assert.assertNotNull("Should be an icon for mainActivity", fileHolder!!.imgIcon)
       }
    }
 
@@ -97,9 +113,9 @@ class TestMainActivity : BaseActivityTest() {
       return mainActivity
    }
 
-   fun startStoryPageFragment(mainActivity : MainActivity) : StoryPageFragment {
+   fun startStoryPageFragment(mainActivity : MainActivity, position : Int) : StoryPageFragment {
       val storyPageAdapter = mainActivity.storyPageViewPager.adapter as org.tyndalebt.storyproduceradv.controller.storylist.StoryPageAdapter
-      var storyPageFrag = storyPageAdapter.createFragment(0) as StoryPageFragment
+      var storyPageFrag = storyPageAdapter.createFragment(position) as StoryPageFragment
 
       val fragmentManager: FragmentManager = mainActivity.getSupportFragmentManager()
       val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()

@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!-- RK 03-13-23
-     issue 96 - Story template titles and subtitles
-     not visible if too long.
-     Expanded min height for longer story titles
+<!-- RK 07-27-2023
+     The smae as the story_list_item, but with a checkbox
+     for selection rather than story_list_image
 -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -13,14 +12,14 @@
     android:layout_height="wrap_content"
     android:minHeight="94dp">
 
-    <ImageView
-        android:id="@+id/story_list_image"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+    <CheckBox
+        android:id="@+id/story_cb"
+        android:layout_height="match_parent"
+        android:layout_width="30dp"
         android:layout_gravity="center_horizontal|center_vertical"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:background="@color/white"
-        android:contentDescription="@string/story_picture" />
+        android:gravity="center|start"/>
+        android:textSize="@dimen/large_text" />
 
     <LinearLayout
         android:id="@+id/story_list_title_layout"

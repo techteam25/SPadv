@@ -10,6 +10,7 @@
         <item name="windowActionBar">false</item>
         <item name="actionButtonStyle">@style/ActionButtonPadded</item>
         <item name="android:actionButtonStyle">@style/ActionButtonPadded</item>
+        <item name="android:popupMenuStyle">@style/PopMenuStyle</item>
     </style>
 
     <style name="ActionButtonPadded" parent="@android:style/Widget.ActionButton">
@@ -23,6 +24,10 @@
         <item name="chipIconVisible">false</item>
         <item name="closeIconVisible">false</item>
         <item name="checkedIcon">@drawable/ic_mtrl_chip_checked_black</item>
+    </style>
+    
+    <style name="PopMenuStyle" parent="@android:style/Widget.PopupMenu">
+        <item name="android:popupBackground">@color/darkGray</item>
     </style>
 
 </resources>

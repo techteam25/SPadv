@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.provider.DocumentsContract
 import org.tyndalebt.storyproduceradv.model.Workspace
 import org.tyndalebt.storyproduceradv.view.BaseActivityView
 
@@ -13,8 +14,11 @@ class SelectTemplatesFolderController(
         val workspace: Workspace
 ) : BaseController(view, context) {
 
-    fun openDocumentTree(request: Int) {
+    fun openDocumentTree(request: Int, initUri : Uri?) {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).addFlags(URI_PERMISSION_FLAGS)
+        if (initUri != null) {
+            intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, initUri)
+        }
         view.startActivityForResult(intent, request)
     }
 
