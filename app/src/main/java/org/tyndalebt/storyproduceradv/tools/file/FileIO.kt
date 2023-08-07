@@ -11,13 +11,13 @@ import android.net.Uri
 import android.os.ParcelFileDescriptor
 import android.provider.DocumentsContract
 import android.util.LruCache
+import androidx.documentfile.provider.DocumentFile
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import org.tyndalebt.storyproduceradv.model.Story
 import org.tyndalebt.storyproduceradv.model.WORD_LINKS_DIR
 import org.tyndalebt.storyproduceradv.model.Workspace
 import java.io.File
 import java.io.FileDescriptor
-import java.io.FileNotFoundException
 import java.io.InputStream
 import java.io.OutputStream
 import kotlin.math.max
@@ -25,7 +25,12 @@ import kotlin.math.min
 
 
 fun copyToWorkspacePath(context: Context, sourceUri: Uri, destRelPath: String){
-//    var iStream: AutoCloseInputStream = null
+
+    val dstUri = Uri.parse(Workspace.workdocfile.uri.toString() +
+            Uri.encode("/$destRelPath"))
+    copyFile(context, sourceUri, dstUri)
+
+/*
     try {
         //TODO Why is DocumentsContract.isDocument not working right?
         val ipfd = context.contentResolver.openFileDescriptor(
@@ -49,6 +54,7 @@ fun copyToWorkspacePath(context: Context, sourceUri: Uri, destRelPath: String){
     } catch (e: Exception) {
         FirebaseCrashlytics.getInstance().recordException(e)
     }
+ */
 }
 
 
@@ -246,10 +252,14 @@ fun getFileTypeFromExtension(newUri : Uri) : String?
     return mType
 }
 
-fun workspaceRelPathExists(context: Context, relPath: String) : Boolean{
-    if(relPath == "") return false
+fun workspaceRelPathExists(context: Context, relPath: String) : Boolean {
+    if (relPath == "") return false
     //if we can get the type, it exists.
     val uri: Uri = getWorkspaceUri(relPath) ?: return false
+    return fileExists(context, uri)
+}
+
+fun fileExists(context : Context, uri : Uri) : Boolean {
     getFileType(context, uri) ?: return false
     return true
 }
@@ -362,45 +372,21 @@ fun getChildDocuments(context: Context,relPath: String) : MutableList<String>{
 fun getPFD(context: Context, relPath: String, mimeType: String = "", mode: String = "r") : ParcelFileDescriptor? {
     if (!Workspace.workdocfile.isDirectory) return null
     //build the document tree if it is needed
-    val segments = relPath.split("/")
     var uri = Workspace.workdocfile.uri
-    try {
-        for (i in 0..segments.size - 2) {
-            //TODO make this faster.
-            val newUri = Uri.parse(uri.toString() + Uri.encode("/${segments[i]}"))
-
-            val isDirectory = getFileType(context, newUri)?.contains(DocumentsContract.Document.MIME_TYPE_DIR)
-                ?: false
-
-            if (!isDirectory) {
-                try {
-                    DocumentsContract.createDocument(context.contentResolver, uri,
-                            DocumentsContract.Document.MIME_TYPE_DIR, segments[i])
-                }
-                catch (e: Exception) {
-                    if (Workspace.isUnitTest) {
-                        // RK 3-27-2023
-                        // Directory create will throw because of incompatibility in contentResolver
-                        // in Robolectric test runner.  Create the directory the old fashioned way
-                        // See TestParsePhotStory.createStoryLoadBloomHtmlTest()
-                        val dir = File(newUri.path)
-                        if (!dir.mkdir())
-                            throw e
-                    }
-                    else
-                        throw e
-                }
-            }
-            uri = newUri
-        }
-    } catch (e: Exception){
-        FirebaseCrashlytics.getInstance().recordException(e)
-        return null
+    createFolder(context, uri, relPath, true)
+    val segments = relPath.split("/")
+    if (segments.size > 1) {
+        val path = relPath.substring(0, relPath.length-segments[segments.size-1].length)
+        uri = Uri.parse(uri.toString() + Uri.encode("/${path}"))
     }
-    //create the file if it is needed
-    val newUri = Uri.parse(uri.toString() + Uri.encode("/${segments.last()}"))
-    //TODO replace with custom exists thing.
 
+    //create the file if it is needed
+    return getPFD(context, uri, segments[segments.size-1], mimeType, mode)
+}
+
+fun getPFD(context: Context, parentUri : Uri, relPath : String, mimeType: String = "", mode: String = "r") : ParcelFileDescriptor? {
+
+    val newUri = Uri.parse(parentUri.toString() + Uri.encode("/$relPath"))
     if (getFileType(context, newUri) == null) {
         //find the mime type by extension
         var mType : String? = mimeType
@@ -411,7 +397,7 @@ fun getPFD(context: Context, relPath: String, mimeType: String = "", mode: Strin
             }
         }
         try {
-            DocumentsContract.createDocument(context.contentResolver, uri, mType!!, segments.last())
+            DocumentsContract.createDocument(context.contentResolver, parentUri, mType!!, relPath)
         }
         catch (ex: Throwable) {
             if (Workspace.isUnitTest) {
@@ -461,14 +447,21 @@ fun getChildInputStream(context: Context, relPath: String) : InputStream? {
 fun deleteStoryFile(context: Context, relPath: String, dirRoot: String = Workspace.activeDirRoot) : Boolean {
     if(storyRelPathExists(context, relPath, dirRoot)){
         val uri: Uri = getStoryUri(relPath,dirRoot) ?: return false
-        return DocumentsContract.deleteDocument(context.contentResolver,uri)
+        return deleteFile(context, uri)
     }
     return false
 }
 
 fun deleteWorkspaceFile(context: Context, relPath: String) : Boolean {
-    if(workspaceRelPathExists(context, relPath)){
-        val uri: Uri  = getWorkspaceUri(relPath) ?: return false
+    if (workspaceRelPathExists(context, relPath)) {
+        val uri: Uri = getWorkspaceUri(relPath) ?: return false
+        return deleteFile(context, uri)
+    }
+    return false
+}
+
+fun deleteFile(context: Context, uri : Uri) : Boolean {
+    if (fileExists(context, uri)) {
         try {
             return DocumentsContract.deleteDocument(context.contentResolver, uri)
         }
@@ -488,6 +481,237 @@ fun deleteWorkspaceFile(context: Context, relPath: String) : Boolean {
     return false
 }
 
+fun deleteFolderInternal(context : Context, uri : Uri, baseDirUri : Uri, relPath : String) : Boolean {
+    if (fileExists(context, uri)) {
+
+        if (isDirectory(context, uri)) {
+
+            val children = getFolderChildren(context, baseDirUri, relPath)
+            for (child in children) {
+                var relPath2 = relPath + "/" + child
+                val newUri = Uri.parse(baseDirUri.toString() + Uri.encode("/${relPath2}"))
+
+                if (!deleteFolderInternal(context, newUri, baseDirUri, relPath2)) {
+                    return false
+                }
+            }
+            return deleteFile(context, uri)
+        }
+        else {
+            return deleteFile(context, uri)
+        }
+        return false
+    }
+    return true
+}
+
+fun copyFolderInternal(context : Context, srcUri : Uri, dstUri : Uri, baseSrcUri : Uri, relPath : String) : Boolean {
+
+    if (!fileExists(context, dstUri)) {
+        return false  // if the dest directory doesn;t exist, stop right now
+    }
+
+    if (fileExists(context, srcUri) && isDirectory(context, srcUri)) {
+
+        val lastSegment = lastSegmentName(srcUri)
+        val dstDirUri = Uri.parse(dstUri.toString() + Uri.encode("/$lastSegment"))
+
+        if (!fileExists(context, dstDirUri)) {
+            // create the destination folder
+           createFolder(context, dstUri, lastSegment, false)
+        }
+
+        val children = getFolderChildren(context, baseSrcUri, relPath)
+        for (child in children) {
+            var relPath2 = relPath + "/" + child
+            val newUri = Uri.parse(baseSrcUri.toString() + Uri.encode("/${relPath2}"))
+
+            if (isDirectory(context, newUri)) {
+                // if this is another directory
+                // create a new directory uri and copy it
+                copyFolderInternal(context, newUri, dstDirUri, baseSrcUri, relPath2)
+            }
+            else {
+                if (!copyFile(context, newUri, dstDirUri)) {
+                    return false
+                }
+            }
+        }
+        return false
+    }
+    return true
+}
+
+fun copyFile(context: Context, srcFileUri: Uri, dstDirUri : Uri)  : Boolean{
+//    var iStream: AutoCloseInputStream = null
+    try {
+        val lastSegment = lastSegmentName(srcFileUri)
+        val dstUri = Uri.parse(dstDirUri.toString() + Uri.encode("/$lastSegment"))
+
+        val ipfd = context.contentResolver.openFileDescriptor(
+                srcFileUri, "r")
+        val iStream = ParcelFileDescriptor.AutoCloseInputStream(ipfd)
+        val opfd = getPFD(context, dstDirUri,lastSegment, "","w")
+        val oStream = ParcelFileDescriptor.AutoCloseOutputStream(opfd)
+        val bArray = ByteArray(100000)
+        var bytesRead = iStream.read(bArray)
+        while(bytesRead > 0){ //eof not reached
+            oStream.write(bArray,0,bytesRead)
+            bytesRead = iStream.read(bArray)
+        }
+
+        iStream.close()
+        // 10/21/2021 - DKH: Espresso test fail for Android 10 and 11 #594
+        // Found this typo bug which closed iStream.close() twice.  Change the second
+        // "istream.close()" to "ostream.close()". Previously, for every file that was created,
+        // the output stream hung around - not a good use of resources
+        oStream.close()
+        return true
+    } catch (e: Exception) {
+        FirebaseCrashlytics.getInstance().recordException(e)
+    }
+    return false
+}
+
+// creates the folder if it is needed
+fun createFolder(context : Context, dirUri : Uri, relPath : String, bPathFile : Boolean) : Boolean{
+    val segments = relPath.split("/")
+    var uri = dirUri
+    try {
+        var size = segments.size - 1
+        if (bPathFile) {
+            size--
+        }
+        for (i in 0..size) {
+            //TODO make this faster.
+            val newUri = Uri.parse(uri.toString() + Uri.encode("/${segments[i]}"))
+
+            if (!isDirectory(context, newUri)) {
+                try {
+                    DocumentsContract.createDocument(context.contentResolver, uri,
+                            DocumentsContract.Document.MIME_TYPE_DIR, segments[i])
+                }
+                catch (e: Exception) {
+                    if (Workspace.isUnitTest) {
+                        // RK 3-27-2023
+                        // Directory create will throw because of incompatibility in contentResolver
+                        // in Robolectric test runner.  Create the directory the old fashioned way
+                        // See TestParsePhotStory.createStoryLoadBloomHtmlTest()
+                        val dir = File(newUri.path)
+                        if (!dir.mkdir())
+                            throw e
+                    }
+                    else
+                        throw e
+                }
+            }
+            uri = newUri
+        }
+        return true
+    }
+    catch (e: Exception) {
+        FirebaseCrashlytics.getInstance().recordException(e)
+        return false
+    }
+}
+fun getFolderChildren(context: Context, dirUri : Uri, relPath: String) : MutableList<String>{
+    //build a query to look for the child documents
+    //This is actually the easiest and fastest way to get a list of child documents, believe it or not.
+
+    /* RK - It seemed logical to me to use the following code fragment
+       to get the folder children, but the results of DocumentFile.fromTreeUri
+       were inconsistent as to which directory was actually returned.  So I
+       reverted to theis approach
+
+    val dir = DocumentFile.fromTreeUri(context, dirUri)
+    val dir2 = dir!!.findFile(lastSegment!!)
+    */
+
+    //val dir3 = DocumentFile.fromSingleUri(context, dirUri)
+    //val files = dir3!!.listFiles()
+
+    var childDocs: MutableList<String> = ArrayList()
+    val cursor: Cursor
+    try {
+        cursor = context.contentResolver.query(
+                DocumentsContract.buildChildDocumentsUriUsingTree(
+                        dirUri,
+                        DocumentsContract.getDocumentId(
+                                Uri.parse(dirUri.toString() +
+                                        Uri.encode("/$relPath"))
+                        ))
+                , arrayOf(DocumentsContract.Document.COLUMN_DISPLAY_NAME),
+                null, null, null)!!
+        //You have a handle to the data structure (as if in SQL).  walk through the elements and add them to the list.
+        cursor.moveToFirst()
+        do {
+            childDocs.add(cursor.getString(0))
+            cursor.moveToNext()
+        } while ((!cursor.isAfterLast))
+        cursor.close()
+    }
+    catch (e: Exception) {
+        childDocs = ArrayList()
+        if (Workspace.isUnitTest) {
+            // RK 03-27-2023  Unit test exception with previous handling
+            // Use old fashioned file techniques
+            // See TestParsePhotoStory.createStoryTest()
+            try {
+                val uri = Uri.parse(dirUri.toString() + Uri.encode("/$relPath"))
+                val dir = File(uri.path)
+                if (dir.exists() && dir.isDirectory()) {
+                    val list = dir.listFiles()
+                    if (list != null) {
+                        for (file in list) {
+                            childDocs.add(file.name)
+                        }
+                    }
+                }
+            }
+            catch (e: Exception)  {}
+        }
+    }
+
+    return childDocs
+}
+
+
+fun getDirectoryChildrenOrig(context : Context, dirUri : Uri) : ArrayList<Uri> {
+
+    val list = ArrayList<Uri>()
+    try {
+        val dir = DocumentFile.fromTreeUri(context, dirUri)
+        val lastSegment = lastSegmentName(dirUri)
+        //val dir2 = dir!!.findFile(lastSegment!!)
+
+        val dir3 = DocumentFile.fromSingleUri(context, dirUri)
+
+        val files = dir3!!.listFiles()
+        if (files != null) {
+            for (child in files) {
+                list.add(child.uri)
+            }
+        }
+    }
+    catch (ex : Throwable) {
+        ex.printStackTrace()
+    }
+    return list
+}
+
+fun lastSegmentName(uri : Uri) : String {
+    var lastSegment = uri.lastPathSegment
+    val index = lastSegment!!.lastIndexOf("/")
+    if (index >= 0) {
+        lastSegment = lastSegment!!.substring(index + 1, lastSegment!!.length)
+    }
+    return lastSegment!!
+}
+
+fun isDirectory(context : Context, uri : Uri) : Boolean {
+    return getFileType(context, uri)?.contains(DocumentsContract.Document.MIME_TYPE_DIR)
+            ?: false
+}
 val DEFAULT_WIDTH: Int = 1500
 val DEFAULT_HEIGHT: Int = 1125
 

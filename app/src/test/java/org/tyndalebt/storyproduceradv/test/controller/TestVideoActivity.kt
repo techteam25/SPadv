@@ -2,11 +2,7 @@ package org.tyndalebt.storyproduceradv.test.controller
 
 import android.net.Uri
 import android.os.Build
-import android.view.View
-import android.view.ViewGroup
-import android.widget.Button
 import android.widget.CheckBox
-import android.widget.ListView
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -16,11 +12,10 @@ import org.robolectric.annotation.Config
 import org.robolectric.shadows.ShadowLooper
 import org.tyndalebt.storyproduceradv.R
 import org.tyndalebt.storyproduceradv.controller.export.VideoActivity
-import org.tyndalebt.storyproduceradv.controller.export.VideoListHelper
-import org.tyndalebt.storyproduceradv.controller.export.ExportedVideosAdapter
 import org.tyndalebt.storyproduceradv.model.*
 import org.tyndalebt.storyproduceradv.model.Workspace.registration
 import org.tyndalebt.storyproduceradv.test.model.BaseActivityTest
+import org.tyndalebt.storyproduceradv.tools.file.UriUtils
 import java.io.File
 
 
@@ -78,16 +73,21 @@ class TestVideoActivity : BaseActivityTest() {
          Assert.assertTrue("Did not find existing file: " + checkbox.text, bExists)
 
          // Do some testing on getUIPathText
-         val copyDirPath = helper.getUIPathText(Workspace.videoCopyPath.uri)
+         val copyDirPath = UriUtils.getUIPathText(mVideoActivity, Workspace.videoCopyPath.uri)
          Assert.assertEquals("getUIPathText should return dir name.", copyDirPath, Workspace.videoCopyPath.uri.path)
 
          val bogusUri = Uri.parse(baseDocUri?.toString() + "/" + Uri.encode("videosxxx"))
-         val bogusDirPath = helper.getUIPathText(bogusUri)   // from sdcard
+         val bogusDirPath = UriUtils.getUIPathText(mVideoActivity, bogusUri)   // from sdcard
          Assert.assertNull("Bogus uri should return null UIPathTest: " + bogusUri.path, bogusDirPath)
 
-         val sdcardPath = helper.getUIPathTextInternal(Workspace.videoCopyPath.uri, "/storage/1234-5678" + Workspace.videoCopyPath.uri.path)
+         val testPath = "/storage/1234-5678" + Workspace.videoCopyPath.uri.path
+         val replaceStr = UriUtils.getStorageText(mVideoActivity, Workspace.videoCopyPath.uri, testPath)
+         val sdcardPath = mVideoActivity!!.getUIPathTextInternal(testPath, replaceStr)
          Assert.assertEquals("getUIPathText should return dir name.", sdcardPath, "[sdcard]" + Workspace.videoCopyPath.uri.path)
-         val usbPath = helper.getUIPathTextInternal(Workspace.videoCopyPath.uri, "/dev/bus/usb/123/456" + Workspace.videoCopyPath.uri.path)
+
+         val testPath2 = "/dev/bus/usb/123/456" + Workspace.videoCopyPath.uri.path
+         val replaceStr2 = UriUtils.getStorageText(mVideoActivity, Workspace.videoCopyPath.uri, testPath2)
+         val usbPath = mVideoActivity!!.getUIPathTextInternal(testPath2, replaceStr2)
          Assert.assertEquals("getUIPathText should return dir name.", usbPath, "[external]" + Workspace.videoCopyPath.uri.path)
       }
       catch (ex : Exception) {

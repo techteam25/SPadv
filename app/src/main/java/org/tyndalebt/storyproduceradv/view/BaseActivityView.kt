@@ -22,6 +22,6 @@ interface BaseActivityView {
     fun hideReadingTemplatesDialog()
     fun showCancellingReadingTemplatesDialog()
     fun showVideos()
-
+    fun showBackupRestore()
 
 }

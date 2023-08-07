@@ -2,10 +2,15 @@ package org.tyndalebt.storyproduceradv.controller.export
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
 import android.widget.LinearLayout
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import org.tyndalebt.storyproduceradv.R
 import org.tyndalebt.storyproduceradv.activities.MainBaseActivity
 import org.tyndalebt.storyproduceradv.controller.SelectTemplatesFolderController
@@ -28,7 +33,16 @@ class VideoActivity : MainBaseActivity()  {
         setContentView(R.layout.activity_videos_shell)
         doSetContentView(R.layout.activity_videos)
         setupDrawer()
-        supportActionBar?.setTitle(R.string.video_share)
+        initActionBar()
+        //supportActionBar?.setTitle(R.string.video_share)
+        //supportActionBar?.setBackgroundDrawable(ColorDrawable(ResourcesCompat.getColor(resources,
+        //        R.color.darkGray, null)))
+        //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        //    val hsv : FloatArray = floatArrayOf(0.0f,0.0f,0.0f)
+        //    Color.colorToHSV(ContextCompat.getColor(this, Workspace.activePhase.getColor()), hsv)
+        //    hsv[2] *= 0.8f
+        //    window.statusBarColor = Color.HSVToColor(hsv)
+        //}
         invalidateOptionsMenu()
         // findViewById<View>(R.id.lock_overlay).visibility = View.INVISIBLE  // turn off lock icon
          
@@ -48,6 +62,14 @@ class VideoActivity : MainBaseActivity()  {
     // since this is the currently selected page.
     override fun getMenuItemId() : Int {
       return R.id.video_share
+    }
+
+    override fun getTitleString() : String? {
+        return getString(R.string.video_share)
+    }
+
+    override fun getTitleColor2() : Int {
+        return R.color.darkGray
     }
 
     override fun openHelpFile() : InputStream {
