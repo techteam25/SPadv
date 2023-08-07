@@ -236,6 +236,30 @@
     <string name="internal">internal</string>
     <string name="external">external</string>
             
+    <!-- Backup/Restore -->
+    <string name="backup_menu_item">Backup</string>
+    <string name="restore_menu_item">Restore</string>    
+    <string name="delete_menu_item">Delete</string>  
+    
+    <string name="delete_stories_title">Delete Stories?</string>
+    <string name="delete_stories_message">Do you want to delete the selected stories?</string>
+    <string name="backup_warning">WARNING: One or more of the selected stories to delete are not backed up in the backup folder.</string>
+    <string name="use_backup_folder_message">Backup the selected stories to the folder:\n\n</string>
+    <string name="restore_story_message">Select the story you wish to restore</string>
+    <string name="change_backup_folder">Change folder</string>    
+    <string name="backup_folder_not_found_message">The backup folder was not found.  Would you like to find or create a new one?  Note: It is recommended to backup your files to an external drive if possible.\n\n</string>   
+    <string name="overwrite_backup_title">Overwrite Backup Files?</string>
+    <string name="overwrite_backup_message">One or more of the selected backup stories already exists in the copy folder.  Do you want to overwrite the story files?</string>
+    <string name="overwrite_backup_message_single_file">The selected backup story already exists in the copy folder.  Do you want to overwrite the story files?</string>
+    <string name="overwrite_story_title">Overwrite Story?</string>
+    <string name="overwrite_story_message">The selected story to restore already exists in the workspace folder.  Do you want to overwrite the story files?</string>
+    <string name="original_story_time_label">Original file: </string>
+    <string name="replace_story_time_label">Replace with: </string>
+    <string name="invalid_story_title">Invalid Story</string>
+    <string name="invalid_story_message">The selected story is not a valid story.  Please select another one.</string>
+
+
+                
     <!-- Whole Story Back Translation phase -->
     <string name="wsbt_alert_title">Finish Draft Phase</string>
     <string name="wsbt_alert_text">Please record a translation for each slide.</string>
@@ -329,7 +353,8 @@ video_share
     <string name="change_language">Change Language</string>
     <string name="spadv_website">SPadv - website</string>
     <string name="video_share">Copy/Share Video Files</string>
-        
+    <string name="backup_restore">Translation Data Backup</string>
+            
     <!-- Main Story Page -->
     <string name="all_stories_tab">All Stories</string>
     <string name="in_progress_tab">In Progress</string>

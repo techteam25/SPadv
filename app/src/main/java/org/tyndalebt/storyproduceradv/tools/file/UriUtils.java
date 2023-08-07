@@ -22,9 +22,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import kotlin.text.Regex;
 
 import android.provider.MediaStore;
 import android.util.Log;
+
+import org.tyndalebt.storyproduceradv.R;
+import org.tyndalebt.storyproduceradv.activities.MainBaseActivity;
 
 public class UriUtils {
     private static Uri contentUri = null;
@@ -389,6 +393,67 @@ public class UriUtils {
 
     private static boolean isGoogleDriveUri(Uri uri) {
         return "com.google.android.apps.docs.storage".equals(uri.getAuthority()) || "com.google.android.apps.docs.storage.legacy".equals(uri.getAuthority());
+    }
+
+    public static String getUIPathText(MainBaseActivity activity, Uri uri) {
+        // translates the uri path to a ui string to display for the copy folder
+        if (!FileIO.fileExists(activity, uri)) {
+            return null;  // file does not exist
+        }
+        return getUIPathTextAlways(activity, uri);
+    }
+
+    public static String getUIPathTextAlways(MainBaseActivity activity, Uri uri) {
+
+        String uriStr = UriUtils.getPathFromUri(activity, uri);
+        if (uriStr != null) {
+            String replaceStr = getStorageText(activity, uri, uriStr);
+            uriStr = activity.getUIPathTextInternal(uriStr, replaceStr);
+            Uri uiUri = Uri.parse(uriStr);
+            return uiUri.getPath();
+        }
+        return null;
+    }
+
+    private static String getUIPathTextInternal(Context context, Uri uri, String uriStr) {
+
+        // At this point the videoFileUriStr will look something like this: /storage/emulated/0/
+        // This is the actual path. However, it needs be changed to the SD Card (/sdcard/)
+        // which is a symbolic link to the emulated storage path.
+        // sdcard/: Is a symlink to...
+        //      /storage/sdcard0 (Android 4.0+)
+        // In Story Publisher Adv, the version will never be less than Android 4.0
+        // We will instead show it as an optional [sdcard]
+        // The below code will change: /storage/emulated/0/ to /storage/[sdcard]/
+        String replaceStr = getStorageText(context, uri, uriStr);
+        Regex regex = new Regex("(/storage\\/emulated\\/)\\d+");
+        String retVal = uriStr.replace(regex.toString(), replaceStr);
+
+        // Also, the SD-Card could show up as /storage/####-####/ where # is a hexidecimal value
+        Regex regex2 = new Regex("(/storage)\\/[0-9a-fA-F]{4}-[0-9a-fA-F]{4}");
+        retVal = retVal.replace(regex2.toString(), replaceStr);
+
+        // Also, the SD-Card could show up as /mnt/media_rw/####-####/ where # is a hexidecimal value for earlier android releases
+        Regex regex3 = new Regex("(/mnt/media_rw)\\/[0-9a-fA-F]{4}-[0-9a-fA-F]{4}");
+        retVal = retVal.replace(regex3.toString(), replaceStr);
+
+        // Also, this is for a usb memory stick
+        Regex regex4 =  new Regex("(/dev/bus/usb)\\/[0-9]{3}\\/[0-9]{3}");
+        retVal = retVal.replace(regex4.toString(), replaceStr);
+        return retVal;
+    }
+
+    public static String getStorageText(Context context, Uri uri, String uriStr) {
+        String segment = uri.getLastPathSegment();
+        boolean isPrimary = (segment.indexOf("primary") == 0) ||
+                (segment.indexOf("raw") == 0);
+        if (isPrimary) {
+            return "[" + context.getString(R.string.internal) + "]";
+        }
+        else if (uriStr.indexOf("usb") >= 0) {
+            return "[" + context.getString(R.string.external) + "]";
+        }
+        return "[" + context.getString(R.string.sdcard) + "]";
     }
 
 }

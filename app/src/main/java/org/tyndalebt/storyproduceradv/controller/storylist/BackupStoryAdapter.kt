@@ -5,14 +5,10 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import org.tyndalebt.storyproduceradv.R
 import org.tyndalebt.storyproduceradv.activities.AppCompatActivityMTT
 
-public open class StoryPageAdapter(activity: AppCompatActivityMTT, private val itemsCount: Int) :
-        FragmentStateAdapter(activity) {
-
-    override fun getItemCount(): Int {
-        return itemsCount
-    }
+class BackupStoryAdapter(activity: AppCompatActivityMTT, private val itemsCount: Int) :
+        StoryPageAdapter(activity, itemsCount) {
 
     override fun createFragment(position: Int): Fragment {
-        return StoryPageFragment.getInstance(position)
+        return BackupStoryPageFragment.getInstance(position)
     }
 }

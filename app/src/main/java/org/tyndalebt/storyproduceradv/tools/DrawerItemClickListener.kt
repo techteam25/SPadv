@@ -63,15 +63,16 @@ class DrawerItemClickListener(private val activity: BaseActivity) : AdapterView.
                 activity.showVideos()
             }
             7 -> {
-                goToURL(activity, Workspace.URL_FOR_WEBSITE)
                 //activity.showBackup()
+                activity.showBackupRestore()
             }
             8 -> {
+                goToURL(activity, Workspace.URL_FOR_WEBSITE)
                 //Workspace.addDemoToWorkspace(activity)
-                activity.showAboutDialog()
+                //activity.showAboutDialog()
             }
             9 -> {
-                //activity.showAboutDialog()
+                activity.showAboutDialog()
             }
         }
     }

@@ -96,6 +96,15 @@ object Workspace {
             prefs?.edit()?.putString("videoCopyPath", field.uri.toString())?.apply()
         }
 
+    var storyBackupPath = DocumentFile.fromFile(File(""))
+        set(value) {
+            field = value
+
+            // persists the copy path for usage in the next session
+            prefs?.edit()?.putString("storyBackupPath", field.uri.toString())?.apply()
+        }
+
+
     val Stories: MutableList<Story> = mutableListOf()
     var registration: Registration = Registration()
     var phases: List<Phase> = ArrayList()
@@ -233,6 +242,7 @@ object Workspace {
 
         // load the previously persisted copy path, if it exists
         setupVideoCopyPath(context, Uri.parse(prefs!!.getString("videoCopyPath", "")))
+        setupStoryBackupPath(context, Uri.parse(prefs!!.getString("storyBackupPath", "")))
 
         isInitialized = true
         parseLanguage = ""
@@ -350,10 +360,21 @@ object Workspace {
             videoCopyPath = DocumentFile.fromTreeUri(context, uri)!!
 
         } catch (e: Exception) {
-            Log.e("setupWorkspacePath", "Error setting up new workspace path!", e)
-//  >>>>>>> 058db41 (language and remote/local related changes)
+            Log.e("setupVideoCopyPath", "Error setting up new video copy path!", e)
         }
     }
+
+    fun setupStoryBackupPath(context: Context, uri: Uri) {
+        try {
+
+            // Initiate new workspace path
+            storyBackupPath = DocumentFile.fromTreeUri(context, uri)!!
+
+        } catch (e: Exception) {
+            Log.e("setupStoryBackupPath", "Error setting up new story backup path!", e)
+        }
+    }
+
     // DKH - 01/26/2022 Issue #571: Add a menu item for accessing templates from Google Drive
     // A new menu item was added that opens a URL for the user to download templates.
     // This is used in both the MainActivity menu (Story Templates display) and the Phase menus

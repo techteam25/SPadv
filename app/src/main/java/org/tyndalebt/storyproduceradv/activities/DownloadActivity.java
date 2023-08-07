@@ -184,7 +184,7 @@ public class DownloadActivity extends BaseActivity {
             is.close();
             json = new String(buffer, "UTF-8");
         } catch (IOException ex) {
-            ex.printStackTrace();
+            // ex.printStackTrace();
             return null;
         }
         return json;
@@ -250,7 +250,7 @@ public class DownloadActivity extends BaseActivity {
                 formList.add(m_li);
             }
         } catch (JSONException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
         }
     }
 
@@ -544,7 +544,7 @@ public class DownloadActivity extends BaseActivity {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                // e.printStackTrace();
             }
             // Build list of (downloaded) bloom files on internal folder
             ArrayList<DocumentFile> storyFiles=new ArrayList<>();

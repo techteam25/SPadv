@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import android.text.Html
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
@@ -13,10 +14,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import org.tyndalebt.storyproduceradv.R
 import org.tyndalebt.storyproduceradv.activities.BaseActivity
+import org.tyndalebt.storyproduceradv.activities.MainBaseActivity
 import org.tyndalebt.storyproduceradv.controller.MainActivity
 import org.tyndalebt.storyproduceradv.model.Story
 import org.tyndalebt.storyproduceradv.model.Workspace
 import org.tyndalebt.storyproduceradv.service.SlideService
+
 
 /**
  * StoryPageFragment is a flexible fragment in that it displays different things based on the
@@ -29,12 +32,15 @@ import org.tyndalebt.storyproduceradv.service.SlideService
  * StoryPageFragment is an Android:Fragment, it will follow the typical activity lifecycle, which
  * means that it gets created and destroyed when it is not being used.
  */
-class StoryPageFragment : Fragment() {
+open class StoryPageFragment : Fragment() {
 
-    private lateinit var storyPageTab : StoryPageTab
-    private lateinit var listView: ListView
-    private lateinit var demoOnlyMsg: TextView
-    private lateinit var adapter: ListAdapter
+    lateinit var storyPageTab: StoryPageTab
+    lateinit var listView: ListView
+    lateinit var lfView: View
+    lateinit var demoOnlyMsg: TextView
+    lateinit var adapter: ListAdapter
+    //lateinit var mHelper: BackupRestoreHelper
+
     // DKH - 07/10/2021 - Issue 407: Add filtering to SP's 'Story Templates' List
     // Updated while integrating pull request #561 into current sillsdev baseline
     // Integration testing identified the wrong index was being used for the selected story
@@ -43,7 +49,7 @@ class StoryPageFragment : Fragment() {
     // via updateStoryList.  So, we stash a copy of the story list in CurrentStoryList so that
     // when a click is performed on a story, we know which story was actually clicked on.
     // CurrentStoryList is used below to start a new activity on a selected story
-    private var CurrentStoryList: List<Story> = emptyList()
+    var CurrentStoryList: List<Story> = emptyList()
 
     companion object {
         const val ARG_POSITION = "position"
@@ -64,6 +70,9 @@ class StoryPageFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreate(savedInstanceState)
 
+        //mHelper = BackupRestoreHelper()
+        //mHelper.init(this)
+
         val position = requireArguments().getInt(ARG_POSITION)
         storyPageTab = StoryPageTab.values()[position]
 
@@ -73,19 +82,48 @@ class StoryPageFragment : Fragment() {
         // save the stories associated with this storyPageFragment
         // (eg, ALL STORIES, IN PROGRESS, COMPLETED)
         CurrentStoryList = storyPageTab.getStoryList()  // grab the stories
+        val view = emptyStoryCheck(inflater, container)
+        if (view != null) {
+            return view
+        }
+
+        lfView = inflater.inflate(getStoryListLayout(), container, false)
+
+        // Apply the Stories to the Story List View
+        adapter = ListAdapter(context!!, getAdapterRowLayout(), storyPageTab.getStoryList(), this)
+
+        listView = lfView.findViewById(R.id.story_list_view)
+        if (Workspace.Stories.size <= 1) {
+            demoOnlyMsg = lfView.findViewById(R.id.demo_only_msg)
+            demoOnlyMsg.text = getString(R.string.only_demo_present)
+        }
+
+        initItemClickListener()
+
+        // Assign adapter to ListView
+        listView.adapter = adapter
+
+        return lfView
+    }
+
+    open fun emptyStoryCheck(inflater: LayoutInflater, container: ViewGroup?) : View? {
+
         if (CurrentStoryList.isEmpty()) {  // If empty, set up for displaying "No Story" message
             val view = inflater.inflate(R.layout.fragment_no_stories, container, false)
 
             view!!.findViewById<TextView>(R.id.stories_not_found_text).text =
-                    if (Build.VERSION.SDK_INT >= 24){
-                        Html.fromHtml(getString(storyPageTab.emptyStoryStringId), 0)}
-                    else{
-                        Html.fromHtml(getString(storyPageTab.emptyStoryStringId))}
+                    if (Build.VERSION.SDK_INT >= 24) {
+                        Html.fromHtml(getString(storyPageTab.emptyStoryStringId), 0)
+                    }
+                    else {
+                        Html.fromHtml(getString(storyPageTab.emptyStoryStringId))
+                    }
 
-            val button : Button = view.findViewById(R.id.update_workspace_button)
-            if(storyPageTab != StoryPageTab.ALL_STORIES) {
+            val button: Button = view.findViewById(R.id.update_workspace_button)
+            if (storyPageTab != StoryPageTab.ALL_STORIES) {
                 button.visibility = View.INVISIBLE
-            } else {
+            }
+            else {
                 button.setOnClickListener {
                     (activity as? BaseActivity)?.showSelectTemplatesFolderDialog()
                 }
@@ -93,17 +131,18 @@ class StoryPageFragment : Fragment() {
 
             return view
         }
-        val lfView = inflater.inflate(R.layout.story_list_container, container, false)
+        return null
+    }
 
-        // Apply the Stories to the Story List View
-        adapter = ListAdapter(context!!, R.layout.story_list_item, storyPageTab.getStoryList(), storyPageTab)
+    open fun getStoryListLayout(): Int {
+        return R.layout.story_list_container
+    }
 
-        listView = lfView.findViewById(R.id.story_list_view)
-        if (Workspace.Stories.size == 1) {
-            demoOnlyMsg = lfView.findViewById(R.id.demo_only_msg)
-            demoOnlyMsg.text =  getString(R.string.only_demo_present)
-        }
+    open fun getAdapterRowLayout(): Int {
+        return R.layout.story_list_item
+    }
 
+    open fun initItemClickListener() {
         // DKH - 07/10/2021 - Issue 407: Add filtering to SP's 'Story Templates' List
         // Updated while integrating pull request #561 into current sillsdev baseline
         //
@@ -113,12 +152,23 @@ class StoryPageFragment : Fragment() {
         // activity is started using the selected story.  Use CurrentStoryList to
         // determine which story
         listView.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
-                (activity as MainActivity).switchToStory(CurrentStoryList[position]) }
+            (activity as MainActivity).switchToStory(CurrentStoryList[position]) }
 
-        // Assign adapter to ListView
+    }
+
+
+    fun updateStoryListDisplay() {
+        // now update the display -- see onCreateView() ??  TODO
+        val position = requireArguments().getInt(ARG_POSITION)
+        storyPageTab = StoryPageTab.values()[position]
+        CurrentStoryList = storyPageTab.getStoryList()  // grab the stories
+        // note that onCreateView does special stuff if all stories are deleted
+        adapter = ListAdapter(context!!, getAdapterRowLayout(), storyPageTab.getStoryList(), this)
+
+        //val lfView = view  // container.findViewById(R.layout.story_list_container)
+        listView = lfView!!.findViewById(R.id.story_list_view)
+        listView = lfView!!.findViewById(R.id.story_list_view)
         listView.adapter = adapter
-
-        return lfView
     }
 
     /**
@@ -133,42 +183,72 @@ class StoryPageFragment : Fragment() {
         // Update CurrentStoryList so that when a click is made on a story, we know which
         // story is selected
         CurrentStoryList = storyList
-        adapter = ListAdapter(context!!, R.layout.story_list_item, storyList, storyPageTab)
+        adapter = ListAdapter(context!!, getAdapterRowLayout(), storyList, this)
+
         listView.adapter = adapter
         adapter.notifyDataSetChanged()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        if(storyPageTab.hasFilterToolbar && storyPageTab.getStoryList().isNotEmpty()) {
+        if (storyPageTab.hasFilterToolbar && storyPageTab.getStoryList().isNotEmpty()) {
             val childFragment: Fragment = FilterToolbarFrag(this)
             val transaction: FragmentTransaction = childFragmentManager.beginTransaction()
             transaction.replace(R.id.filter_container, childFragment).commit()
         }
-    }
+     }
 
+    open fun initAdapterFileView(story : Story, holder : ListAdapter.FileHolder) {
+
+        //TODO put th number 25 in some configuration.  What if the images are different sizes?
+        //Use the "second" image, because the first is just for the title screen.
+        holder.imgIcon!!.setImageBitmap(SlideService(activity!!).getImage(1, 25, story))
+    }
 }
 
 class ListAdapter(context: Context,
                   private val resourceId: Int,
-                  private val stories: List<Story>,
-                  private val storyPageTab: StoryPageTab) : ArrayAdapter<Story>(context, resourceId, stories) {
+                  val stories: List<Story>,
+                  private val fragment : StoryPageFragment) : ArrayAdapter<Story>(context, resourceId, stories) {
+
+    var mListFiles: ArrayList<View?>? = null
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        var row = convertView
-        val holder: FileHolder
 
-        if (row == null) {
-            val inflater = (context as Activity).layoutInflater
-            row = inflater.inflate(resourceId, parent, false)
-
-            holder = FileHolder(row!!)
-            row.tag = holder
-        } else {
-            holder = row.tag as FileHolder
+        // set up the view cache if it is not initialized
+        if (mListFiles == null) {
+            // create the cache and initially null it out
+            mListFiles = ArrayList<View?>(stories.size)
+            for (i in 0 until stories.size){
+                mListFiles!!.add(null)
+            }
         }
 
-        if(position <= stories.size){
+        var row = mListFiles!!.get(position)
+        if (row != null) {
+            return row  // use the existing row
+        }
+
+        val inflater = (context as Activity).layoutInflater
+        row = inflater.inflate(resourceId, parent, false)
+
+        val holder = FileHolder(row!!)
+        row.tag = holder
+
+        try {
+            holder.imgIcon = row!!.findViewById(R.id.story_list_image)
+        }
+        catch (ex : Throwable) { }
+        try {
+            holder.checkBox = row!!.findViewById(R.id.story_cb)
+        }
+        catch (ex : Throwable) { }
+
+        mListFiles!!.set(position, row)  // cache the view for use
+
+        if (position <= stories.size){
             val story = stories[position]
+
+            fragment.initAdapterFileView(story, holder)
 
             // 09/11/2021 - DKH: Update for Testing Abstraction #566
             // ALL_STORIES, IN_PROGRESS, COMPLETED are the tabs in the "Story Templates" view.
@@ -186,30 +266,27 @@ class ListAdapter(context: Context,
             //     able to pick the appropriate story/tab combo.
             // Espresso test will have to reflect this new naming convention for stories in
             //     each tab.
-            when (storyPageTab){
+            when (fragment.storyPageTab){
                 StoryPageTab.ALL_STORIES-> holder.txtTitle.text = story.title + " (" + (story.slides.size - 1) + "s)" // leave unchanged
                 StoryPageTab.IN_PROGRESS-> holder.txtTitle.text = story.title + " " // add 1 space for uniqueness
                 StoryPageTab.COMPLETED-> holder.txtTitle.text = story.title + "  " // add 2 spaces for uniqueness
                 else -> holder.txtTitle.text = story.title + "   "  // add 3 spaces for uniqueness
             }
 
-            //TODO put th number 25 in some configuration.  What if the images are different sizes?
-            //Use the "second" image, because the first is just for the title screen.
-            holder.imgIcon.setImageBitmap(SlideService(context).getImage(1, 25, story))
-            holder.txtSubTitle.text = story.slides[0].subtitle
-
             // Handle graying out text when story is completed
-            if(storyPageTab == StoryPageTab.ALL_STORIES && story.isComplete) {
+            if(fragment.storyPageTab == StoryPageTab.ALL_STORIES && story.isComplete) {
                 holder.txtTitle.alpha = 0.5f
                 holder.txtSubTitle.alpha = 0.5f
             } else {
                 holder.txtTitle.alpha = 1f
                 holder.txtSubTitle.alpha = 1f
             }
+            holder.txtSubTitle.text = story.slides[0].subtitle
+
 
             // Handle the image icon to the side of the story
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-                    && storyPageTab == StoryPageTab.ALL_STORIES) { // Only show icon on ALL Stories
+                    && fragment.storyPageTab == StoryPageTab.ALL_STORIES) { // Only show icon on ALL Stories
 
                 val color = if(story.isComplete) {
                     R.color.story_list_completed
@@ -233,10 +310,25 @@ class ListAdapter(context: Context,
         return row
     }
 
-    internal class FileHolder(view: View){
-        var imgIcon: ImageView = view.findViewById(R.id.story_list_image)
-        var txtTitle: TextView = view.findViewById(R.id.story_list_title)
-        var txtSubTitle: TextView = view.findViewById(R.id.story_list_subtitle)
+    fun getFileHolderAt(position : Int) : FileHolder? {
+        if (mListFiles != null) {
+            var view = mListFiles!!.get(position)
+            if (view != null) {
+                return view!!.tag as FileHolder
+            }
+        }
+        return null
     }
+
+    class FileHolder(view: View){
+
+         var imgIcon: ImageView? = null   // view.findViewById(R.id.story_list_image)
+         var checkBox : CheckBox? = null
+         var txtTitle: TextView = view.findViewById(R.id.story_list_title)
+         var txtSubTitle: TextView = view.findViewById(R.id.story_list_subtitle)
+         var titleLayout: LinearLayout = view.findViewById(R.id.story_list_title_layout)
+         var selected = false
+
+     }
 
 }
