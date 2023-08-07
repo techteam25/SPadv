@@ -1,13 +1,15 @@
 package org.tyndalebt.storyproduceradv.activities
 
 import android.app.AlertDialog
-import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.webkit.WebView
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
@@ -17,10 +19,37 @@ import org.tyndalebt.storyproduceradv.model.PhaseType
 import org.tyndalebt.storyproduceradv.model.Workspace
 import org.tyndalebt.storyproduceradv.tools.file.goToURL
 import java.io.InputStream
+import android.graphics.drawable.ColorDrawable
+import android.os.Build
+import androidx.core.content.res.ResourcesCompat
 
 open class MainBaseActivity : BaseActivity() {
 
     protected var mDrawerLayout: DrawerLayout? = null
+
+    //override fun onCreate(savedInstanceState: Bundle?) {
+    //    super.onCreate(savedInstanceState)
+    //    initActionBar()
+    //}
+
+    fun initActionBar() {
+        var title = this.getTitleString()
+        if (title != null) {
+            supportActionBar?.setTitle(title)
+        }
+        var titleColor = getTitleColor2()
+        if (titleColor != R.color.transparent) {
+
+            supportActionBar?.setBackgroundDrawable(ColorDrawable(ResourcesCompat.getColor(resources,
+                    titleColor, null)))
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                val hsv: FloatArray = floatArrayOf(0.0f, 0.0f, 0.0f)
+                Color.colorToHSV(ContextCompat.getColor(this, titleColor), hsv)
+                hsv[2] *= 0.8f
+                window.statusBarColor = Color.HSVToColor(hsv)
+            }
+        }
+    }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_with_help, menu)
@@ -87,7 +116,15 @@ open class MainBaseActivity : BaseActivity() {
     open fun getMenuItemId() : Int {
       return -1
     }
-    
+
+    open fun getTitleString() : String? {
+        return null
+    }
+
+    open fun getTitleColor2() : Int {
+        return R.color.transparent
+    }
+
     private fun onNavigationItemSelected(menuItem: MenuItem): Boolean {
         mDrawerLayout?.closeDrawers()
    
@@ -155,6 +192,11 @@ open class MainBaseActivity : BaseActivity() {
             R.id.video_share -> {
                 showVideos()
             }
+
+            R.id.backup_restore -> {
+                showBackupRestore()
+            }
+
             R.id.nav_spadv_website -> {
                 goToURL(this, Workspace.URL_FOR_WEBSITE)
             }
@@ -179,5 +221,31 @@ open class MainBaseActivity : BaseActivity() {
                 }.create()
         dialog.show()
     }
+
+    // This method would probably be better served moving it to UriUtils (see UriUtils.getUIPathText)
+    // but Regex code seems to be happier in kotlin than in java.
+    fun getUIPathTextInternal(uriStr: String, replaceStr : String): String {
+
+        // At this point the videoFileUriStr will look something like this: /storage/emulated/0/
+        // This is the actual path. However, it needs be changed to the SD Card (/sdcard/)
+        // which is a symbolic link to the emulated storage path.
+        // sdcard/: Is a symlink to...
+        //      /storage/sdcard0 (Android 4.0+)
+        // In Story Publisher Adv, the version will never be less than Android 4.0
+        // We will instead show it as an optional [sdcard]
+        // The below code will change: /storage/emulated/0/ to /storage/[sdcard]/
+        var retVal = uriStr.replace(Regex("(/storage\\/emulated\\/)\\d+"), replaceStr)
+
+        // Also, the SD-Card could show up as /storage/####-####/ where # is a hexidecimal value
+        retVal = retVal.replace(Regex("(/storage)\\/[0-9a-fA-F]{4}-[0-9a-fA-F]{4}"), replaceStr)
+
+        // Also, the SD-Card could show up as /mnt/media_rw/####-####/ where # is a hexidecimal value for earlier android releases
+        retVal = retVal.replace(Regex("(/mnt/media_rw)\\/[0-9a-fA-F]{4}-[0-9a-fA-F]{4}"), replaceStr)
+
+        // Also, this is for a usb memory stick
+        retVal = retVal.replace(Regex("(/dev/bus/usb)\\/[0-9]{3}\\/[0-9]{3}"), replaceStr)
+        return retVal
+    }
+
 }
 

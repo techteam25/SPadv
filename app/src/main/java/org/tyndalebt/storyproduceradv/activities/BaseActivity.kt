@@ -18,6 +18,7 @@ import com.android.volley.toolbox.StringRequest
 import io.reactivex.disposables.CompositeDisposable
 import org.tyndalebt.storyproduceradv.R
 import org.tyndalebt.storyproduceradv.controller.export.VideoActivity
+import org.tyndalebt.storyproduceradv.controller.storylist.BackupRestoreActivity
 import org.tyndalebt.storyproduceradv.controller.BaseController
 import org.tyndalebt.storyproduceradv.controller.MainActivity
 import org.tyndalebt.storyproduceradv.controller.RegistrationActivity
@@ -81,7 +82,11 @@ open class BaseActivity : AppCompatActivityMTT(), BaseActivityView {
     }
 
     fun updateTemplatesFolder() {
-        controller.openDocumentTree(UPDATE_TEMPLATES_FOLDER)
+        var initUri = null as Uri?
+        if (Workspace.workdocfile != null) {
+            initUri = Workspace.workdocfile.uri
+        }
+        controller.openDocumentTree(UPDATE_TEMPLATES_FOLDER, initUri)
     }
 
     override fun takePersistableUriPermission(uri: Uri) {
@@ -101,12 +106,18 @@ open class BaseActivity : AppCompatActivityMTT(), BaseActivityView {
     override fun showVideos() {
         try {
             startActivity(Intent(this, VideoActivity::class.java))
-            //Workspace.startedMain = true
-            //Workspace.processReceivedApprovals()
-            //finish()
         }
         catch (ex : Throwable) {
-            ex.printStackTrace()
+            //ex.printStackTrace()
+        }
+    }
+    
+    override fun showBackupRestore() {
+        try {
+            startActivity(Intent(this, BackupRestoreActivity::class.java))  // TODO - fixme!
+        }
+        catch (ex : Throwable) {
+            //ex.printStackTrace()
         }
     }
     

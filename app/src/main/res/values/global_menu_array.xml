@@ -8,6 +8,7 @@
         <item>@string/update_workspace</item>
         <item>@string/change_language</item>
         <item>@string/video_share</item>
+        <item>@string/backup_restore</item>
         <item>@string/spadv_website</item>
         <item>@string/about</item>
     </string-array>

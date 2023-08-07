@@ -5,22 +5,10 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.ParcelFileDescriptor
 import android.provider.DocumentsContract
-import android.util.Log
-import android.widget.CheckBox
-import androidx.documentfile.provider.DocumentFile
-import com.google.firebase.crashlytics.FirebaseCrashlytics
-import org.tyndalebt.storyproduceradv.R
 import org.tyndalebt.storyproduceradv.model.Workspace
 import org.tyndalebt.storyproduceradv.view.BaseActivityView
 import org.tyndalebt.storyproduceradv.controller.BaseController
-import org.tyndalebt.storyproduceradv.model.Story
-import org.tyndalebt.storyproduceradv.model.VIDEO_DIR
-import org.tyndalebt.storyproduceradv.tools.file.copyToFilesDir
-import org.tyndalebt.storyproduceradv.tools.file.getFileType
-import java.io.File
-import java.io.OutputStream
 
 
 class SelectCopyFolderController(
@@ -31,12 +19,15 @@ class SelectCopyFolderController(
 
     var mHelper : VideoListHelper? = null
 
-    fun openDocumentTree(request: Int, helper : VideoListHelper) {
+    fun openDocumentTree(request: Int, helper : VideoListHelper, initUri : Uri?) {
         mHelper = helper
         val selectedVideos = mHelper!!.getSelectedVideos()
         if (selectedVideos!!.size > 0) {
-            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).addFlags(URI_PERMISSION_FLAGS)
-            view.startActivityForResult(intent, request)
+              val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).addFlags(URI_PERMISSION_FLAGS)
+              if (initUri != null) {
+                 intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, initUri)
+              }
+              view.startActivityForResult(intent, request)
         }
     }
 

@@ -92,7 +92,10 @@
         <activity
             android:name="org.tyndalebt.storyproduceradv.controller.export.VideoActivity"
             android:screenOrientation="portrait" /> <!-- Videos -->
-
+        <activity
+            android:name="org.tyndalebt.storyproduceradv.controller.storylist.BackupRestoreActivity"
+            android:screenOrientation="portrait" /> <!-- Backup/Restore/Delete -->
+            
         <activity
             android:name="org.tyndalebt.storyproduceradv.controller.learn.LearnActivity"
             android:screenOrientation="portrait" /> <!-- Create -->
