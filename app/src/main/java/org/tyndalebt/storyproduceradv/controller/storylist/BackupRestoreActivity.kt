@@ -36,7 +36,7 @@ class BackupRestoreActivity : MainBaseActivity()  {
             invalidateOptionsMenu()
         }
         catch (ex : Throwable) {
-            ex.printStackTrace()
+            // ex.printStackTrace()
         }
     }
 
@@ -80,7 +80,7 @@ class BackupRestoreActivity : MainBaseActivity()  {
 
     override fun openHelpFile() : InputStream {
         // TODO - replace help file
-        return  Phase.openHelpDocFile(PhaseType.COPY_VIDEOS, Workspace.activeStory.language,this)
+        return  Phase.openHelpDocFile(PhaseType.BACKUP_RESTORE, Workspace.activeStory.language,this)
     }
 
     override fun onActivityResult(request: Int, result: Int, data: Intent?) {

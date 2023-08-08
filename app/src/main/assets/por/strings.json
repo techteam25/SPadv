@@ -190,6 +190,27 @@
   "sdcard": "cartão SD",
   "internal": "interna",
   "external": "externa",    
+
+   "backup_menu_item": "Cópia de segurança",
+   "restore_menu_item": "Restaurar",    
+   "delete_menu_item": "Excluir",  
+
+   "delete_stories_title": "Excluir histórias?",
+   "delete_stories_message": "Deseja excluir as histórias selecionadas?",
+   "backup_warning": "AVISO: Uma ou mais das histórias selecionadas para exclusão não são copiadas na pasta de backup.",
+   "use_backup_folder_message": "Faça backup das histórias selecionadas para a pasta:\n\n",
+   "restore_story_message": "Selecione a história que deseja restaurar",
+   "change_backup_folder": "Mudar pasta",    
+   "backup_folder_not_found_message": "A pasta de backup não foi encontrada. Gostaria de encontrar ou criar um novo? Observação: é recomendável fazer backup de seus arquivos em uma unidade externa, se possível.\n\n",   
+   "overwrite_backup_title": "Substituir arquivos de backup?",
+   "overwrite_backup_message": "Uma ou mais histórias de backup selecionadas já existem na pasta de cópia. Deseja substituir os arquivos da história?",
+   "overwrite_backup_message_single_file": "A história de backup selecionada já existe na pasta de cópia. Deseja sobrescrever os arquivos da história?",
+   "overwrite_story_title": "Sobrescrever história?",
+   "overwrite_story_message": "A história selecionada para restaurar já existe na pasta da área de trabalho. Deseja sobrescrever os arquivos da história?",
+   "original_story_time_label": "Arquivo original: ",
+   "replace_story_time_label": "Substituir com: ",
+   "invalid_story_title": "História inválida",
+   "invalid_story_message": "A história selecionada não é uma história válida. Selecione outro.",
   
   "wsbt_alert_title": "Finalizar Fase de Rascunho",
   "wsbt_alert_text": "Por favor grave a tradução para cada slide.",
@@ -274,7 +295,8 @@
   "change_language": "Mudar idioma",
   "spadv_website": "SPadv - website",
   "video_share": "Copiar/compartilhar arquivos de vídeo",
-
+  "backup_restore": "Backup de dados de tradução",
+  
   "all_stories_tab": "Tudo",
   "in_progress_tab": "Em Progresso",
   "completed_tab": "Finalizado",
