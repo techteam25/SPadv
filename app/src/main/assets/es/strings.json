@@ -190,7 +190,28 @@
   
   "sdcard": "tarjeta SD",
   "internal": "interna",
-  "external": "externa",  
+  "external": "externa",
+
+  "backup_menu_item": "Respaldo",
+  "restore_menu_item": "Restaurar",
+  "delete_menu_item": "Borrar",
+
+  "delete_stories_title": "¿Eliminar historias?",
+  "delete_stories_message": "¿Quieres eliminar las historias seleccionadas?",
+  "backup_warning": "ADVERTENCIA: Una o más de las historias seleccionadas para eliminar no se respaldan en la carpeta de respaldo.",
+  "use_backup_folder_message": "Haga una copia de seguridad de las historias seleccionadas en la carpeta::\n\n",
+  "restore_story_message": "Seleccione la historia que desea restaurar",
+  "change_backup_folder": "Cambiar carpeta",
+  "backup_folder_not_found_message": "No se encontró la carpeta de respaldo. ¿Te gustaría encontrar o crear uno nuevo? Nota: Se recomienda hacer una copia de seguridad de sus archivos en una unidad externa si es posible.\n\n",
+  "overwrite_backup_title": "¿Sobrescribir archivos de copia de seguridad?",
+  "overwrite_backup_message": "Una o más de las historias de copia de seguridad seleccionadas ya existen en la carpeta de copia. ¿Quieres sobrescribir los archivos de la historia?",
+  "overwrite_backup_message_single_file": "La historia de copia de seguridad seleccionada ya existe en la carpeta de copia. ¿Quieres sobrescribir los archivos de la historia?",
+  "overwrite_story_title": "¿Sobrescribir historia?",
+  "overwrite_story_message": "La historia seleccionada para restaurar ya existe en la carpeta del espacio de trabajo. ¿Quieres sobrescribir los archivos de la historia?",
+  "original_story_time_label": "Archivo original: ",
+  "replace_story_time_label": "Reemplazar con: ",
+  "invalid_story_title": "Historia inválida",
+  "invalid_story_message": "La historia seleccionada no es una historia válida. Seleccione otro.",
 
   "wsbt_alert_title": "Finalizar Etapa de Redacción",
   "wsbt_alert_text": "Registre una traducción para cada diapositiva.",
@@ -275,6 +296,7 @@
   "change_language": "Cambiar idioma",
   "spadv_website": "PHadv - sitio web",
   "video_share": "Copiar/Compartir Archivos de Video",
+  "backup_restore": "Copia de seguridad de datos de traducción",
 
   "all_stories_tab": "Todas las historias",
   "in_progress_tab": "En Curso",

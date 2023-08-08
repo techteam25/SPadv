@@ -191,6 +191,27 @@
   "internal": "intern",
   "external": "luar",  
 
+   "backup_menu_item": "Cadangan",
+   "restore_menu_item": "Memulihkan",    
+   "delete_menu_item": "Menghapus",  
+
+   "delete_stories_title": "Hapus Cerita?",
+   "delete_stories_message": "Apakah Anda ingin menghapus cerita yang dipilih?",
+   "backup_warning": "PERINGATAN: Satu atau lebih cerita yang dipilih untuk dihapus tidak dicadangkan di folder cadangan.",
+   "use_backup_folder_message": "Cadangkan cerita yang dipilih ke folder:\n\n",
+   "restore_story_message": "Pilih cerita yang ingin Anda pulihkan",
+   "change_backup_folder": "Ubah map",    
+   "backup_folder_not_found_message": "Folder cadangan tidak ditemukan. Apakah Anda ingin mencari atau membuat yang baru? Catatan: Disarankan untuk mencadangkan file Anda ke drive eksternal jika memungkinkan.\n\n",   
+   "overwrite_backup_title": "Timpa File Cadangan?",
+   "overwrite_backup_message": "Satu atau lebih cerita cadangan yang dipilih sudah ada di folder salin. Apakah Anda ingin menimpa file cerita?",
+   "overwrite_backup_message_single_file": "Cerita cadangan yang dipilih sudah ada di folder salin. Apakah Anda ingin menimpa file cerita?",
+   "overwrite_story_title": "Timpa Cerita?",
+   "overwrite_story_message": "Cerita yang dipilih untuk dipulihkan sudah ada di folder ruang kerja. Apakah Anda ingin menimpa file cerita?",
+   "original_story_time_label": "Berkas asli: ",
+   "replace_story_time_label": "Ubah dengan: ",
+   "invalid_story_title": "Cerita Tidak Valid",
+   "invalid_story_message": "Cerita yang dipilih bukanlah cerita yang valid. Silakan pilih yang lain.",
+
   "wsbt_alert_title": "Selesaikan Fase Draf",
   "wsbt_alert_text": "Harap rekam terjemahan untuk setiap slide.",
 
@@ -274,6 +295,7 @@
   "change_language": "Change Language",
   "spadv_website": "SPadv - website",
   "video_share": "Salin/Bagikan File Video",
+  "backup_restore": "Cadangan Data Terjemahan",
 
   "all_stories_tab": "Semua Cerita",
   "in_progress_tab": "Dalam Proses",

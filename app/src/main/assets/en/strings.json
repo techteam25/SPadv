@@ -188,8 +188,29 @@
     
   "sdcard": "sdcard",
   "internal": "internal",
-  "external": "external",  
-  
+  "external": "external",
+
+  "backup_menu_item": "Backup",
+  "restore_menu_item": "Restore",
+  "delete_menu_item": "Delete",
+
+  "delete_stories_title": "Delete Stories?",
+  "delete_stories_message": "Do you want to delete the selected stories?",
+  "backup_warning": "WARNING: One or more of the selected stories to delete are not backed up in the backup folder.",
+  "use_backup_folder_message": "Backup the selected stories to the folder:\n\n",
+  "restore_story_message": "Select the story you wish to restore",
+  "change_backup_folder": "Change folder",
+  "backup_folder_not_found_message": "The backup folder was not found.  Would you like to find or create a new one?  Note: It is recommended to backup your files to an external drive if possible.\n\n",
+  "overwrite_backup_title": "Overwrite Backup Files?",
+  "overwrite_backup_message": "One or more of the selected backup stories already exists in the copy folder.  Do you want to overwrite the story files?",
+  "overwrite_backup_message_single_file": "The selected backup story already exists in the copy folder.  Do you want to overwrite the story files?",
+  "overwrite_story_title": "Overwrite Story?",
+  "overwrite_story_message": "The selected story to restore already exists in the workspace folder.  Do you want to overwrite the story files?",
+  "original_story_time_label": "Original file: ",
+  "replace_story_time_label": "Replace with: ",
+  "invalid_story_title": "Invalid Story",
+  "invalid_story_message": "The selected story is not a valid story.  Please select another one.",
+
   "wsbt_alert_title": "Finish Draft Phase",
   "wsbt_alert_text": "Please record a translation for each slide.",
 
@@ -273,7 +294,7 @@
   "change_language": "Change Language",
   "spadv_website": "SPadv - website",
   "video_share": "Copy/Share Video Files",
-  
+  "backup_restore": "Translation Data Backup",
 
   "all_stories_tab": "All Stories",
   "in_progress_tab": "In Progress",
