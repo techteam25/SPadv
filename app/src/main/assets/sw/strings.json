@@ -191,6 +191,27 @@
   "internal": "ndani",
   "external": "ya nje",  
 
+   "backup_menu_item": "Hifadhi nakala",
+   "restore_menu_item": "Rejesha",    
+   "delete_menu_item": "Futa",  
+
+   "delete_stories_title": "Ungependa kufuta Hadithi?",
+   "delete_stories_message": "Je, ungependa kufuta hadithi zilizochaguliwa?",
+   "backup_warning": "ONYO: Hadithi moja au zaidi zilizochaguliwa za kufuta hazijachelezwa katika folda ya chelezo.",
+   "use_backup_folder_message": "Hifadhi nakala za hadithi zilizochaguliwa kwenye folda:\n\n",
+   "restore_story_message": "Chagua hadithi unayotaka kurejesha",
+   "change_backup_folder": "Badilisha folda",    
+   "backup_folder_not_found_message": "Folda mbadala haikupatikana. Je, ungependa kupata au kuunda mpya? Kumbuka: Inapendekezwa kuhifadhi faili zako kwenye hifadhi ya nje ikiwezekana.\n\n",   
+   "overwrite_backup_title": "OJe, ungependa kufuta faili za Hifadhi Nakala?",
+   "overwrite_backup_message": "Hadithi moja au zaidi zilizochaguliwa tayari zipo kwenye folda ya nakala. Je, ungependa kubatilisha faili za hadithi?",
+   "overwrite_backup_message_single_file": "Hadithi ya chelezo iliyochaguliwa tayari ipo kwenye folda ya nakala. Je, ungependa kubatilisha faili za hadithi?",
+   "overwrite_story_title": "Je, ungependa kufuta Hadithi?",
+   "overwrite_story_message": "Hadithi iliyochaguliwa ya kurejesha tayari ipo kwenye folda ya nafasi ya kazi. Je, ungependa kubatilisha faili za hadithi?",
+   "original_story_time_label": "Faili asili: ",
+   "replace_story_time_label": "Badilisha na: ",
+   "invalid_story_title": "Hadithi Batili",
+   "invalid_story_message": "The selected story is not a valid story.  Please select another one.",
+
   "wsbt_alert_title": "maliza rasimu ya awamu",
   "wsbt_alert_text": "tafadhali rekodi utafsiri wa kila slaidi",
 
@@ -274,7 +295,8 @@
   "change_language": "Badilisha lugha",
   "spadv_website": "SPadv - website",
   "video_share": "Nakili/Shiriki Faili za Video",
-
+  "backup_restore": "Hifadhi Nakala ya Data ya Tafsiri",
+  
   "all_stories_tab": "hadithi zote",
   "in_progress_tab": "inaendelea",
   "completed_tab": "kumalizika",
