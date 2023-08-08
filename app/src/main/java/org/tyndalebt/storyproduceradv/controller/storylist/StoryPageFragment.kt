@@ -39,7 +39,6 @@ open class StoryPageFragment : Fragment() {
     lateinit var lfView: View
     lateinit var demoOnlyMsg: TextView
     lateinit var adapter: ListAdapter
-    //lateinit var mHelper: BackupRestoreHelper
 
     // DKH - 07/10/2021 - Issue 407: Add filtering to SP's 'Story Templates' List
     // Updated while integrating pull request #561 into current sillsdev baseline
@@ -69,9 +68,6 @@ open class StoryPageFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreate(savedInstanceState)
-
-        //mHelper = BackupRestoreHelper()
-        //mHelper.init(this)
 
         val position = requireArguments().getInt(ARG_POSITION)
         storyPageTab = StoryPageTab.values()[position]

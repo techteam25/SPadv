@@ -189,8 +189,29 @@
 
   "sdcard": "carte SD",
   "internal": "interne",
-  "external": "externe",  
-  
+  "external": "externe",
+
+   "backup_menu_item": "Sauvegarde",
+   "restore_menu_item": "Restaurer",    
+   "delete_menu_item": "Supprimer",  
+
+   "delete_stories_title": "Supprimer les histoires ?",
+   "delete_stories_message": "Voulez-vous supprimer les histoires sélectionnées ?",
+   "backup_warning": "AVERTISSEMENT : Un ou plusieurs des récits sélectionnés à supprimer ne sont pas sauvegardés dans le dossier de sauvegarde.",
+   "use_backup_folder_message": "Sauvegardez les histoires sélectionnées dans le dossier :\n\n",
+   "restore_story_message": "Sélectionnez l'histoire que vous souhaitez restaurer",
+   "change_backup_folder": "Changer de dossier",    
+   "backup_folder_not_found_message": "Le dossier de sauvegarde est introuvable. Vous souhaitez en trouver ou en créer un nouveau ? Remarque : Il est recommandé de sauvegarder vos fichiers sur un disque externe si possible.\n\n",   
+   "overwrite_backup_title": "Ecraser les fichiers de sauvegarde ?",
+   "overwrite_backup_message": "Un ou plusieurs des récits de sauvegarde sélectionnés existent déjà dans le dossier de copie. Voulez-vous écraser les fichiers de l'histoire ?",
+   "overwrite_backup_message_single_file": "L'histoire de sauvegarde sélectionnée existe déjà dans le dossier de copie. Voulez-vous écraser les fichiers de l'histoire ?",
+   "overwrite_story_title": "Remplacer l'histoire ?",
+   "overwrite_story_message": "L'histoire sélectionnée à restaurer existe déjà dans le dossier de l'espace de travail. Voulez-vous écraser les fichiers de l'histoire ?",
+   "original_story_time_label": "Fichier d'origine : ",
+   "replace_story_time_label": "Remplacer par: ",
+   "invalid_story_title": "Histoire invalide",
+   "invalid_story_message": "TL'histoire sélectionnée n'est pas une histoire valide. Veuillez en sélectionner un autre.",
+
   "wsbt_alert_title": "Compléter la Phase brouillon",
   "wsbt_alert_text": "Veuillez enregistrer une traduction de chaque diapo.",
 
@@ -274,6 +295,7 @@
   "change_language": "Changer de langue",
   "spadv_website": "SPadv - site de toile",
   "video_share": "Copier/partager des fichiers vidéo",
+  "backup_restore": "Sauvegarde des données de traduction",
 
   "all_stories_tab": "Toutes les histoires",
   "in_progress_tab": "En cours",

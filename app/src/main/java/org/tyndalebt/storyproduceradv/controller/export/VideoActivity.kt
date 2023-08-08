@@ -34,15 +34,6 @@ class VideoActivity : MainBaseActivity()  {
         doSetContentView(R.layout.activity_videos)
         setupDrawer()
         initActionBar()
-        //supportActionBar?.setTitle(R.string.video_share)
-        //supportActionBar?.setBackgroundDrawable(ColorDrawable(ResourcesCompat.getColor(resources,
-        //        R.color.darkGray, null)))
-        //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-        //    val hsv : FloatArray = floatArrayOf(0.0f,0.0f,0.0f)
-        //    Color.colorToHSV(ContextCompat.getColor(this, Workspace.activePhase.getColor()), hsv)
-        //    hsv[2] *= 0.8f
-        //    window.statusBarColor = Color.HSVToColor(hsv)
-        //}
         invalidateOptionsMenu()
         // findViewById<View>(R.id.lock_overlay).visibility = View.INVISIBLE  // turn off lock icon
          

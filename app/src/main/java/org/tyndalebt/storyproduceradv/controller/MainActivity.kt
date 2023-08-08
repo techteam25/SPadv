@@ -32,7 +32,6 @@ class MainActivity : MainBaseActivity(), Serializable {
     //private var mDrawerLayout: DrawerLayout? = null
     lateinit var storyPageViewPager : ViewPager2
     lateinit var storyPageTabLayout : TabLayout
-    //lateinit var backupController: SelectBackupFolderController
 
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -94,7 +93,7 @@ class MainActivity : MainBaseActivity(), Serializable {
                 this.getString(R.string.remote_check_msg_no_connection),
                 Toast.LENGTH_LONG).show()
         }
-        //supportActionBar?.setTitle(R.string.title_activity_story_templates)
+        supportActionBar?.setTitle(R.string.title_activity_story_templates)
     }
 
     /**
@@ -127,7 +126,6 @@ class MainActivity : MainBaseActivity(), Serializable {
         storyPageViewPager.adapter = storyPageAdapter
 
         storyPageViewPager.registerOnPageChangeCallback(storyPageChangeCallback)
-        //backupController = SelectBackupFolderController(this, this, Workspace)
 
         // Sets the Tab Names from the list of StoryPageTabs
         TabLayoutMediator(storyPageTabLayout, storyPageViewPager) { tab, position ->
@@ -137,9 +135,6 @@ class MainActivity : MainBaseActivity(), Serializable {
 
     override fun onActivityResult(request: Int, result: Int, data: Intent?) {
         super.onActivityResult(request, result, data)
-        //if (SelectBackupFolderController.SELECT_BACKUP_FOLDER_REQUEST_CODES.contains(request)) {
-        //    backupController.onFolderSelected(request, result, data)
-        //}
     }
 
     // If this menu item is selected, do nothing
