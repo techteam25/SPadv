@@ -206,7 +206,8 @@ class AccuracyCheckFrag : SlidePhaseFrag() {
             val button = (dialog as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)
             button.setOnClickListener {
                 val passwordText = password.text.toString()
-                if (passwordText.contentEquals(PASSWORD)) {
+                if (passwordText.contentEquals(PASSWORD) || passwordText.contentEquals(PASSWORD2))
+                {
                     saveConsultantApproval()
                     dialog.dismiss()
                     launchDramatizationPhase()
@@ -257,5 +258,6 @@ class AccuracyCheckFrag : SlidePhaseFrag() {
         val CONSULTANT_PREFS = "Consultant_Checks"
         val IS_CONSULTANT_APPROVED = "isApproved"
         private val PASSWORD = "appr00ved"
+        private val PASSWORD2 = "2777683"
     }
 }

@@ -35,7 +35,7 @@
     "translate_revise_title": "अनुवाद + संशोधन",
     "community_work_title": "समुदाय कार्य",
     "accuracy_check_title": "सटीकता की जाँच",
-    "voice_studio_title": "Voice Studio",
+    "voice_studio_title": "आवाज स्टूडियो",
     "finalize_title": "अंतिम रूप दें",
     "share_title": "साझा करें",
     "whole_story_title": "कहानी वापिस बताइए",
@@ -75,7 +75,7 @@
     "registration_exit_title": "पंजीकरण से निकलें?",
     "registration_exit_message": "क्या आप वाकई पंजीकरण से निकलना चाहते हैं? आपके परिवर्तन सहेजे नहीं जाएंगे।",
     "registration_skip_title": "पंजीकरण छोड़ें?",
-	"registration_submit": "इस माध्यम से पंजीकरण जमा करें...",
+    "registration_submit": "इस माध्यम से पंजीकरण जमा करें...",
     "registration_skip_message": "क्या आप वाकई पंजीकरण छोड़ना चाहते हैं? चिंता न करें, आपके पास अब तक जो भी है हम उसे बचा लेंगे।",
     "registration_submit_title": "जमा करें",
     "registration_submit_complete_message": "क्या आप जमा करने के लिए तैयार हैं?",
@@ -102,17 +102,17 @@
     "only_demo_present": "अधिक कहानी टेम्पलेट डाउनलोड करने या अन्य विकल्पों तक पहुंचने के लिए, मुख्य मेनू खोलें (ऊपरी बाएं कोने में 3-पंक्तियों वाले आइकन पर टैप करें)। कृपया इसे \"छिपाने\" के लिए पंजीकरण पूरा करें और सबमिट करें।",
     "welcome_screen_demo_error": "डेमो कार्यक्षमता जल्द ही आ रही है!",
 
-    "orthography_list_none": "कुछ नहीं",
-    "orthography_list_trial": "परीक्षण",
-    "orthography_list_stable": "स्थिर",
+    "orthography_list_none": "none कुछ नहीं",
+    "orthography_list_trial": "trial परीक्षण",
+    "orthography_list_stable": "stable स्थिर",
 
-    "communication_list_phone": "फ़ोन",
-    "communication_list_email": "ईमेल",
-    "communication_list_whatsapp": "वाट्साप",
-    "communication_list_facebook": "फ़ेसबुक",
+    "communication_list_phone": "phone फ़ोन",
+    "communication_list_email": "email ईमेल",
+    "communication_list_whatsapp": "WA वाट्साप",
+    "communication_list_facebook": "fb फ़ेसबुक",
 
-    "location_type_list_local": "स्थानीय",
-    "location_type_list_remote": "दूर",
+    "location_type_list_local": "local स्थानीय",
+    "location_type_list_remote": "remote दूर",
     "nav_open": "विकल्प",
     "nav_close": "बंद करें",
     "PhoneId": "फ़ोन आई डी",
@@ -286,7 +286,7 @@
 
     "logging_numSlides": [
         "स्लाइड",
-         "स्लाइड्स"
+        "स्लाइड्स"
     ],
 
     "overwrite": "अधिलेखित करें"

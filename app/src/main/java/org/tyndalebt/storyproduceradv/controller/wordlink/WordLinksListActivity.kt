@@ -145,9 +145,6 @@ class WordLinksListActivity : BaseActivity(), SearchView.OnQueryTextListener {
                 R.id.nav_more_templates -> {
                     Workspace.startDownLoadMoreTemplatesActivity(this)
                 }
-                R.id.nav_spadv_website -> {
-                    goToURL(this, Workspace.URL_FOR_WEBSITE)
-                }
                 R.id.nav_stories -> {
                     intent = Intent(this, MainActivity::class.java)
                     this.startActivity(intent)
@@ -160,6 +157,12 @@ class WordLinksListActivity : BaseActivity(), SearchView.OnQueryTextListener {
                 }
                 R.id.change_language -> {
                     showChooseLanguage()
+                }
+                R.id.video_share -> {
+                    showVideos()
+                }
+                R.id.nav_spadv_website -> {
+                    goToURL(this, Workspace.URL_FOR_WEBSITE)
                 }
                 R.id.nav_about -> {
                     showAboutDialog()
