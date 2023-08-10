@@ -551,6 +551,9 @@ public class DownloadActivity extends BaseActivity {
             case R.id.change_language:
                 showChooseLanguage();
                 break;
+            case R.id.video_share:
+                showVideos();
+                break;
             case R.id.nav_spadv_website:
                 org.tyndalebt.storyproduceradv.tools.file.FileIO.goToURL(this, Workspace.URL_FOR_WEBSITE);
                 break;

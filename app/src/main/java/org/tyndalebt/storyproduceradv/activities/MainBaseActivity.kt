@@ -155,9 +155,6 @@ open class MainBaseActivity : BaseActivity() {
             R.id.video_share -> {
                 showVideos()
             }
-            //R.id.backup_sync -> {
-            //    showBackup()
-            //}
             R.id.nav_spadv_website -> {
                 goToURL(this, Workspace.URL_FOR_WEBSITE)
             }

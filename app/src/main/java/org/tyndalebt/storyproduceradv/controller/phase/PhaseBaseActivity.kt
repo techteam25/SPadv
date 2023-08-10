@@ -262,9 +262,9 @@ abstract class PhaseBaseActivity : BaseActivity(), AdapterView.OnItemSelectedLis
         menuArray[4] = getString(R.string.update_workspace)
         menuArray[5] = getString(R.string.change_language)
         menuArray[6] = getString(R.string.video_share)
-        //menuArray[7] = getString(R.string.backup_sync)
         menuArray[7] = getString(R.string.spadv_website)
         menuArray[8] = getString(R.string.about)
+        //menuArray[9] = getString(R.string.backup_sync)
 
         mAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, menuArray)
         mDrawerList!!.adapter = mAdapter

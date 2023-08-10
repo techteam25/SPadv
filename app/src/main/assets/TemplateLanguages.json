@@ -1,6 +1,11 @@
 {
     "language":[
         {
+            "filename": "Indonesian",
+            "roman": "yes",
+            "displayname": "Bahasa Indonesian"
+        },
+        {
             "filename": "Bislama",
             "roman": "yes",
             "displayname": "Bislama"
@@ -16,6 +21,11 @@
             "displayname": "English"
         },
         {
+            "filename": "Spanish",
+            "roman": "yes",
+            "displayname": "Español"
+        },
+        {
             "filename": "French",
             "roman": "yes",
             "displayname": "Français"
@@ -26,14 +36,14 @@
             "displayname": "हिंदी"
         },
         {
-            "filename": "Indonesian",
-            "roman": "yes",
-            "displayname": "Bahasa Indonesian"
-        },
-        {
             "filename": "Khmer",
             "roman": "no",
             "displayname": "ខ្មែរ"
+        },
+        {
+            "filename": "Swahili",
+            "roman": "yes",
+            "displayname": "KiSwahili"
         },
         {
             "filename": "Odia",
@@ -44,16 +54,6 @@
             "filename": "Portuguese",
             "roman": "yes",
             "displayname": "Português"
-        },
-        {
-            "filename": "Spanish",
-            "roman": "yes",
-            "displayname": "Español"
-        },
-        {
-            "filename": "Swahili",
-            "roman": "yes",
-            "displayname": "KiSwahili"
         },
         {
             "filename": "Telugu",
