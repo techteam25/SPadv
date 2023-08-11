@@ -317,7 +317,7 @@
     <string name="export_start">Create Video</string>
     <string name="export_cancel">Cancel</string>
     <string name="export_cancel_comment">Do not leave this screen until the video is complete.</string>
-video_share
+
     <!-- ListView -->
     <string name="title_activity_splash_screen">Story Publisher Adv</string>
 
