@@ -135,32 +135,44 @@ class WordLinksListActivity : BaseActivity(), SearchView.OnQueryTextListener {
 
             // Add code here to update the UI based on the item selected
             // For example, swap UI fragments here
-            when (menuItem.itemId) {
-                R.id.nav_workspace -> {
-                    showSelectTemplatesFolderDialog()
-                }
-                R.id.nav_word_link_list -> {
-                    // Current fragment
-                }
-                R.id.nav_more_templates -> {
-                    Workspace.startDownLoadMoreTemplatesActivity(this)
-                }
+            when (menuItem.itemId)
+                {
                 R.id.nav_stories -> {
                     intent = Intent(this, MainActivity::class.java)
                     this.startActivity(intent)
                     this.finish()
                 }
+
                 R.id.nav_registration -> {
                     intent = Intent(this, RegistrationActivity::class.java)
                     this.startActivity(intent)
                     this.finish()
                 }
+
+                R.id.nav_more_templates -> {
+                    Workspace.startDownLoadMoreTemplatesActivity(this)
+                }
+
+                R.id.nav_word_link_list -> {
+                    // Current fragment
+                }
+
+                R.id.nav_workspace -> {
+                    showSelectTemplatesFolderDialog()
+                }
+
                 R.id.change_language -> {
                     showChooseLanguage()
                 }
+
                 R.id.video_share -> {
                     showVideos()
                 }
+
+                R.id.backup_restore -> {
+                    showBackupRestore()
+                }
+
                 R.id.nav_spadv_website -> {
                     goToURL(this, Workspace.URL_FOR_WEBSITE)
                 }
