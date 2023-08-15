@@ -538,6 +538,7 @@ open class RegistrationActivity : AppCompatActivityMTT() {
         
         //Reinitialize the workspace to fix wrong slide issues with changing from local to remote without restarting the app
         Workspace.isInitialized = false
+        Workspace.phases = Workspace.buildPhases(this)   // build phase list again, in case change was made to local/remote
     }
 
     /**
@@ -770,6 +771,13 @@ open class RegistrationActivity : AppCompatActivityMTT() {
                     message.append(formattedKey)
                     message.append(": ")
                     message.append(Workspace.registration.getString(aKeyListOrder, "NA"))
+                    if (aKeyListOrder == "consultant_location_type") {  // Add english for remote/local
+                        if (Workspace.registration.getString("isRemote") == "true") {
+                            message.append(" / Remote ")
+                        } else {
+                            message.append(" / Local ")
+                        }
+                    }
                     message.append("\n")
                 }
             }

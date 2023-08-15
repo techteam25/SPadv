@@ -122,6 +122,13 @@ public class DownloadActivity extends BaseActivity {
         Integer idx;
         String tmp;
 
+        // array of all possible languages listed in the desired order with blank URL
+        if (firstPass) {
+            for (idx = 0; idx < formList.size(); idx++) {
+                arrayList.add(new DownloadDS(formList.get(idx).get("displayname"), "", false));
+            }
+        }
+
         for (idx = 0; idx < pList.length; idx++) {
             if (!folderExists(this, pURL[idx])) {
                 if (pURL[idx].equals("Language")) {
@@ -132,8 +139,34 @@ public class DownloadActivity extends BaseActivity {
                 } else {
                     tmp = at.removeExtension(pList[idx]);
                 }
-                arrayList.add(new DownloadDS(tmp, pURL[idx], false));
+                if (firstPass) {
+                    // Find the right place to put it in the array
+                    Integer idx1;
+                    DownloadDS ds;
+                    for (idx1 = 0; idx1 < arrayList.size(); idx1++) {
+                        ds = arrayList.get(idx1);
+                        if (ds.getName() == getNativeLangName(pList[idx])) {
+                            // Found at least one file that can be downloaded in this language
+                            // Replace it with an entry that has a URL string
+                            arrayList.remove(ds);
+                            arrayList.add(idx1, new DownloadDS(tmp, pURL[idx], false));
+                        }
+                    }
+                } else {
+                    arrayList.add(new DownloadDS(tmp, pURL[idx], false));
+                }
             }
+        }
+
+        if (firstPass) {
+            //  Go through array and remove any that have an empty string for URL, indicating that language does not any files to download
+            for (idx = 0; idx < arrayList.size(); idx++) {
+                while (idx < arrayList.size() && arrayList.get(idx).getURL() == "") {
+                    arrayList.remove(arrayList.get(idx));
+                    arrayList.trimToSize();
+                }
+            }
+            // arrayList now has a list of languages that have stories to download, in the desired order
         }
         DownloadAdapter arrayAdapter = new DownloadAdapter(arrayList, this);
         pView.setAdapter(arrayAdapter);

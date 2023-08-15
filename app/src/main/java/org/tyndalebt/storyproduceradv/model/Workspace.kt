@@ -276,49 +276,51 @@ object Workspace {
             }
         }
         GlobalScope.launch {
-            var hasSentCatchupMessage = false
-            val reconnect: () -> Unit = {
-                hasSentCatchupMessage = false
-                val oldClient = messageClient
-                if (oldClient == null || !oldClient.isOpen) {
-                    oldClient?.close()
-                    Log.e("@pwhite", "Restarting websocket.")
-                    val newClient = MessageWebSocketClient(URI(getRoccWebSocketsUrl(context)))
-                    newClient.connectBlocking()
-                    if (newClient.isOpen == false) {
-                        InternetConnection = false
-                    } else {
-                        InternetConnection = true
+            if (registration.getString("isRemote") == "true") {
+                var hasSentCatchupMessage = false
+                val reconnect: () -> Unit = {
+                    hasSentCatchupMessage = false
+                    val oldClient = messageClient
+                    if (oldClient == null || !oldClient.isOpen) {
+                        oldClient?.close()
+                        Log.e("@pwhite", "Restarting websocket.")
+                        val newClient = MessageWebSocketClient(URI(getRoccWebSocketsUrl(context)))
+                        newClient.connectBlocking()
+                        if (newClient.isOpen == false) {
+                            InternetConnection = false
+                        } else {
+                            InternetConnection = true
+                        }
+                        messageClient = newClient
                     }
-                    messageClient = newClient
                 }
-            }
-            while (true) {
-                try {
-                    if (messageClient?.isOpen != true) {
+                while (true) {
+                    try {
+                        if (messageClient?.isOpen != true) {
+                            reconnect()
+                            delay(5000)
+                        }
+                        if (!hasSentCatchupMessage) {
+                            val js = JSONObject()
+                            js.put("type", "catchup")
+                            val df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                            js.put("since", df.format(lastReceivedTimeSent))
+                            messageClient!!.send(js.toString(2))
+                            hasSentCatchupMessage = true
+                        }
+                        val nextQueuedMessage = queuedMessages.peek()
+                        if (nextQueuedMessage != null) {
+                            val js = messageToJson(nextQueuedMessage)
+                            messageClient!!.send(js.toString(2))
+                            queuedMessages.remove()
+                        }
+                        delay(500) // pause 1/2 second between checks
+                    } catch (ex: Exception) {
+                        Log.e("@pwhite", "websocket iteration failed: ${ex} ${ex.message}. Closing old websocket.")
+                        ex.printStackTrace();
                         reconnect()
                         delay(5000)
                     }
-                    if (!hasSentCatchupMessage) {
-                        val js = JSONObject()
-                        js.put("type", "catchup")
-                        val df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-                        js.put("since", df.format(lastReceivedTimeSent))
-                        messageClient!!.send(js.toString(2))
-                        hasSentCatchupMessage = true
-                    }
-                    val nextQueuedMessage = queuedMessages.peek()
-                    if (nextQueuedMessage != null) {
-                        val js = messageToJson(nextQueuedMessage)
-                        messageClient!!.send(js.toString(2))
-                        queuedMessages.remove()
-                    }
-                    delay(500) // pause 1/2 second between checks
-                } catch (ex: Exception) {
-                    Log.e("@pwhite", "websocket iteration failed: ${ex} ${ex.message}. Closing old websocket.")
-                    ex.printStackTrace();
-                    reconnect()
-                    delay(5000)
                 }
             }
         }
@@ -358,7 +360,7 @@ object Workspace {
             videoCopyPath = DocumentFile.fromTreeUri(context, uri)!!
 
         } catch (e: Exception) {
-            Log.e("setupVideoCopyPath", "Error setting up new vidoe copy path!", e)
+            Log.e("setupVideoCopyPath", "Error setting up new video copy path!", e)
         }
     }
 
@@ -635,11 +637,10 @@ object Workspace {
 
     fun buildPhases(context: Context): List<Phase> {
         //update phases based upon registration selection
-        val remoteString: String = context.getString(R.string.location_type_list_remote)
-
-        return when(registration.getString("consultant_location_type")) {
-            remoteString -> Phase.getRemotePhases()
-            else -> Phase.getLocalPhases()
+        if (registration.getString("isRemote") == "true") {
+            return Phase.getRemotePhases()
+        } else {
+            return Phase.getLocalPhases()
         }
     }
 
