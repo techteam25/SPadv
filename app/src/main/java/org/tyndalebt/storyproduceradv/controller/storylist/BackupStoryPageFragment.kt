@@ -413,6 +413,23 @@ class BackupStoryPageFragment : StoryPageFragment() {
         }
     }
 
+    /**
+     * Updates ListAdapter to use the newly provided list. This is very helpful 
+     * the list changes because of changes that occur from restore/delete actinos.
+     */
+    fun updateStoryListDisplay() {
+        // now update the display -- see onCreateView() ??  TODO
+        val position = requireArguments().getInt(ARG_POSITION)
+        storyPageTab = StoryPageTab.values()[position]
+        CurrentStoryList = storyPageTab.getStoryList()  // grab the stories
+        // note that onCreateView does special stuff if all stories are deleted
+        adapter = ListAdapter(context!!, getAdapterRowLayout(), storyPageTab.getStoryList(), this)
+
+        listView = lfView!!.findViewById(R.id.story_list_view)
+        listView.adapter = adapter
+        adapter.notifyDataSetChanged()
+    }
+    
     // Initially, if there is only a single story in the list then
     // the list will also include a message that you can download more
     // templates.  If we change the story list through restore or delete
