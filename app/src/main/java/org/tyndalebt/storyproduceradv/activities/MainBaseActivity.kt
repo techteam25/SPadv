@@ -3,7 +3,6 @@ package org.tyndalebt.storyproduceradv.activities
 import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Color
-import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.webkit.WebView
@@ -14,6 +13,7 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
 import org.tyndalebt.storyproduceradv.R
+import org.tyndalebt.storyproduceradv.controller.MainActivity
 import org.tyndalebt.storyproduceradv.model.Phase
 import org.tyndalebt.storyproduceradv.model.PhaseType
 import org.tyndalebt.storyproduceradv.model.Workspace
@@ -150,7 +150,7 @@ open class MainBaseActivity : BaseActivity() {
                     dialogBuilder.setTitle(R.string.more_templates)
                         .setMessage(R.string.remote_check_msg_no_connection)
                         .setPositiveButton("OK") { _, _ ->
-                            startActivity(Intent(this@MainBaseActivity, MainBaseActivity::class.java))
+                            startActivity(Intent(this@MainBaseActivity, MainActivity::class.java))
                             finish()
                         }.create()
                         .show()

@@ -26,11 +26,13 @@ import kotlin.math.min
 
 fun copyToWorkspacePath(context: Context, sourceUri: Uri, destRelPath: String){
 
-    val dstUri = Uri.parse(Workspace.workdocfile.uri.toString() +
-            Uri.encode("/$destRelPath"))
-    copyFile(context, sourceUri, dstUri)
+    // cannot use copyFile, since the 2nd parameter is a dirUri
+    // dstUri needed to be a file uri, since the srcName and the dstName
+    // could be different, e.g. a temp video name to a formal name
+    //val dstUri = Uri.parse(Workspace.workdocfile.uri.toString() +
+    //        Uri.encode("/$destRelPath"))
+    //copyFile(context, sourceUri, dstUri)
 
-/*
     try {
         //TODO Why is DocumentsContract.isDocument not working right?
         val ipfd = context.contentResolver.openFileDescriptor(
@@ -54,7 +56,6 @@ fun copyToWorkspacePath(context: Context, sourceUri: Uri, destRelPath: String){
     } catch (e: Exception) {
         FirebaseCrashlytics.getInstance().recordException(e)
     }
- */
 }
 
 

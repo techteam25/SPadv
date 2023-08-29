@@ -152,21 +152,6 @@ open class StoryPageFragment : Fragment() {
 
     }
 
-
-    fun updateStoryListDisplay() {
-        // now update the display -- see onCreateView() ??  TODO
-        val position = requireArguments().getInt(ARG_POSITION)
-        storyPageTab = StoryPageTab.values()[position]
-        CurrentStoryList = storyPageTab.getStoryList()  // grab the stories
-        // note that onCreateView does special stuff if all stories are deleted
-        adapter = ListAdapter(context!!, getAdapterRowLayout(), storyPageTab.getStoryList(), this)
-
-        //val lfView = view  // container.findViewById(R.layout.story_list_container)
-        listView = lfView!!.findViewById(R.id.story_list_view)
-        listView = lfView!!.findViewById(R.id.story_list_view)
-        listView.adapter = adapter
-    }
-
     /**
      * Updates ListAdapter to use the newly provided list. This is very helpful when filter options
      * are used.
