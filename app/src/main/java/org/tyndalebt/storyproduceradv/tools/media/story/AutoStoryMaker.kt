@@ -35,7 +35,7 @@ class AutoStoryMaker(private val context: Context) : Thread(), Closeable {
     val video3gpPath: String get(){return File(videoRelPath).nameWithoutExtension + VIDEO_3GP_EXT}
 
     // bits per second for video
-    private var videoTempFile: File = File(context.filesDir,"temp$VIDEO_MP4_EXT")
+    var videoTempFile: File = File(context.filesDir,"temp$VIDEO_MP4_EXT")
     private var video3gpFile: File = File(context.filesDir,"temp$VIDEO_3GP_EXT")
 
     var mIncludeBackgroundMusic = true
@@ -98,24 +98,27 @@ class AutoStoryMaker(private val context: Context) : Thread(), Closeable {
                 + MediaHelper.getDecimal(duration / 1000.toDouble()) + " seconds")
 
         if (isSuccess) {
-            Log.v(TAG, "Moving completed video to " + videoRelPath)
-            copyToWorkspacePath(context,Uri.fromFile(videoTempFile),"$VIDEO_DIR/$videoRelPath")
-            Workspace.activeStory.addVideo(videoRelPath)
-
-            val params = Bundle()
-            params.putString("video_name", videoRelPath)
-            Workspace.logEvent(context,"video_creation",params)
-
-            //Make 3gp video before you delete the temp video - it's made from that.
-            if(mIncludePictures) make3GPVideo()
-
-            videoTempFile.delete()
-
+            videoCreated()
         } else {
             Log.w(TAG, "Deleting incomplete temporary video")
             videoTempFile.delete()
         }
         allVideosDone = true
+    }
+
+    public fun videoCreated() {  // RK 09/29/23 made public for unit testing
+        Log.v(TAG, "Moving completed video to " + videoRelPath)
+        copyToWorkspacePath(context,Uri.fromFile(videoTempFile),"$VIDEO_DIR/$videoRelPath")
+        Workspace.activeStory.addVideo(videoRelPath)
+
+        val params = Bundle()
+        params.putString("video_name", videoRelPath)
+        Workspace.logEvent(context,"video_creation",params)
+
+        //Make 3gp video before you delete the temp video - it's made from that.
+        if(mIncludePictures) make3GPVideo()
+
+        videoTempFile.delete()
     }
 
     private fun make3GPVideo() {

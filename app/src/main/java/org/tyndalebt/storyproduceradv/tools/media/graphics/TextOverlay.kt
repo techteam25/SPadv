@@ -190,6 +190,10 @@ class TextOverlay(private val mText: String) {
         mIsDirty = false
     }
 
+    fun getText() : String {  // RK 09/29/23 made public for unit tests
+        return mText
+    }
+
     companion object {
         private val FONT_SIZE_SCALE_FACTOR = 240
     }

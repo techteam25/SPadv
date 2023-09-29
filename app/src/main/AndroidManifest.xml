@@ -41,9 +41,11 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+<!--  RK 09/29/23 if you want to enable FIREBASE Analytics, remove the following element -->
         <meta-data
             android:name="firebase_analytics_collection_deactivated"
             android:value="@bool/FIREBASE_ANALYTICS_DEACTIVATED" />
+        
         <!--
  Set custom default icon. This is used when no icon is set for incoming notification messages.
              See README(https://goo.gl/l4GJaQ) for more.

@@ -90,6 +90,8 @@ abstract class AudioRecorder(val activity: Activity) {
             File(tempDestPath).delete()
         }
     }
+
+    open fun cleanupOlderFiles() { }   // RK 09/29/23 exposed for testing, see TestTranslateReviseActivity
 }
 
 
@@ -179,7 +181,7 @@ class AudioRecorderMP4(activity: Activity) : AudioRecorder(activity) {
         }
     }
 
-    private fun cleanupOlderFiles() {
+    override fun cleanupOlderFiles() {  // made public for testing
         var pos: Int? = null
         var mCombName: String
         var aSize: Int

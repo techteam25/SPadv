@@ -214,7 +214,7 @@ abstract class SlidePhaseFrag : androidx.fragment.app.Fragment() {
      *
      * @param slideImage    The ImageView that will contain the picture.
      */
-    protected fun setPic(slideImage: ImageView) {
+    fun setPic(slideImage: ImageView) {  // RK 09/29/23 made public for unit test TestTranslateReviseActivity
 
         (activity as PhaseBaseActivity).setPic(slideImage, slideNum)
         //Set up the reference audio and slide number overlays

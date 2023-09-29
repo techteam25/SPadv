@@ -3,6 +3,8 @@ package org.tyndalebt.storyproduceradv.controller
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
+import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
@@ -154,18 +156,26 @@ abstract class MultiRecordFrag : SlidePhaseFrag(), PlayBackRecordingToolbar.Tool
                 //copy image into workspace
                 var uri = data?.data
                 if (uri == null) uri = FileProvider.getUriForFile(context!!, "${BuildConfig.APPLICATION_ID}.fileprovider", tempPicFile!!)   //it was a camera intent
-                // SP422 - DKH 5/6/2022 Enable images on all the slides to be swapped out via the camera tool
-                // Put extension in a common place for use by others
-                Workspace.activeStory.slides[slideNum].imageFile = "$PROJECT_DIR/${slideNum}${Workspace.activeStory.slides[slideNum].localSlideExtension}"
-                copyToWorkspacePath(context!!, uri!!,
-                        "${Workspace.activeStory.title}/${Workspace.activeStory.slides[slideNum].imageFile}")
-                tempPicFile?.delete()
-                setPic(rootView!!.findViewById(R.id.fragment_image_view) as ImageView)
+                onPictureSelected(uri)
             }
         }catch (e:Exception){
             Toast.makeText(context,"Error",Toast.LENGTH_SHORT).show()
             FirebaseCrashlytics.getInstance().recordException(e)
         }
+    }
+
+    fun onPictureSelected(uri : Uri?) {  // RK 09/29/23 made public for test TestTranslateReviseActivity
+        //copy image into workspace
+        // SP422 - DKH 5/6/2022 Enable images on all the slides to be swapped out via the camera tool
+        // Put extension in a common place for use by others
+        Workspace.activeStory.slides[slideNum].imageFile =
+            "$PROJECT_DIR/${slideNum}${Workspace.activeStory.slides[slideNum].localSlideExtension}"
+        copyToWorkspacePath(
+            context!!, uri!!,
+            "${Workspace.activeStory.title}/${Workspace.activeStory.slides[slideNum].imageFile}"
+        )
+        tempPicFile?.delete()
+        setPic(rootView!!.findViewById(R.id.fragment_image_view) as ImageView)
     }
 
     /**
@@ -209,5 +219,9 @@ abstract class MultiRecordFrag : SlidePhaseFrag(), PlayBackRecordingToolbar.Tool
     
     companion object {
         private const val ACTIVITY_SELECT_IMAGE = 53
+    }
+
+    fun getRecordToolbar() : RecordingToolbar { // RK 09/29/23 for testing purposes - see TestTranslateReviseActivity
+        return recordingToolbar
     }
 }

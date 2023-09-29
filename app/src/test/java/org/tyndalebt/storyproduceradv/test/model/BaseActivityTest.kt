@@ -37,7 +37,7 @@ open class BaseActivityTest {
    val cTestDir = cProjectDir + "/test"
    var baseDocUri : Uri? = null
 
-   fun loadStory(baseActivity : BaseActivity) : Story? {
+   open fun loadStory(baseActivity : BaseActivity) : Story? {
       val storyUri =  Uri.parse(Workspace.workdocfile.uri.toString() + "/" + Uri.encode(cProjectName))
       var df2 = androidx.documentfile.provider.DocumentFile.fromFile(File(storyUri.path!!))
       val myStory = Workspace.buildStory(baseActivity, df2)
