@@ -177,6 +177,7 @@ class TestVideoActivity : BaseActivityTest() {
       ShadowLooper.runUiThreadTasksIncludingDelayedTasks()
       java.util.concurrent.TimeUnit.SECONDS.sleep(5)   // pause just a bit more
       ShadowLooper.runUiThreadTasksIncludingDelayedTasks()      // videoFile.onPostExecute
+      Workspace.initFirebaseAnalytics(videoActivity)
       return videoActivity
    }
 

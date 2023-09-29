@@ -33,6 +33,8 @@ import org.tyndalebt.storyproduceradv.tools.file.deleteWorkspaceFile
 import org.tyndalebt.storyproduceradv.tools.file.getChildOutputStream
 import org.tyndalebt.storyproduceradv.tools.file.wordLinkListFromJson
 import org.tyndalebt.storyproduceradv.tools.file.workspaceRelPathExists
+import org.tyndalebt.storyproduceradv.tools.sqlite.DatabaseHelper
+import org.tyndalebt.storyproduceradv.tools.sqlite.EventTable
 import java.io.*
 import java.net.URI
 import java.sql.Timestamp
@@ -246,7 +248,7 @@ object Workspace {
 
         isInitialized = true
         parseLanguage = ""
-        firebaseAnalytics = FirebaseAnalytics.getInstance(context)
+        initFirebaseAnalytics(context)
         startedMain = false
         Log.e("@pwhite", "about to create socket client ${getRoccWebSocketsUrl(context)}")
         GlobalScope.launch {
@@ -322,6 +324,10 @@ object Workspace {
                 }
             }
         }
+    }
+
+    fun initFirebaseAnalytics(context : Context) {
+        firebaseAnalytics = FirebaseAnalytics.getInstance(context)
     }
 
     fun messageToJson(m: MessageROCC): JSONObject {
@@ -697,6 +703,19 @@ object Workspace {
         params.putString("trainer_email", registration.getString("trainer_email", " "))
         params.putString("consultant_email", registration.getString("consultant_email", " "))
         firebaseAnalytics.logEvent(eventName, params)
+
+        // RK 09/29/23 - testing loggin the events to a db  Issue #81
+        //val dbHelper: DatabaseHelper= DatabaseHelper(context)
+        //val event = EventTable(event_id = 0,
+        //    phone_id = Secure.getString(context.contentResolver, Secure.ANDROID_ID),
+        //    story_number = activeStory.titleNumber,
+        //    ethnolog =  registration.getString("ethnologue", " "),
+        //    lwc = registration.getString("lwc", " "),
+        //    translator_email = registration.getString("translator_email", " "),
+        //    trainer_email = registration.getString("trainer_email", " "),
+        //    consultant_email = registration.getString("consultant_email", " "),
+        //    video_name = params.getString("video_name")!!)
+        //dbHelper.addEvent(event)
     }
 
     fun saveLogToFile(context: Context, pText: String) {

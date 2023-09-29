@@ -86,21 +86,34 @@ class AccuracyCheckFrag : SlidePhaseFrag() {
             button.background = grayCheckmark
         }
         button.setOnClickListener(View.OnClickListener {
-            if (Workspace.activeStory.isApproved) {
-                Toast.makeText(context, "Story already approved", Toast.LENGTH_SHORT).show()
-                return@OnClickListener
-            }
-            if (Workspace.activeStory.slides[slideNum].isChecked) {
-                button.background = grayCheckmark
-                Workspace.activeStory.slides[slideNum].isChecked = false
-            } else {
-                button.background = greenCheckmark
-                Workspace.activeStory.slides[slideNum].isChecked = true
-                if (checkAllMarked()) {
-                    showConsultantPasswordDialog()
-                }
-            }
+            checkButtonClicked(button)
         })
+    }
+
+    fun checkButtonClicked(button: ImageButton) {  // RK 09/29/23public for call by TestAccuracyPhase
+        if (Workspace.activeStory.isApproved) {
+            Toast.makeText(context, "Story already approved", Toast.LENGTH_SHORT).show()
+            return   // return@OnClickListener
+        }
+
+        if (Workspace.activeStory.slides[slideNum].isChecked) {
+            button.background = grayCheckmark
+            Workspace.activeStory.slides[slideNum].isChecked = false
+        } else {
+            button.background = greenCheckmark
+            Workspace.activeStory.slides[slideNum].isChecked = true
+            if (checkAllMarked()) {
+                showConsultantPasswordDialog()
+            }
+        }
+    }
+
+    fun setSlideNumber(num : Int) {   // RK 09/29/23only for testing: TestAccuracyPhase
+        slideNum = num
+        Workspace.activeSlideNum = num
+        slide = Workspace.activeStory.slides[slideNum]
+        val commentIcon = rootView!!.findViewById<View>(R.id.comment_present_accuracy_check_indicator) as ImageView?
+        setCommentIndicatorOnRender(commentIcon!!)
     }
 
     /**
@@ -164,7 +177,7 @@ class AccuracyCheckFrag : SlidePhaseFrag() {
      * Checks each slide of the story to see if all slides have been approved
      * @return true if all approved, otherwise false
      */
-    private fun checkAllMarked(): Boolean {
+    fun checkAllMarked(): Boolean {   // RK 09/29/23 public for TestAccuracyPhase
         for (slide in Workspace.activeStory.slides) {
             if (!slide.isChecked && slide.slideType in
                 arrayOf(SlideType.FRONTCOVER, SlideType.NUMBEREDPAGE, SlideType.LOCALSONG)
@@ -179,6 +192,11 @@ class AccuracyCheckFrag : SlidePhaseFrag() {
      * Launches a dialog for the consultant to enter a password once all slides approved
      */
     private fun showConsultantPasswordDialog() {
+        if (Workspace.isUnitTest) {
+            // RK 09/29/23 if called from a unit test, mark it as approved
+            saveConsultantApproval()
+            return
+        }
         val password = EditText(context)
         password.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
         password.id = org.tyndalebt.storyproduceradv.R.id.password_text_field;

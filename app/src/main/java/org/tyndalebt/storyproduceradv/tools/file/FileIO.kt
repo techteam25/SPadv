@@ -205,6 +205,7 @@ fun storyRelPathExists(context: Context, relPath: String, dirRoot: String = Work
                 "html" ->  "text/html"
                 "css"  ->  "text/css"
                 "svg"  ->  "text/svg"
+                "m4a"  ->  "text/m4a"
                 else   ->  null
             }
         }
@@ -248,6 +249,7 @@ fun getFileTypeFromExtension(newUri : Uri) : String?
         "html" -> "text/html"
         "css" -> "text/css"
         "svg" -> "text/svg"
+        "m4a" -> "text/m4a"
         else -> null
     }
     return mType
