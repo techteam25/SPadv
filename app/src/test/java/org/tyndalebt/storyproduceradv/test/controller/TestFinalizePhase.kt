@@ -18,8 +18,8 @@ import org.tyndalebt.storyproduceradv.model.Workspace.registration
 import org.tyndalebt.storyproduceradv.test.model.BaseActivityTest
 import org.tyndalebt.storyproduceradv.tools.file.UriUtils
 import org.tyndalebt.storyproduceradv.tools.media.story.AutoStoryMaker
-import org.tyndalebt.storyproduceradv.tools.sqlite.DatabaseHelper
-import org.tyndalebt.storyproduceradv.tools.sqlite.EventTable
+//import org.tyndalebt.storyproduceradv.tools.sqlite.DatabaseHelper
+//import org.tyndalebt.storyproduceradv.tools.sqlite.EventTable
 import java.io.File
 
 
