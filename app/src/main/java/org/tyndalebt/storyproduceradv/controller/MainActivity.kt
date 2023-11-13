@@ -16,16 +16,14 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.tyndalebt.storyproduceradv.R
 import org.tyndalebt.storyproduceradv.activities.MainBaseActivity
-import org.tyndalebt.storyproduceradv.controller.export.SelectCopyFolderController
-import org.tyndalebt.storyproduceradv.controller.storylist.SelectBackupFolderController
 import org.tyndalebt.storyproduceradv.controller.storylist.StoryPageAdapter
 import org.tyndalebt.storyproduceradv.controller.storylist.StoryPageTab
 import org.tyndalebt.storyproduceradv.model.Story
 import org.tyndalebt.storyproduceradv.model.Workspace
 import org.tyndalebt.storyproduceradv.tools.Network.ConnectivityStatus
 import org.tyndalebt.storyproduceradv.tools.Network.VolleySingleton
-import org.tyndalebt.storyproduceradv.view.BaseActivityView
 import java.io.Serializable
+
 
 class MainActivity : MainBaseActivity(), Serializable {
 
@@ -100,10 +98,26 @@ class MainActivity : MainBaseActivity(), Serializable {
      * move to the chosen story
      */
     fun switchToStory(story: Story) {
-        Workspace.activeStory = story
-        val intent = Intent(this.applicationContext, Workspace.activePhase.getTheClass())
-        startActivity(intent)
-        finish()
+        // RK 11/13/23
+        // Crashes were reported for the case that for some reason the SD card became
+        // unwritable which caused problems for editing the story.  If we detect that
+        // case, we will warn the user, encouraging him to investigate the cause before
+        // proceeding.
+        if (story.isWritable(this)) {
+
+            Workspace.activeStory = story
+            val intent = Intent(this.applicationContext, Workspace.activePhase.getTheClass())
+            startActivity(intent)
+            finish()
+        }
+        else if (!Workspace.isUnitTest){  // if not writable (and not unit test) warn the user
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle(getString(R.string.read_only_title))
+            builder.setMessage(getString(R.string.read_only_message))
+            builder.setPositiveButton(getString(R.string.ok), null)
+            val dlg = builder.create()
+            dlg.show()
+        }
     }
 
     override fun onDestroy() {

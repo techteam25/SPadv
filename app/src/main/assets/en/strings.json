@@ -210,6 +210,8 @@
   "replace_story_time_label": "Replace with: ",
   "invalid_story_title": "Invalid Story",
   "invalid_story_message": "The selected story is not a valid story.  Please select another one.",
+  "read_only_title" : "Read-Only",
+  "read_only_message" : "Unable to open the story because it is read-only.  Is there a problem with the external storage on your device?  Try to reboot your device.",
 
   "wsbt_alert_title": "Finish Draft Phase",
   "wsbt_alert_text": "Please record a translation for each slide.",

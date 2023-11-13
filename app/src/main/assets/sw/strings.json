@@ -211,6 +211,8 @@
    "replace_story_time_label": "Badilisha na: ",
    "invalid_story_title": "Hadithi Batili",
    "invalid_story_message": "The selected story is not a valid story.  Please select another one.",
+   "read_only_title" : "Kusoma Pekee",
+   "read_only_message" : "Imeshindwa kufungua hadithi kwa sababu ni ya kusomwa tu. Je, kuna tatizo na hifadhi ya nje kwenye kifaa chako? Jaribu kuwasha upya kifaa chako.",
 
   "wsbt_alert_title": "maliza rasimu ya awamu",
   "wsbt_alert_text": "tafadhali rekodi utafsiri wa kila slaidi",

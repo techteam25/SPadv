@@ -212,6 +212,9 @@
   "replace_story_time_label": "Reemplazar con: ",
   "invalid_story_title": "Historia inválida",
   "invalid_story_message": "La historia seleccionada no es una historia válida. Seleccione otro.",
+  "read_only_title" : "Solo lectura",
+  "read_only_message" : "No se puede abrir la historia porque es de solo lectura. ¿Hay algún problema con el almacenamiento externo de su dispositivo? Intente reiniciar su dispositivo.",
+
 
   "wsbt_alert_title": "Finalizar Etapa de Redacción",
   "wsbt_alert_text": "Registre una traducción para cada diapositiva.",

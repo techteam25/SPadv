@@ -152,6 +152,10 @@ class WordLinksActivity : AppCompatActivityMTT(), PlayBackRecordingToolbar.Toolb
         supportFragmentManager.beginTransaction().replace(R.id.toolbar_for_recording_toolbar, recordingToolbar).commit()
     }
 
+    fun getWLRecordingToolbar() : WordLinksRecordingToolbar? {  // RK 11/13/23 = added for word link unit tests
+        return recordingToolbar
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_wordlink_view, menu)
         return true

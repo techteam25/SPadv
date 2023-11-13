@@ -16,6 +16,7 @@ import org.tyndalebt.storyproduceradv.controller.storylist.StoryPageFragment
 import org.tyndalebt.storyproduceradv.model.*
 import org.tyndalebt.storyproduceradv.model.Workspace.registration
 import org.tyndalebt.storyproduceradv.test.model.BaseActivityTest
+import java.io.File
 
 
 @RunWith(RobolectricTestRunner::class)
@@ -81,8 +82,62 @@ class TestMainActivity : BaseActivityTest() {
          }
          checkFragment(frag, 0, 2, 2)
 
-         // try to switch to the story to see if it goes to the right place in the story
          // test filters
+      }
+      finally {
+         cleanTempDirectories(mainActivity)
+      }
+   }
+
+   //
+   // Test: storySwitchTest
+   //
+   // Purpose:
+   //    Tests the action of switching to a new story.
+   //    If a story is not writable, should not be able to
+   //    open the story.
+   //
+   // Steps:
+   //    1. Initialize the projects directories
+   //    2. Open the MainActivity
+   //    3. Switch to a writable story
+   //    4. Make a story unwritable and try to switch to it
+   //
+   // Author: Ray Kaestner 11-08-2023
+   //
+
+   @Test
+   fun storySwitchTest() {
+
+      // init environment
+      initProjectFiles(false)
+      initProjectFiles2()
+      val mainActivity = startMainActivity()
+      try {
+
+         mainActivity.controller.updateStories()  // this is normally done in Activity.initWorkspace()
+
+         java.util.concurrent.TimeUnit.SECONDS.sleep(5)  // pause a bit to allow async code to catch up
+         ShadowLooper.runUiThreadTasksIncludingDelayedTasks()     // allow other threads to run, for the story loading
+         java.util.concurrent.TimeUnit.SECONDS.sleep(5)   // pause just a bit more
+         ShadowLooper.runUiThreadTasksIncludingDelayedTasks()      // one last chance for other threads
+         //Assert.assertNull("mainActivity.readingTemplatesDialog should be null after load", mainActivity.readingTemplatesDialog)
+
+         val storyCount = Workspace.Stories.size  // Why do we not read 2 stories instead of just 1?
+         Assert.assertEquals("Incorrect nunber of stories", 2, storyCount)
+         // could add some testing for story loading
+
+         Assert.assertEquals("The initial active story should be null", Workspace.activeStory.title, "")
+
+         mainActivity.switchToStory(Workspace.Stories[0])
+         Assert.assertEquals("Switching to the story did not succeed", Workspace.activeStory.title, Workspace.Stories[0].title)
+
+         val uri = Workspace.Stories[1].getStoryUri()
+         val file = File(uri!!.path)
+         file.setReadOnly()
+         mainActivity.switchToStory(Workspace.Stories[1])
+         Assert.assertEquals("Should not be able to switch to a read-only story", Workspace.activeStory.title, Workspace.Stories[0].title)
+
       }
       finally {
          cleanTempDirectories(mainActivity)
@@ -126,8 +181,6 @@ class TestMainActivity : BaseActivityTest() {
       ShadowLooper.runUiThreadTasksIncludingDelayedTasks()
 
       storyPageFrag.onCreateView(storyPageFrag.onGetLayoutInflater(null), null, null)
-
-      //var storyPageFrag2 = Robolectric.buildFragment(StoryPageFragment::class.java).create().get()
 
       return storyPageFrag
    }
