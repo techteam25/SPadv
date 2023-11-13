@@ -33,8 +33,8 @@ import org.tyndalebt.storyproduceradv.tools.file.deleteWorkspaceFile
 import org.tyndalebt.storyproduceradv.tools.file.getChildOutputStream
 import org.tyndalebt.storyproduceradv.tools.file.wordLinkListFromJson
 import org.tyndalebt.storyproduceradv.tools.file.workspaceRelPathExists
-//import org.tyndalebt.storyproduceradv.tools.sqlite.DatabaseHelper
-//import org.tyndalebt.storyproduceradv.tools.sqlite.EventTable
+import org.tyndalebt.storyproduceradv.tools.sqlite.EventTableHelper
+import org.tyndalebt.storyproduceradv.tools.sqlite.EventTable
 import java.io.*
 import java.net.URI
 import java.sql.Timestamp
@@ -410,7 +410,7 @@ object Workspace {
         importWordLinks(context)
     }
 
-    private fun importWordLinks(context: Context) {
+    fun importWordLinks(context: Context) {  // RK 11/13/23  made public for access by unit test
         var wordLinksDir = workdocfile.findFile(WORD_LINKS_DIR)
         var csvFileName : String? = null  // default is no csv file, later on, create one if none found
 
@@ -704,18 +704,29 @@ object Workspace {
         params.putString("consultant_email", registration.getString("consultant_email", " "))
         firebaseAnalytics.logEvent(eventName, params)
 
-        // RK 09/29/23 - testing loggin the events to a db  Issue #81
-        //val dbHelper: DatabaseHelper= DatabaseHelper(context)
-        //val event = EventTable(event_id = 0,
-        //    phone_id = Secure.getString(context.contentResolver, Secure.ANDROID_ID),
-        //    story_number = activeStory.titleNumber,
-        //    ethnolog =  registration.getString("ethnologue", " "),
-        //    lwc = registration.getString("lwc", " "),
-        //    translator_email = registration.getString("translator_email", " "),
-        //    trainer_email = registration.getString("trainer_email", " "),
-        //    consultant_email = registration.getString("consultant_email", " "),
-        //    video_name = params.getString("video_name")!!)
-        //dbHelper.addEvent(event)
+        /*  This code will persist the event to a db
+            When we detect an internet connection, we will pass
+            the event info to an analytics collector on the other side
+            Enable this code when we define the analytics collector
+            See issue #81
+
+        val dbHelper: EventTableHelper = EventTableHelper(context)
+        var phoneId = Secure.getString(context.contentResolver, Secure.ANDROID_ID)
+        if (phoneId == null) {  // occurs for unit tests
+            phoneId = ""
+        }
+
+        val event = EventTable(event_id = 0,
+            phone_id = phoneId,
+            story_number = activeStory.titleNumber,
+            ethnolog =  registration.getString("ethnologue", " "),
+            lwc = registration.getString("lwc", " "),
+            translator_email = registration.getString("translator_email", " "),
+            trainer_email = registration.getString("trainer_email", " "),
+            consultant_email = registration.getString("consultant_email", " "),
+            video_name = params.getString("video_name")!!)
+        dbHelper.addEvent(event)
+         */
     }
 
     fun saveLogToFile(context: Context, pText: String) {

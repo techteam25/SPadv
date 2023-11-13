@@ -211,6 +211,8 @@
    "replace_story_time_label": "Remplacer par: ",
    "invalid_story_title": "Histoire invalide",
    "invalid_story_message": "TL'histoire sélectionnée n'est pas une histoire valide. Veuillez en sélectionner un autre.",
+   "read_only_title" : "Lecture seulement",
+   "read_only_message" : "Impossible d'ouvrir l'histoire car elle est en lecture seule. Y a-t-il un problème avec le stockage externe sur votre appareil ? Essayez de redémarrer votre appareil.",
 
   "wsbt_alert_title": "Compléter la Phase brouillon",
   "wsbt_alert_text": "Veuillez enregistrer une traduction de chaque diapo.",

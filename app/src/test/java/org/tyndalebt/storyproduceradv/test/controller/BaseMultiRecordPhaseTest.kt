@@ -18,6 +18,7 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.robolectric.shadows.ShadowLooper
 import org.tyndalebt.storyproduceradv.R
+import org.tyndalebt.storyproduceradv.activities.BaseActivity
 import org.tyndalebt.storyproduceradv.controller.MultiRecordFrag
 import org.tyndalebt.storyproduceradv.controller.pager.PagerBaseActivity
 import org.tyndalebt.storyproduceradv.model.*
@@ -31,6 +32,7 @@ import org.tyndalebt.storyproduceradv.tools.file.getRecordedAudioFiles
 import org.tyndalebt.storyproduceradv.tools.file.getRecordedDisplayNames
 import org.tyndalebt.storyproduceradv.tools.file.setChosenFileIndex
 import org.tyndalebt.storyproduceradv.tools.file.updateDisplayName
+import org.tyndalebt.storyproduceradv.tools.toolbar.RecordingToolbar
 import org.tyndalebt.storyproduceradv.viewmodel.SlideViewModelBuilder
 import java.io.File
 import java.nio.file.Files
@@ -51,6 +53,11 @@ open class BaseMultiRecordPhaseTest : BaseActivityTest() {
 
    open fun getAudioFiles(slide : Slide) : MutableList<String> {
       return slide.translateReviseAudioFiles
+   }
+
+   open fun getAudioFilesSize(slideNum : Int) : Int {
+      val slide = Workspace.activeStory.slides[slideNum]
+      return getAudioFiles(slide).size
    }
 
    open fun getPhaseType() : PhaseType {
@@ -83,7 +90,7 @@ open class BaseMultiRecordPhaseTest : BaseActivityTest() {
       initProjectFiles(false)
       mActivity = startAudioRecordActivity()
       try {
-         mStory = loadStory(mActivity!!)
+         mStory = loadStory(getActivity())
          Workspace.activeStory = mStory!!  // switches activePhase back to LEARN
 
          Workspace.activeSlideNum = 1
@@ -103,7 +110,7 @@ open class BaseMultiRecordPhaseTest : BaseActivityTest() {
          Assert.assertTrue("Exception occurred. " + ex.message, false)
       }
       finally {
-         cleanTempDirectories(mActivity!!)
+         cleanTempDirectories(getActivity())
       }
    }
 
@@ -116,13 +123,16 @@ open class BaseMultiRecordPhaseTest : BaseActivityTest() {
       val testName = "audio/narration" + slideNum + ".mp3"
       Assert.assertEquals("Incorrect narration file name", narrationFileName, testName)
 
-      var audioFiles = getAudioFiles(slide) 
+      var audioFiles = getAudioFiles(slide)
       getAudioFiles(slide)
       if (audioFiles != null) {
          val bFiles = audioFiles.size > 0
          Assert.assertTrue("Audio translate files existence incorrect", bFiles == bAudioExists)
       }
+      checkRecordingToolbarButtons(toolbarFragView, bList, bAudioExists)
+   }
 
+   fun checkRecordingToolbarButtons(toolbarFragView : View?, bList : Boolean, bAudioExists : Boolean) {
       // check the toolbar buttons for visibility
       // play and list only show up if there are existing audio draft files
       val micButton = toolbarFragView!!.findViewById<View>(R.id.start_recording_button) as ImageButton?
@@ -146,13 +156,22 @@ open class BaseMultiRecordPhaseTest : BaseActivityTest() {
 
    fun doModifyAudioFiles(frag : MultiRecordFrag, fragView : View?, toolbarFragView : View?, slideNum : Int, bList : Boolean) {
       // add an audio file and check for proper operation
-      doAddAudioFile(frag, fragView, toolbarFragView, slideNum, bList)
+      var toolbar = frag.getRecordToolbar()
+      doAddAudioFile(toolbarFragView, toolbar, slideNum, bList)
+      doCheckAudioRecordAudioContent(frag, fragView, toolbarFragView, Workspace.activeSlideNum, bList, true)
+
 
       // add 3 more audio files to check that the code properly respects
       // the maximum number of files to keep
-      doAddAudioFile(frag, fragView, toolbarFragView, slideNum, bList)
-      doAddAudioFile(frag, fragView, toolbarFragView, slideNum, bList)
-      doAddAudioFile(frag, fragView, toolbarFragView, slideNum, bList)
+      doAddAudioFile(toolbarFragView, toolbar, slideNum, bList)
+      doCheckAudioRecordAudioContent(frag, fragView, toolbarFragView, Workspace.activeSlideNum, bList, true)
+
+      doAddAudioFile(toolbarFragView, toolbar, slideNum, bList)
+      doCheckAudioRecordAudioContent(frag, fragView, toolbarFragView, Workspace.activeSlideNum, bList, true)
+
+      doAddAudioFile(toolbarFragView, toolbar, slideNum, bList)
+      doCheckAudioRecordAudioContent(frag, fragView, toolbarFragView, Workspace.activeSlideNum, bList, true)
+
 
       // check the operations of the list files buttons in the toolbar
       doCheckAudioFilesList(frag, fragView, toolbarFragView, slideNum, bList, true)
@@ -160,34 +179,33 @@ open class BaseMultiRecordPhaseTest : BaseActivityTest() {
 
    // this method tests the operations that occur when you hit the record button and
    // add a new audio file to the story project
-   fun doAddAudioFile(frag : MultiRecordFrag, fragView : View?, toolbarFragView : View?, slideNum : Int, bList : Boolean) {
-      val slide = Workspace.activeStory.slides[slideNum]
+   fun doAddAudioFile(toolbarFragView : View?, recordingToolbar : RecordingToolbar, slideNum : Int, bList : Boolean) {
 
       // get the name of the audio file that would be created by the audio recorder
       // and add it to the story object
-      val startFilesSize = getAudioFiles(slide).size
+      val startFilesSize = getAudioFilesSize(slideNum)
       val fileName = assignNewAudioRelPath()
-      val addedFilesSize = getAudioFiles(slide).size
+      val addedFilesSize = getAudioFilesSize(slideNum)
       Assert.assertEquals("File was not added during create", addedFilesSize, startFilesSize + 1)
 
       // Copying the test audio file to the location given in assignNewAudioRelPath
       // simulates what the audio recorder.  It will take the recorded audio and
       // store it in the file with the desired name
       val srcName = Workspace.workdocfile.uri.path + "/testCopy/" + TestAudioFileName
-      val dstName = Workspace.workdocfile.uri.path + "/" + mStory!!.title + '/' + fileName
+      val dstName = getDestinationAudioFileName(fileName)  // Workspace.workdocfile.uri.path + "/" + mStory!!.title + '/' + fileName  // xxxx
       copyFile(srcName, dstName)
 
       // cleanupOlder files is called after the file has been created to
       // ensure that there is only the maximum amount of draft files (3)
       // that are being stored on the drive
-      frag.getRecordToolbar().getRecorder()!!.cleanupOlderFiles()
-      frag.getRecordToolbar().updateInheritedToolbarButtonVisibility()
-      val doneFiles = getAudioFiles(slide)
+      recordingToolbar.getRecorder()!!.cleanupOlderFiles()
+      recordingToolbar.updateInheritedToolbarButtonVisibility()
+      val doneFilesSize = getAudioFilesSize(slideNum)
       if ((addedFilesSize > 3) && bList) {
-         Assert.assertEquals("File list should not exceed the max of 3", doneFiles.size, 3)
+         Assert.assertEquals("File list should not exceed the max of 3", doneFilesSize, 3)
       }
       else {
-         Assert.assertEquals("Cleanup should not remove any file", doneFiles.size, addedFilesSize)
+         Assert.assertEquals("Cleanup should not remove any file", doneFilesSize, addedFilesSize)
       }
 
       // test AudioFiles.kt = see the selected audio file and its display name
@@ -207,14 +225,19 @@ open class BaseMultiRecordPhaseTest : BaseActivityTest() {
             displayPrefix + " " + addedFilesSize
          )
       }
-      doCheckAudioRecordAudioContent(frag, fragView, toolbarFragView, Workspace.activeSlideNum, bList, true)
    }
+
+   open fun getDestinationAudioFileName(fileName : String) : String{
+      val dstName = Workspace.workdocfile.uri.path + "/" + mStory!!.title + '/' + fileName
+      return dstName
+   }
+
 
    // this method tests the operations that occur when you hit the files list button and
    // do the various operations.  This assumes it starts with the maximumum number of files
    // in the file list (i.e. 3).  See RecordingsListAdapter for this functionality
    fun doCheckAudioFilesList(frag : MultiRecordFrag, fragView : View?, toolbarFragView : View?, slideNum : Int, bList : Boolean, bFileExists : Boolean) {
-      val slide = Workspace.activeStory.slides[slideNum]
+      // val slide = Workspace.activeStory.slides[slideNum]
 
       // first check the starting number of files in the list
       var displayNames = getRecordedDisplayNames(slideNum)
@@ -304,7 +327,7 @@ open class BaseMultiRecordPhaseTest : BaseActivityTest() {
       // var file = File(fileName)
       // Assert.assertTrue("The audio file exists before delete", file.exists())
 
-      deleteAudioFileFromList(mActivity!!, 0)
+      deleteAudioFileFromList(getActivity(), 0)
 
       // check that the lists are properly updated
       displayNames = getRecordedDisplayNames(slideNum)
@@ -341,13 +364,17 @@ open class BaseMultiRecordPhaseTest : BaseActivityTest() {
       return pagerBaseActivity
    }
 
+   open fun getActivity() : BaseActivity {
+      return mActivity!!
+   }
+
    fun startPagerFragment(position : Int) : MultiRecordFrag {
       Workspace.activePhase = Phase(getPhaseType())
-      val mViewPager: ViewPager = mActivity!!.findViewById<ViewPager>(R.id.pager)
+      val mViewPager: ViewPager = getActivity().findViewById<ViewPager>(R.id.pager)
       val multiRecordAdapter = mViewPager.adapter as org.tyndalebt.storyproduceradv.controller.pager.PagerAdapter
       var multiRecordFrag = multiRecordAdapter.getItem(position) as MultiRecordFrag
 
-      val fragmentManager: FragmentManager = mActivity!!.supportFragmentManager
+      val fragmentManager: FragmentManager = getActivity().supportFragmentManager
       val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
       fragmentTransaction.add(multiRecordFrag, null)
       fragmentTransaction.commit()

@@ -18,8 +18,8 @@ import org.tyndalebt.storyproduceradv.model.Workspace.registration
 import org.tyndalebt.storyproduceradv.test.model.BaseActivityTest
 import org.tyndalebt.storyproduceradv.tools.file.UriUtils
 import org.tyndalebt.storyproduceradv.tools.media.story.AutoStoryMaker
-//import org.tyndalebt.storyproduceradv.tools.sqlite.DatabaseHelper
-//import org.tyndalebt.storyproduceradv.tools.sqlite.EventTable
+import org.tyndalebt.storyproduceradv.tools.sqlite.EventTableHelper
+import org.tyndalebt.storyproduceradv.tools.sqlite.EventTable
 import java.io.File
 
 
@@ -111,6 +111,8 @@ class TestFinalizePhase : BaseActivityTest() {
          Workspace.activeStory = myStory!!
          doVideoTest(myStory.title + "_VideoFile.mp4")
          doVideoTest(myStory.title + "_VideoFile2.mp4")
+
+         doSQLHelperTest()
       }
       catch (ex : Exception) {
          ex.printStackTrace()
@@ -135,8 +137,8 @@ class TestFinalizePhase : BaseActivityTest() {
       startFile.copyTo(storyMaker!!.videoTempFile)  // simulate file being created
 
       // RK 09/29 - re-enable if we store events in db instead of to Firebase
-      //val dbHelper: DatabaseHelper = DatabaseHelper(mFinalizeActivity!!)
-      //var eventList = dbHelper.viewEvent()
+      val dbHelper: EventTableHelper = EventTableHelper(mFinalizeActivity!!)
+      var eventList = dbHelper.viewAllEvents()
 
       Assert.assertTrue("Temp video file does not exist", storyMaker!!.videoTempFile.exists())
       Assert.assertFalse("Video file should not exist before create", videoFile.exists())
@@ -147,14 +149,66 @@ class TestFinalizePhase : BaseActivityTest() {
       Assert.assertFalse("Temp video file should be deleted", storyMaker!!.videoTempFile.exists())
       Assert.assertTrue("Video file should exist after create", videoFile.exists())
 
-      // RK 9/29 Re-enable this if we store events to db instead of Firebase
-      //val dbHelper: DatabaseHelper = DatabaseHelper(mFinalizeActivity!!)
-      //var eventList2 = dbHelper.viewEvent()
+      // RK 9/29 Re-enable this if we store events to db instead of Firebase - Issue 81
+      //val dbHelper2: EventTableHelper = EventTableHelper(mFinalizeActivity!!)
+      //var eventList2 = dbHelper2.viewAllEvents()
       //Assert.assertEquals("We should find at least one event.", eventList2.size, eventList.size+1)
       //Assert.assertNotNull("Returned video name should not be null.", eventList2[0].video_name)
       //Assert.assertEquals("Returned video name is incorrect.", eventList2[eventList2.size-1].video_name, videoFileName)
 
    }
+
+   // RK 11-13-23  Issue #81
+   // Issue 81 requires that instead of using Firebase Analytics, that we log events
+   // to the local database and upload the events to the analytics client when we have
+   // an internet connection available,  Enable this method contents when Issue 81
+   // is implemented,
+   fun doSQLHelperTest() {
+      /*
+      val dbHelper: EventTableHelper = EventTableHelper(mFinalizeActivity!!)
+      var eventList = dbHelper.viewAllEvents()
+      var eventList2 = dbHelper.viewEvent(1)
+      var eventList3 = dbHelper.viewEvent(100)
+      Assert.assertEquals("AllEvents should be 2.", eventList.size, 2)
+      Assert.assertEquals("Event with id=1 not found properly.", eventList2.size, 1)
+      Assert.assertEquals("Event with id=100 should not be found", eventList3.size, 0)
+
+      var event = eventList2.get(0)
+      var videoName = event.video_name + "XXX"
+      event.video_name = videoName
+      dbHelper.updateEvent(event)
+      eventList2 = dbHelper.viewEvent(1)
+      event = eventList2.get(0)
+      Assert.assertEquals("Event video name not changed after update", event.video_name, videoName)
+
+      dbHelper.deleteEvent(1)
+      eventList = dbHelper.viewAllEvents()
+      eventList2 = dbHelper.viewEvent(1)
+      Assert.assertEquals("AllEvents should be 1 after delete.", eventList.size, 1)
+      Assert.assertEquals("Event with id=1 should not be found after delete.", eventList2.size, 0)
+
+      dbHelper.deleteEvent(2)
+      eventList = dbHelper.viewAllEvents()
+      Assert.assertEquals("AllEvents should be 0 after 2nd delete.", eventList.size, 0)
+
+      event = EventTable(event_id = 0,
+         phone_id = "test phone",
+         story_number = Workspace.activeStory.titleNumber,
+         ethnolog =  registration.getString("ethnologue", " "),
+         lwc = registration.getString("lwc", " "),
+         translator_email = registration.getString("translator_email", " "),
+         trainer_email = registration.getString("trainer_email", " "),
+         consultant_email = registration.getString("consultant_email", " "),
+         video_name = "test video")
+      dbHelper.addEvent(event)
+      eventList = dbHelper.viewAllEvents()
+      Assert.assertEquals("AllEvents should be 1 after add event.", eventList.size, 1)
+      event = eventList.get(0)
+      //Assert.assertEquals("Event id should be 3 after add", event.video_name, videoName)
+      dbHelper.deleteEvent(event.event_id)  // clear out the events
+       */
+   }
+
    fun startFinalizeActivity() : FinalizeActivity {
       registration.complete = true
       val FinalizeActivity = Robolectric.buildActivity(FinalizeActivity::class.java).create().get()

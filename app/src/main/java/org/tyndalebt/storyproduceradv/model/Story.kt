@@ -1,8 +1,13 @@
 package org.tyndalebt.storyproduceradv.model
 
 
+import android.content.Context
+import android.net.Uri
+import androidx.documentfile.provider.DocumentFile
 import com.squareup.moshi.JsonClass
 import org.tyndalebt.storyproduceradv.model.logging.LogEntry
+import org.tyndalebt.storyproduceradv.tools.file.getFileType
+import java.io.File
 import java.util.*
 
 
@@ -98,6 +103,40 @@ class Story(var title: String, var slides: List<Slide>){
             outputVideos.add(video)
             outputVideos.sort()
         }
+    }
+
+    // RK 11/13/23
+    // Crashes were reported for the case that for some reason the SD card became
+    // unwritable which caused problems for editing the story.  This method allows
+    // us to detect that case and warn the user.
+    fun isWritable(context : Context) : Boolean {
+
+        val uri = getStoryUri() ?: return false
+        try {
+            var myGetType = getFileType(context, uri)
+            if (myGetType != null) { // file exists
+                val file = DocumentFile.fromTreeUri(context, uri)
+                return file!!.canWrite()
+            }
+        }
+        catch (ex : Throwable) {
+            if (Workspace.isUnitTest) {
+                val file = File(uri.path)
+                // for testing, can use this method
+                // file.setReadOnly()
+                return file.canWrite()
+            }
+        }
+
+        return false
+    }
+
+    // RK 11/13/23
+    // Returns the Uri of the story.son file for the project
+    fun getStoryUri() : Uri? {
+        val filePath = title + "/" + "$PROJECT_DIR/$PROJECT_FILE"  // location of file
+        return Uri.parse(Workspace.workdocfile.uri.toString() +
+                Uri.encode("/" + filePath))
     }
 
     companion object{

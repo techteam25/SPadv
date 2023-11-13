@@ -91,6 +91,7 @@ class TestDownloadActivity : BaseActivityTest() {
       }
       catch (ex : Exception) {
          ex.printStackTrace()
+         throw ex
       }
       finally {
          cleanTempDirectories(downloadActivity)
@@ -191,7 +192,7 @@ class TestDownloadActivity : BaseActivityTest() {
       var index = -1
       for (i in listAdapter.getArray().indices) {
          val item = listAdapter.getArray()[i]
-         if (item.name.indexOf(stringId) == 0) {
+         if ((item.name != null) && item.name.indexOf(stringId) == 0) {
             index = i
          }
       }
