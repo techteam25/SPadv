@@ -212,7 +212,7 @@
    "invalid_story_title": "Cerita Tidak Valid",
    "invalid_story_message": "Cerita yang dipilih bukanlah cerita yang valid. Silakan pilih yang lain.",
    "read_only_title" : "Hanya Baca",
-   "read_only_message" : "Tidak dapat membuka cerita karena hanya dapat dibaca. Apakah ada masalah dengan penyimpanan eksternal pada perangkat Anda? Coba reboot perangkat Anda.",
+   "read_only_message" : "Tidak dapat membuka cerita karena hanya dapat dibaca. Apakah ada masalah dengan penyimpanan eksternal (kartu SD) pada perangkat Anda? Coba reboot perangkat Anda.",
 
   "wsbt_alert_title": "Selesaikan Fase Draf",
   "wsbt_alert_text": "Harap rekam terjemahan untuk setiap slide.",
