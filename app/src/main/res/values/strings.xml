@@ -258,7 +258,7 @@
     <string name="invalid_story_title">Invalid Story</string>
     <string name="invalid_story_message">The selected story is not a valid story.  Please select another one.</string>
     <string name="read_only_title">Read-Only</string>
-    <string name="read_only_message">Unable to open the story because it is read-only.  Is there a problem with the external storage on your device?  Try to reboot your device.</string>
+    <string name="read_only_message">Unable to open the story because it is read-only.  Is there a problem with the external storage (SD card) on your device?  Try to reboot your device.</string>
 
                 
     <!-- Whole Story Back Translation phase -->

@@ -189,7 +189,10 @@
   "sdcard": "spes i stap long SD kat",
   "internal": "spes i stap long pon",
   "external": "spes i stap long samting ausait long pon",  
-  
+ 
+  "read_only_title" : "Ritim Tasol",
+  "read_only_message" : "App i no inap opim stori bilong wanem em i luk olsem em bilong ritim tasol. Ating SD card i bagarap o em i gat mak ritim tasol (read-only). Yu ken pasim na opim gen (reboot) pon bilong yu na mebi dispela bai rausim hevi.",
+ 
   "wsbt_alert_title": "Finish Draft Phase",
   "wsbt_alert_text": "Please record a translation for each slide.",
 
