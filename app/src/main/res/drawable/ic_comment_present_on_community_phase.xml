@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:top="10dp"
+        android:bottom="10dp"
+        android:right="10dp"
+        android:left="10dp"
+        >
+
+    <shape
+     android:shape="oval"
+     android:dither="false"
+    >
+<!--    This icon will be present if the community phase contains a comment     -->
+    <!-- if the bitmap does not have the same pixel config as the screen it enables dithering-->
+    <size
+        android:width="28dp"
+        android:height="28dp"
+        />
+    <gradient
+        android:startColor="#859900"
+        android:centerColor="#859900"
+        android:endColor="#FFFFFF"
+        android:gradientRadius="14dp"
+        android:type="radial"
+
+        />
+
+
+</shape>
+
+    </item>
+</layer-list>
