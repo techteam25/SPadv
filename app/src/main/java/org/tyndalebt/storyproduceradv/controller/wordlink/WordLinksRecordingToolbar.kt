@@ -79,4 +79,8 @@ class WordLinksRecordingToolbar : MultiRecordRecordingToolbar() {
             }
         }
     }
+
+    fun collapseBottomSheet() {
+        from(bottomSheet).state = STATE_COLLAPSED
+    }
 }

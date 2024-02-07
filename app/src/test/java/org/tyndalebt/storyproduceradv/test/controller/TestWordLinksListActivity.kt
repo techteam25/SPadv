@@ -16,13 +16,13 @@ import org.robolectric.annotation.Config
 import org.robolectric.shadows.ShadowLooper
 import org.tyndalebt.storyproduceradv.R
 import org.tyndalebt.storyproduceradv.activities.BaseActivity
-import org.tyndalebt.storyproduceradv.controller.MultiRecordFrag
 import org.tyndalebt.storyproduceradv.controller.SplashScreenActivity
 import org.tyndalebt.storyproduceradv.controller.wordlink.WordLinksActivity
 import org.tyndalebt.storyproduceradv.controller.wordlink.WordLinksListActivity
 import org.tyndalebt.storyproduceradv.model.*
 import org.tyndalebt.storyproduceradv.model.Workspace.registration
 import org.tyndalebt.storyproduceradv.tools.file.deleteWLAudioFileFromList
+import org.tyndalebt.storyproduceradv.tools.file.setChosenFileIndex
 import org.tyndalebt.storyproduceradv.tools.toolbar.RecordingToolbar
 import java.io.File
 
@@ -69,7 +69,7 @@ class TestWordLinksListActivity : BaseMultiRecordPhaseTest() {
    fun WordLinksListActivityTest() {
 
       // init environment
-      initProjectFiles(false)
+      initProjectWithFiles(false, false)
       var activity = startWordLinksListActivity()
       try {
          mStory = loadStory(activity!!)
@@ -104,16 +104,48 @@ class TestWordLinksListActivity : BaseMultiRecordPhaseTest() {
    //    3. Check the contents of the wordlink audio comment data
    //    4. Simulate the buttons to record an audio file and check that the
    //       wordlinkactivity screen is properly updated
-   //    6. Test the audio file back translation function
-   //    7. Test the audio file delete function
+   //    5. Test the audio file back translation function
+   //    6. Test the audio file delete function
    //
    // Author: Ray Kaestner 11-13-2023
    //
 
    @Test
    fun RecordAudioTest() {
+      initProjectWithFiles(false, false)
+      doRecordAudioTest2(false)
+   }
+
+   //
+   // Test: RecordAudioRemoteTest
+   //
+   // Purpose:
+   //    Similar to RecordAudioTest, but for the remote (aka ROCC) test case.
+   //    i.e. it will also test the state of the wordlink needs upload flag.
+   //
+   // Steps:
+   //    1. Initialize the Wordlinks list screen
+   //    2. Switch to a wordlink activity
+   //    3. Check the contents of the wordlink audio comment data
+   //    4. Simulate the buttons to record an audio file and check that the
+   //       wordlinkactivity screen is properly updated
+   //       Test proper operation of the needs upload for the wordlink
+   //    5. Test the audio file back translation function
+   //       Test proper operation of the needs upload for the wordlink
+   //    6. Test the audio file delete function
+   //       Test proper operation of the needs upload for the wordlink
+   //
+   // Author: Ray Kaestner 02/07/24
+   //
+   @Test
+   fun RecordAudioRemoteTest() {
+      initProjectWithFiles(false, true)
+      doRecordAudioTest2(true)
+   }
+
+   fun doRecordAudioTest2(bRemote : Boolean) {
       // init environment
-      initProjectFiles(false)
+      //initProjectWithFiles(false, bRemote)
       var activity = startWordLinksListActivity()
       try {
          mStory = loadStory(activity!!)
@@ -127,6 +159,10 @@ class TestWordLinksListActivity : BaseMultiRecordPhaseTest() {
          checkAudioRecordAudioContent(toolbarView, mLastTerm!!,  true, false)
          var toolbar = mWLActivity!!.getWLRecordingToolbar()
          modifyAudioFiles(toolbar!!, toolbarView, mLastTerm!!, false)
+
+         if (bRemote)  {
+            uploadTest(toolbar!!, toolbarView, mLastTerm!!)
+         }
       }
       catch (ex : Throwable) {
          ex.printStackTrace()
@@ -198,6 +234,43 @@ class TestWordLinksListActivity : BaseMultiRecordPhaseTest() {
       return getAudioFiles(mLastTerm!!).size
    }
 
+   fun uploadTest(toolBar : RecordingToolbar, toolbarFragView : View?, term : String) {
+
+      // do a quick upload check
+      var toolbar = mWLActivity!!.getWLRecordingToolbar()
+      val slideNum = 0
+      doAddAudioFile(toolbarFragView, toolbar!!, slideNum, false)
+      var wordLink = Workspace.termToWordLinkMap.get(mLastTerm!!)
+      wordLink!!.uploadState = WordLinkUploadState.UPLOAD_NEEDED
+
+      var wordLinks2 = Workspace.WLSTree.getWordLinksNeedUpdateForForText("Jesus was teaching about " + term)
+      Assert.assertEquals(
+         "Should be a wordlink in the text needing upload",
+         1, wordLinks2.size
+      )
+      wordLinks2 = Workspace.WLSTree.getWordLinksNeedUpdateForForText("Jesus was teaching about life")
+      Assert.assertEquals(
+         "Should be no wordlink in the 2nd text needing upload",
+         0, wordLinks2.size
+      )
+
+      var wordLinks = getWordLinksNeedsUpload()
+      Assert.assertEquals(
+         "Should be a wordlink needing upload before upload check",
+         1, wordLinks.size
+      )
+      checkWordLinksNeedsUpload(mWLActivity!!, slideNum, null)
+      wordLinks = getWordLinksNeedsUpload()
+
+      // XXXX FIX ME!!!
+      // XXXX unable to complete this test because all uploads result in exception
+      // XXXX java.lang.ClassNotFoundException: org.apache.http.client.HttpClient
+      // XXXX Assert.assertEquals(
+      // XXXX    "Should be no wordlinks needing upload after upload check",
+      // XXXX    0, wordLinks.size
+      // XXXX )
+   }
+
    fun modifyAudioFiles(toolBar : RecordingToolbar, toolbarFragView : View?, term : String, bList : Boolean) {
       // add an audio file and check for proper operation
       val slideNum = 0
@@ -213,7 +286,6 @@ class TestWordLinksListActivity : BaseMultiRecordPhaseTest() {
 
       doAddAudioFile(toolbarFragView, toolbar!!, slideNum, bList)
       checkAudioRecordAudioContent(toolbarFragView, term, bList, true)
-
 
       // check the operations of the list files buttons in the toolbar
       checkAudioFilesList(toolbarFragView, term, bList, true)
@@ -244,7 +316,9 @@ class TestWordLinksListActivity : BaseMultiRecordPhaseTest() {
       var file = File(fullFileName)
       Assert.assertTrue("Audio file does not exist.", file.exists())
 
-      // test that textBackTranslation is persisted
+      // change the file selection
+      checkModifySelectedFile(recordings.size-1)
+      checkModifySelectedFile(0)
 
       // finally delete the selected file
       deleteFileTest(term)
@@ -276,8 +350,9 @@ class TestWordLinksListActivity : BaseMultiRecordPhaseTest() {
 
       // var file = File(fullFileName)
       // Assert.assertTrue("The audio file exists before delete", file.exists())
-
+      checkUploadNeeded(term, false)
       deleteWLAudioFileFromList(getActivity(), 0)
+      checkUploadNeeded(term, true)
 
       // check that the lists are properly updated
       recordings = wordLink!!.wordLinkRecordings
@@ -286,6 +361,48 @@ class TestWordLinksListActivity : BaseMultiRecordPhaseTest() {
       // check that the file is actually gone.
       var file = File(fullFileName)
       Assert.assertFalse("The audio file has not been deleted", file.exists())
+   }
+
+   override fun doAddAudioFile(toolbarFragView : View?, recordingToolbar : RecordingToolbar, slideNum : Int, bList : Boolean) {
+      checkUploadNeeded(mLastTerm!!, false)
+      super.doAddAudioFile(toolbarFragView, recordingToolbar, slideNum, bList)
+      checkUploadNeeded(mLastTerm!!, true)
+   }
+
+   fun checkModifySelectedFile(pos : Int) {
+      checkUploadNeeded(Workspace.activeWordLink.term, false)
+      setChosenFileIndex(0)
+      checkUploadNeeded(Workspace.activeWordLink.term, true)
+   }
+
+   fun checkUploadNeeded(term : String, bUploadNeeded : Boolean) {
+      // uploadstate only matters if this is a remote context
+      var wordLink = Workspace.termToWordLinkMap.get(term)
+      Assert.assertNotNull("Unable to find expected wordlink", wordLink)
+      Assert.assertEquals("Active wordlink does not match expected term",
+         term, Workspace.activeWordLink.term)
+      if (Workspace.isRemote()) {
+         val bActual = Workspace.activeWordLink.uploadState == WordLinkUploadState.UPLOAD_NEEDED
+         Assert.assertEquals(
+            "Upload needed value incorrect, should be " + bUploadNeeded,
+            bUploadNeeded, bActual
+         )
+         val wordLinks = getWordLinksNeedsUpload()
+         val expected = if (bUploadNeeded) 1 else 0
+         Assert.assertEquals("Wordlinks needing upload is incorrect",
+            expected, wordLinks.size)
+      }
+      else {
+         val bActual = Workspace.activeWordLink.uploadState == WordLinkUploadState.UPLOAD_NEEDED
+         Assert.assertEquals(
+            "Upload needed value incorrect, should be false for non-remote" + bUploadNeeded,
+            false, bActual
+         )
+         val wordLinks = getWordLinksNeedsUpload()
+         Assert.assertEquals("Should be no wordlinks needing upload in non-remote case",
+            0, wordLinks.size)
+      }
+      Workspace.activeWordLink.uploadState = WordLinkUploadState.NOT_UPLOADED
    }
 
    fun startRecordingToolbarView() : View? {
@@ -320,8 +437,8 @@ class TestWordLinksListActivity : BaseMultiRecordPhaseTest() {
       return wlActivity
   }
 
-   override fun initProjectFiles(bCreateStory : Boolean) {
-      super.initProjectFiles(bCreateStory)
+   fun initProjectWithFiles(bCreateStory : Boolean, bRemote : Boolean) {
+      initProjectFiles(bCreateStory)
 
       // set up the word links directory
       val srcUri = Uri.parse(baseDocUri?.toString() + "/" + Uri.encode(WORD_LINKS_DIR))
@@ -330,6 +447,10 @@ class TestWordLinksListActivity : BaseMultiRecordPhaseTest() {
       copyDirectory(srcUri.path, dstUri.path)
 
       var splashScreenActivity = startSplashScreenActivity()
+
+      if (bRemote) {
+         Workspace.registration.putString("isRemote", "true")
+      }
       Workspace.importWordLinks(splashScreenActivity)  // inits the wordlinks map in the workspace
    }
 
@@ -341,5 +462,4 @@ class TestWordLinksListActivity : BaseMultiRecordPhaseTest() {
       ShadowLooper.runUiThreadTasksIncludingDelayedTasks()
       return splashScreenActivity
    }
-
 }

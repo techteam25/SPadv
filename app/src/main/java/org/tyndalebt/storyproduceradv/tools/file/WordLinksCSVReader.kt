@@ -1,5 +1,6 @@
 import com.opencsv.CSVReader
 import org.tyndalebt.storyproduceradv.model.WordLink
+import org.tyndalebt.storyproduceradv.model.WordLinkUploadState
 import java.io.Reader
 
 /**
@@ -43,6 +44,7 @@ class WordLinksCSVReader(reader: Reader): AutoCloseable {
         // DKH - 9/20/2021, for testing process Column E
         wordLink.explanation = line[4].trim()   // column E
         wordLink.relatedTerms = stringToList(line[5], ",")
+        wordLink.uploadState = WordLinkUploadState.NOT_UPLOADED  // RK 12/28/23 - Issue #111
 
         return wordLink
     }

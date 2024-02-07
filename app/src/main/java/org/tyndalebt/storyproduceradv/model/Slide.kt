@@ -67,13 +67,18 @@ class Slide{
     var chosenVoiceStudioFile = ""
     @Json(name="backTranslationAudioFiles")
     var backTranslationAudioFiles: MutableList<String> = ArrayList()
+    @Json(name="backTranslationUploadState")  // RK 12/28/23: persist upload state so that it will display properly on a SPadv restart
+    var backTranslationUploadState = UploadState.UPLOADED  // upload not needed until a change
     @Json(name="chosenBackTranslationFile")
     var chosenBackTranslationFile = ""
-    var backTranslationUploadState = UploadState.NOT_UPLOADED
+
     var backTranslationTranscript: String? = null
     // DBH 8/11/2022 Issue #57 There are really 3 stages.  No message, message sent, message modified
     var backTranslationTranscriptModified = false
     var backTranslationTranscriptPresent = false
+
+    //var remoteCheckUploadState = UploadState.UPLOADED  // RK 12/28/23: upload not needed until a change
+
     //consultant approval
     var isChecked: Boolean = false
 

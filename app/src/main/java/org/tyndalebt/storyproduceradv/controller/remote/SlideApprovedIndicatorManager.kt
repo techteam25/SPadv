@@ -18,7 +18,7 @@ import org.tyndalebt.storyproduceradv.tools.file.workspaceRelPathExists
 class ApprovalIndicatorManager(
     val context: Context,
     val scope: CoroutineScope,
-    private val approvedIndicator: ImageButton,
+    val approvedIndicator: ImageButton,
     val slide: Slide,
     val slideNumber: Int?
 ){

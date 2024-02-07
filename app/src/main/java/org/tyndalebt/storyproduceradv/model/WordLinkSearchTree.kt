@@ -1,5 +1,7 @@
 package org.tyndalebt.storyproduceradv.model
 
+import java.util.Locale
+
 /**
  * The purpose of this class is to make searching for multi-word wordlinks possible and fast within a larger paragraph of text.
  * The point of this class is to quickly differentiate between similar wordlinks (ones which begin with the same words).
@@ -64,6 +66,37 @@ class WordLinkSearchTree {
         resultPhrases.removeAll{ it == "" }
 
         return resultPhrases
+    }
+
+    // RK 02/07/24
+    // This method will take the text (typically from the current slide) and
+    // find the wordlinks in the current text that needs uploading and
+    // return those wordlinks
+    fun getWordLinksNeedUpdateForForText(text : String): MutableList<WordLink> {
+        val wordLinks: MutableList<WordLink> = mutableListOf()
+        val words = splitBeforeAndAfterAnyNonLetters(text)
+        while (words.size > 0) {
+            val wordLinkPhrase = getIfWordLink(words, root)
+            // If the returned wordlink is empty, no wordlink was found.
+            // All parsed words are reinserted onto the list of terms to parse.
+            // The first word is removed as this word is guaranteed to not be part of a wordlink.
+            // That first word is appended to the string of words since the last wordlink was found.
+            if (wordLinkPhrase != "") {
+                // we have a wordlink, phrase could be derived from the actual wordlink
+                // term is for the actual wordlink
+                val term = Workspace.termFormToTermMap[wordLinkPhrase!!.toLowerCase(Locale.getDefault())]
+                var wordLink = Workspace.termToWordLinkMap.get(term)
+                if ((wordLink != null) && wordLink!!.uploadState == WordLinkUploadState.UPLOAD_NEEDED) {
+                    wordLinks.add(wordLink!!)
+                }
+            }
+            else {
+                // not a wordlink, manually remove it from the list
+                // else it will be removed by getIfWordLink()
+                words.removeAt(0)
+            }
+        }
+        return wordLinks
     }
 
     /**
