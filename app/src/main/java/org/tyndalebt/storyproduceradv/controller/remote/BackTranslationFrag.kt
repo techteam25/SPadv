@@ -31,10 +31,12 @@ class BackTranslationFrag : MultiRecordFrag(), CoroutineScope by MainScope() {
 
     override var recordingToolbar: RecordingToolbar = DramatizationRecordingToolbar() //This toolbar is specific to the slide-tellback
 
-    private lateinit var uploadAudioButtonManager: UploadAudioButtonManager
-    private lateinit var approvalIndicatorManager: ApprovalIndicatorManager
+    lateinit var uploadAudioButtonManager: UploadAudioButtonManager
+    lateinit var approvalIndicatorManager: ApprovalIndicatorManager
     private var approvalReceiveChannel: ReceiveChannel<Approval>? = null
-    private var skipChanged: Boolean = false
+    private var lastTranscriptText: String = ""  // RK 12/28/23 - used for determining when the text changes
+    lateinit var whiteSendIcon : VectorDrawableCompat
+    lateinit var blackSendIcon : VectorDrawableCompat
 
 //Check other files for examples on how to use the old version of onCreateView
     override fun onCreateView(inflater: LayoutInflater,
@@ -45,63 +47,59 @@ class BackTranslationFrag : MultiRecordFrag(), CoroutineScope by MainScope() {
         setPic(rootView?.findViewById<View>(R.id.fragment_image_view) as ImageView) //uncertain if this line is correct
 
 
-        val whiteSendIcon = VectorDrawableCompat.create(resources, R.drawable.ic_send_white_24dp, null)!!
-        val blackSendIcon = VectorDrawableCompat.create(resources, R.drawable.ic_send_black_24dp, null)!!
+        whiteSendIcon = VectorDrawableCompat.create(resources, R.drawable.ic_send_white_24dp, null)!!
+        blackSendIcon = VectorDrawableCompat.create(resources, R.drawable.ic_send_black_24dp, null)!!
         val sendTranscriptButton: Button = rootView.findViewById(R.id.send_transcript_button)
 
         val transcriptEditText: EditText = rootView.findViewById(R.id.transcript_edit_text)
         val transcriptString = slide.backTranslationTranscript
         if (transcriptString != null && transcriptString != "") {
-            skipChanged = true // Not changed by user, don't change colors, etc.
-            slide.backTranslationTranscriptModified = false
+            lastTranscriptText = transcriptString
+            // RK 12/28/23 switch to use the persisted value for the need to upload
+            //slide.backTranslationTranscriptModified = false
             slide.backTranslationTranscriptPresent = true
-            transcriptEditText.setText(transcriptString)
+            if (!transcriptString.equals(transcriptEditText.text)) {
+                transcriptEditText.setText(transcriptString)
+            }
         }
         if (!slide.backTranslationTranscriptPresent) {
             transcriptEditText.setTextColor(ContextCompat.getColor(context!!, R.color.transcript_dirty));
-            sendTranscriptButton.background = whiteSendIcon
         } else {
             transcriptEditText.setTextColor(ContextCompat.getColor(context!!, R.color.transcript_sent));
+        }
+        if (!slide.backTranslationTranscriptModified) {
             sendTranscriptButton.background = blackSendIcon
+        }
+        else {
+            sendTranscriptButton.background = whiteSendIcon
         }
 
         sendTranscriptButton.setOnClickListener {
-            val text = transcriptEditText.text.toString()
-            if (text.isNotEmpty() && slide.backTranslationTranscriptModified) {
-                val storyId = Workspace.activeStory.remoteId ?: 0
-                val message = MessageROCC(slideNum, storyId, false, true, Timestamp(0), text)
-                launch {
-                    Workspace.toSendMessageChannel.send(message)
-                }
-
-                // Close the keyboard
-                val imm = context!!.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.hideSoftInputFromWindow(rootView.windowToken, 0)
-                rootView.requestFocus()
-
-                transcriptEditText.setTextColor(ContextCompat.getColor(context!!, R.color.transcript_sent));
-                sendTranscriptButton.background = blackSendIcon;
-                slide.backTranslationTranscriptModified = false
-            }
+            sendTranscriptAction(transcriptEditText, sendTranscriptButton)
         }
 
         transcriptEditText.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {}
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(text: CharSequence, start: Int, before: Int, count: Int) {
-                if (!skipChanged) {
+                if (!lastTranscriptText.equals(transcriptEditText.text.toString())) {
                     transcriptEditText.setTextColor(ContextCompat.getColor(context!!, R.color.transcript_dirty));
                     slide.backTranslationTranscript = text.toString()
                     sendTranscriptButton.background = whiteSendIcon;
                     slide.backTranslationTranscriptModified = true
+                    lastTranscriptText = transcriptEditText.text.toString()
                 }
                 else {
                     val text = transcriptEditText.text.toString()
                     if (text.isNotEmpty()) {
                         // Text exists, we are setting it, so make it sent color
                         transcriptEditText.setTextColor(ContextCompat.getColor(context!!, R.color.transcript_sent));
-                        sendTranscriptButton.background = blackSendIcon
-                        skipChanged = false
+                        if (!slide.backTranslationTranscriptModified) {
+                            sendTranscriptButton.background = blackSendIcon
+                        }
+                        else {
+                            sendTranscriptButton.background = whiteSendIcon
+                        }
                     }
                 }
             }
@@ -111,7 +109,7 @@ class BackTranslationFrag : MultiRecordFrag(), CoroutineScope by MainScope() {
             context!!,
             rootView.findViewById(R.id.upload_audio_botton),
             { slide.backTranslationUploadState },
-            { slide.backTranslationUploadState = it },
+            { setBackTranslationUploadStateValue(it) },
             { org.tyndalebt.storyproduceradv.tools.file.getChosenFilename(slideNum) },
             slideNum)
 
@@ -125,6 +123,43 @@ class BackTranslationFrag : MultiRecordFrag(), CoroutineScope by MainScope() {
         setToolbar() //<---- This brings up the audio recording bar
 
         return rootView
+    }
+
+    // RK 12/28/23
+    // This method is used for help in managing the uploaded
+    // state, properly updating the upload state when various
+    // changes occur. See RecordingsListAdapter.setUploadNeeded
+    fun setBackTranslationUploadStateValue(value: UploadState) {
+        if (value != slide.backTranslationUploadState) {
+            slide.backTranslationUploadState = value
+            uploadAudioButtonManager.refreshBackground()
+        }
+    }
+
+    fun sendTranscriptAction(transcriptEditText : EditText, sendTranscriptButton : Button) {
+        val text = transcriptEditText.text.toString()
+        if (text.isNotEmpty() && slide.backTranslationTranscriptModified) {
+            val storyId = Workspace.activeStory.remoteId ?: 0
+            val message = MessageROCC(slideNum, storyId, false, true, Timestamp(0), text)
+            launch {
+                Workspace.toSendMessageChannel.send(message)
+            }
+
+            // Close the keyboard
+            val imm =
+                context!!.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(rootView.windowToken, 0)
+            rootView.requestFocus()
+
+            transcriptEditText.setTextColor(
+                ContextCompat.getColor(
+                    context!!,
+                    R.color.transcript_sent
+                )
+            );
+            sendTranscriptButton.background = blackSendIcon!!;
+            slide.backTranslationTranscriptModified = false
+        }
     }
 
     override fun onStart() {

@@ -1,5 +1,6 @@
 package org.tyndalebt.storyproduceradv.controller.remote
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
@@ -17,9 +18,13 @@ import org.json.JSONException
 import org.tyndalebt.storyproduceradv.R
 import org.tyndalebt.storyproduceradv.controller.MainActivity
 import org.tyndalebt.storyproduceradv.model.Workspace
+import org.tyndalebt.storyproduceradv.model.checkWordLinksNeedsUpload
+import org.tyndalebt.storyproduceradv.model.getWordLinksNeedsUpload
+import org.tyndalebt.storyproduceradv.model.getWordLinksNeedsUploadForSlide
 import org.tyndalebt.storyproduceradv.tools.Network.VolleySingleton
 import org.tyndalebt.storyproduceradv.tools.file.getStoryChildInputStream
 import java.util.*
+import java.io.InputStream
 import kotlin.collections.HashMap
 
 class UploadAudioButtonManager(
@@ -31,9 +36,9 @@ class UploadAudioButtonManager(
     val slideNumber: Int?
 ) {
 
-    private val notUploadedIcon: VectorDrawableCompat
-    private val uploadingIcon: VectorDrawableCompat
-    private val uploadedIcon: VectorDrawableCompat
+    val notUploadedIcon: VectorDrawableCompat
+    val uploadingIcon: VectorDrawableCompat
+    val uploadedIcon: VectorDrawableCompat
 
     init {
         notUploadedIcon = VectorDrawableCompat.create(context.resources, R.drawable.ic_cloud_upload_24dp, null)!!
@@ -43,80 +48,7 @@ class UploadAudioButtonManager(
         refreshBackground()
 
         uploadAudioButton.setOnClickListener {
-            when (getUploadState()) {
-                UploadState.UPLOADED -> Toast.makeText(context, R.string.already_uploaded, Toast.LENGTH_SHORT).show()
-                UploadState.NOT_UPLOADED -> {
-
-                    if (Workspace.checkForInternet (context) == false) {
-                        val dialogBuilder = AlertDialog.Builder(context)
-                        dialogBuilder.setTitle(R.string.upload_failed)
-                            .setMessage(R.string.remote_check_msg_no_connection)
-                            .setPositiveButton("OK") { _, _ ->
-                            }.create()
-                            .show()
-                    } else {
-
-                        val audioRecording = getAudioRecording()
-                        if (audioRecording != null && audioRecording != "") {
-                            setUploadState(UploadState.UPLOADING)
-                            uploadAudioButton.background = uploadingIcon
-                            Toast.makeText(context, R.string.uploading_audio, Toast.LENGTH_SHORT)
-                                .show()
-                            val input = getStoryChildInputStream(context, audioRecording)
-                            val audioBytes = IOUtils.toByteArray(input)
-                            val byteString = Base64.encodeToString(audioBytes, Base64.DEFAULT)
-
-                            val js = HashMap<String, String>()
-                            // Default to 0 as the slide number to send to the server
-                            // because the server will ignore it if the request has
-                            // IsWholeStory set to true.
-                            var finalSlideNumber = 0
-                            // Null slideNumber indicates that this is a a whole story
-                            // upload button.
-                            if (slideNumber == null) {
-                                js["IsWholeStory"] = "true"
-                            } else {
-                                finalSlideNumber = slideNumber
-                            }
-                            sendSlideSpecificRequest(
-                                context,
-                                finalSlideNumber,
-                                context.getString(R.string.url_upload_audio),
-                                byteString,
-                                {
-                                    Toast.makeText(
-                                        context,
-                                        R.string.upload_success,
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                    setUploadState(UploadState.UPLOADED)
-                                    uploadAudioButton.background = uploadedIcon
-                                },
-                                {
-                                    Toast.makeText(
-                                        context,
-                                        R.string.upload_failed,
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                    setUploadState(UploadState.NOT_UPLOADED)
-                                    uploadAudioButton.background = notUploadedIcon
-                                },
-                                js
-                            )
-                        } else {
-                            Toast.makeText(context, R.string.no_recording_found, Toast.LENGTH_SHORT)
-                                .show()
-                        }
-                    }
-                }
-
-
-                UploadState.UPLOADING -> {
-                    uploadAudioButton.background = uploadingIcon
-                    Toast.makeText(context, R.string.upload_already_started, Toast.LENGTH_LONG).show()
-                    setUploadState(UploadState.NOT_UPLOADED)
-                }
-            }
+            DoUploadBtnClick()
         }
 
         uploadAudioButton.setOnLongClickListener {
@@ -124,12 +56,12 @@ class UploadAudioButtonManager(
                 UploadState.UPLOADING -> {
                     setUploadState(UploadState.NOT_UPLOADED)
                     Toast.makeText(context, R.string.cancel_uploaded, Toast.LENGTH_SHORT).show()
-                    uploadAudioButton.background = notUploadedIcon
+                    refreshBackground()
                 }
                 UploadState.UPLOADED -> {
                     setUploadState(UploadState.NOT_UPLOADED)
                     Toast.makeText(context, R.string.ignore_uploaded, Toast.LENGTH_SHORT).show()
-                    uploadAudioButton.background = notUploadedIcon
+                    refreshBackground()
                 }
                 UploadState.NOT_UPLOADED -> Toast.makeText(context, R.string.no_uploads_done, Toast.LENGTH_SHORT).show()
             }
@@ -137,11 +69,137 @@ class UploadAudioButtonManager(
         }
     }
 
+    // RK - 02/07/224
+    // Separating the code into this method allows it to be used for unit testing purposes
+    fun DoUploadBtnClick() {
+        when (getUploadState()) {
+            UploadState.UPLOADED -> {
+                // if we need to upload wordlinks, then allow an upload
+                if (getWordLinksNeedsUpload().size > 0) {
+                    checkWordLinksNeedsUpload(context, slideNumber, this)
+                }
+                else {
+                    // no upload needed
+                    Toast.makeText(
+                        context,
+                        R.string.already_uploaded,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    refreshBackground()
+                }
+            }
+
+            UploadState.NOT_UPLOADED -> {
+
+                if (Workspace.checkForInternet(context) == false) {
+                    val dialogBuilder = AlertDialog.Builder(context)
+                    dialogBuilder.setTitle(R.string.upload_failed)
+                        .setMessage(R.string.remote_check_msg_no_connection)
+                        .setPositiveButton("OK") { _, _ ->
+                        }.create()
+                        .show()
+                } else {
+
+                    val audioRecording = getAudioRecording()
+
+                    // RK 12/28
+                    // if no file specified, upload empty string.
+                    // this is in case a previously uploaded audio was deleted
+                    var byteString = ""
+                    var input = null as InputStream?
+                    if (audioRecording != null && audioRecording != "") {
+                        input = getStoryChildInputStream(context, audioRecording)
+                        if (input != null) {  // null if file not exists, probably removed but metadata not cleaned up
+                            val audioBytes = IOUtils.toByteArray(input)
+                            byteString = Base64.encodeToString(audioBytes, Base64.DEFAULT)
+                        }
+                    }
+
+                    if ((input != null) ||
+                        (audioRecording == null) || (audioRecording == "")) {
+
+                        setUploadState(UploadState.UPLOADING)
+                        refreshBackground()
+                        Toast.makeText(context, R.string.uploading_audio, Toast.LENGTH_SHORT)
+                            .show()
+
+                        val js = HashMap<String, String>()
+                        // Default to 0 as the slide number to send to the server
+                        // because the server will ignore it if the request has
+                        // IsWholeStory set to true.
+                        var finalSlideNumber = 0
+                        // Null slideNumber indicates that this is a a whole story
+                        // upload button.
+                        if (slideNumber == null) {
+                            js["IsWholeStory"] = "true"
+                        } else {
+                            finalSlideNumber = slideNumber
+                        }
+                        sendSlideSpecificRequest(
+                            context,
+                            finalSlideNumber,
+                            context.getString(R.string.url_upload_audio),
+                            byteString,
+                            {
+                                Toast.makeText(
+                                    context,
+                                    R.string.upload_success,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                if (getUploadState() == UploadState.UPLOADING) {
+                                    setUploadState(UploadState.UPLOADED)
+                                    refreshBackground()
+                                }
+                                checkWordLinksNeedsUpload(context, slideNumber, this)
+                            },
+                            {
+                                Toast.makeText(
+                                    context,
+                                    R.string.upload_failed,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                setUploadState(UploadState.NOT_UPLOADED)
+                                refreshBackground()
+                            },
+                            js
+                        )
+                    } else {
+                        Toast.makeText(context, R.string.no_recording_found, Toast.LENGTH_SHORT)
+                            .show()
+                        setUploadState(UploadState.UPLOADED)
+                    }
+                }
+            }
+
+            UploadState.UPLOADING -> {
+                uploadAudioButton.background = uploadingIcon
+                Toast.makeText(context, R.string.upload_already_started, Toast.LENGTH_LONG).show()
+                setUploadState(UploadState.NOT_UPLOADED)
+            }
+        }
+    }
+
     fun refreshBackground() {
-        uploadAudioButton.background = when (getUploadState()) {
-            UploadState.UPLOADED -> uploadedIcon
-            UploadState.NOT_UPLOADED -> notUploadedIcon
-            UploadState.UPLOADING -> uploadingIcon
+        // RK - 02/07/24
+        // Updated tto allow enabling in the case that a wordlink on
+        // the slide needs an upload
+
+        if (getUploadState() == UploadState.UPLOADING) {
+            // if we in the process of uploading, give that state a priority
+            uploadAudioButton.background = uploadingIcon
+        }
+        // else if (getWordLinksNeedsUpload().size > 0) {   // checks all wordlink needs upload
+        else if ((slideNumber != null) && getWordLinksNeedsUploadForSlide(slideNumber!!).size > 0) {
+            // if wordlinks need an upload, ensure that the button is enabled
+            uploadAudioButton.background = notUploadedIcon
+        }
+        else {
+            // if no wordlink needed uploading, then use the upload state to determing the button
+            uploadAudioButton.background = when (getUploadState()) {
+                UploadState.UPLOADED -> uploadedIcon
+                UploadState.NOT_UPLOADED -> notUploadedIcon
+                UploadState.UPLOADING -> uploadingIcon
+            }
         }
     }
 }
@@ -211,9 +269,26 @@ fun sendProjectSpecificRequest(
             return params
         }
     }
-    VolleySingleton.getInstance(context.applicationContext).addToRequestQueue(req)
+    try {
+        VolleySingleton.getInstance(context.applicationContext).addToRequestQueue(req)
+    }
+    catch (ex : Throwable) {
+        // RK 12/28/23: unit test throws NoClassDefFoundError for org.apache.http.client.HttpClient
+        if (!Workspace.isUnitTest) {
+            throw ex
+        }
+    }
 }
 
 fun getPhoneId(context: Context): String {
-    return Settings.Secure.getString(context.applicationContext.contentResolver, Settings.Secure.ANDROID_ID)
+    try {
+        return Settings.Secure.getString(context.applicationContext.contentResolver, Settings.Secure.ANDROID_ID)
+    }
+    catch (ex : Throwable) {
+        if (Workspace.isUnitTest) {
+            // RK 12/28/23: the unit test returns a null value which throws illegalStateException
+            return ""
+        }
+        throw ex
+    }
 }

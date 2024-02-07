@@ -49,7 +49,7 @@ internal const val SLIDE_NUM = "CurrentSlideNum"
 internal const val DEMO_FOLDER = "000 Unlocked demo story Storm"
 internal const val PHASE = "Phase"
 
-internal const val WORD_LINKS_DIR = "wordlinks"
+val WORD_LINKS_DIR = "wordlinks"
 internal const val WORD_LINKS_CSV = "wordlinks.csv"
 internal const val WORD_LINKS_JSON_FILE = "wordlinks.json"
 internal const val WORD_LINKS_CLICKED_TERM = "ClickedTerm"
@@ -283,7 +283,7 @@ object Workspace {
             }
         }
         GlobalScope.launch {
-            if (registration.getString("isRemote") == "true") {
+            if (isRemote()) {
                 var hasSentCatchupMessage = false
                 val reconnect: () -> Unit = {
                     hasSentCatchupMessage = false
@@ -648,11 +648,17 @@ object Workspace {
 
     fun buildPhases(context: Context): List<Phase> {
         //update phases based upon registration selection
-        if (registration.getString("isRemote") == "true") {
+        val isRemotePhases = isRemote()
+        if (isRemotePhases) {
             return Phase.getRemotePhases()
         } else {
             return Phase.getLocalPhases()
         }
+    }
+
+    // RK 12/28/23:   If the registration is registered for remote (aka ROCC) access
+    fun isRemote() : Boolean {
+        return registration.getString("isRemote") == "true"
     }
 
     fun deleteVideo(context: Context, path: String){

@@ -179,7 +179,7 @@ open class BaseMultiRecordPhaseTest : BaseActivityTest() {
 
    // this method tests the operations that occur when you hit the record button and
    // add a new audio file to the story project
-   fun doAddAudioFile(toolbarFragView : View?, recordingToolbar : RecordingToolbar, slideNum : Int, bList : Boolean) {
+   open fun doAddAudioFile(toolbarFragView : View?, recordingToolbar : RecordingToolbar, slideNum : Int, bList : Boolean) {
 
       // get the name of the audio file that would be created by the audio recorder
       // and add it to the story object
@@ -236,7 +236,7 @@ open class BaseMultiRecordPhaseTest : BaseActivityTest() {
    // this method tests the operations that occur when you hit the files list button and
    // do the various operations.  This assumes it starts with the maximumum number of files
    // in the file list (i.e. 3).  See RecordingsListAdapter for this functionality
-   fun doCheckAudioFilesList(frag : MultiRecordFrag, fragView : View?, toolbarFragView : View?, slideNum : Int, bList : Boolean, bFileExists : Boolean) {
+   open fun doCheckAudioFilesList(frag : MultiRecordFrag, fragView : View?, toolbarFragView : View?, slideNum : Int, bList : Boolean, bFileExists : Boolean) {
       // val slide = Workspace.activeStory.slides[slideNum]
 
       // first check the starting number of files in the list
@@ -262,12 +262,7 @@ open class BaseMultiRecordPhaseTest : BaseActivityTest() {
          //Assert.assertEquals("displayIndex should match fileIndex", displayIndex, fileIndex)
 
          if (displayNames!!.size > 1) {  // if only one, then you cannot change it
-            setChosenFileIndex(displayNames!!.size - 1, slideNum)
-
-            val combinedName2 = getChosenCombName(slideNum)
-            Assert.assertNotNull("Unable to find combinedName", combinedName2)
-            val displayName2 = getChosenDisplayName(slideNum)
-            Assert.assertNotNull("Unable to find displayName", displayName2)
+            modifySelectedAudioTest(displayNames, slideNum)
          }
 
          // now modify the file name for the chosen file (simulates a long click on the file)
@@ -314,7 +309,16 @@ open class BaseMultiRecordPhaseTest : BaseActivityTest() {
       }
    }
 
-   fun doDeleteFileTest(slideNum : Int) {
+   open fun modifySelectedAudioTest(displayNames : MutableList<String>?, slideNum : Int) {
+      setChosenFileIndex(displayNames!!.size - 1, slideNum)
+
+      val combinedName2 = getChosenCombName(slideNum)
+      Assert.assertNotNull("Unable to find combinedName", combinedName2)
+      val displayName2 = getChosenDisplayName(slideNum)
+      Assert.assertNotNull("Unable to find displayName", displayName2)
+   }
+
+   open fun doDeleteFileTest(slideNum : Int) {
       // See RecordingsListAdapter for the delete functionality
       var displayNames = getRecordedDisplayNames(slideNum)
       var fileNames =  getRecordedAudioFiles(slideNum)
@@ -368,7 +372,7 @@ open class BaseMultiRecordPhaseTest : BaseActivityTest() {
       return mActivity!!
    }
 
-   fun startPagerFragment(position : Int) : MultiRecordFrag {
+   open fun startPagerFragment(position : Int) : MultiRecordFrag {
       Workspace.activePhase = Phase(getPhaseType())
       val mViewPager: ViewPager = getActivity().findViewById<ViewPager>(R.id.pager)
       val multiRecordAdapter = mViewPager.adapter as org.tyndalebt.storyproduceradv.controller.pager.PagerAdapter
@@ -386,7 +390,7 @@ open class BaseMultiRecordPhaseTest : BaseActivityTest() {
       return multiRecordFrag
    }
 
-   fun startPagerFragmentView(frag : MultiRecordFrag) : View? {
+   open fun startPagerFragmentView(frag : MultiRecordFrag) : View? {
       return frag.onCreateView(frag.onGetLayoutInflater(null), null, null)
    }
 

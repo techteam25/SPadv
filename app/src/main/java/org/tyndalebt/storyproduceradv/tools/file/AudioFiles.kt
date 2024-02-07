@@ -51,9 +51,14 @@ fun setChosenFileIndex(index: Int, slideNum: Int = Workspace.activeSlideNum){
 
     when(Workspace.activePhase.phaseType){
         PhaseType.TRANSLATE_REVISE -> Workspace.activeStory.slides[slideNum].chosenTranslateReviseFile = combName
-        PhaseType.WORD_LINKS -> Workspace.activeWordLink.chosenWordLinkFile = combName
+        PhaseType.WORD_LINKS -> {
+            Workspace.activeWordLink.chosenWordLinkFile = combName
+            setWordLinkUploadState(WordLinkUploadState.UPLOAD_NEEDED)  // RK 12/28/23: upload needed for Issue #111
+        }
         PhaseType.VOICE_STUDIO -> Workspace.activeStory.slides[slideNum].chosenVoiceStudioFile = combName
-        PhaseType.BACK_T -> Workspace.activeStory.slides[slideNum].chosenBackTranslationFile = combName
+        PhaseType.BACK_T -> {
+            Workspace.activeStory.slides[slideNum].chosenBackTranslationFile = combName
+        }
         else -> return
     }
     return
@@ -86,6 +91,7 @@ fun updateDisplayName(position:Int, newName:String) {
         // getCombNames() for WORD_LINKS creates a shallow copy
         //  so the recording needs to be found by position and updated
         Workspace.activeWordLink.wordLinkRecordings[position].audioRecordingFilename = "$newName|${Story.getFilename(filenames[position])}"
+        setWordLinkUploadState(WordLinkUploadState.UPLOAD_NEEDED)  // RK 12/28/23: upload needed for Issue #111
     } else {
         filenames[position] = "$newName|${Story.getFilename(filenames[position])}"
     }
@@ -110,9 +116,10 @@ fun deleteWLAudioFileFromList(context: Context, pos: Int) {
         }
     }
     // delete the WL recording file
-    deleteStoryFile(context, fileLocation)
+    if (deleteStoryFile(context, fileLocation)) {
+        setWordLinkUploadState(WordLinkUploadState.UPLOAD_NEEDED)  // RK 12/28/23: upload needed for Issue #111
+    }
 }
-
 
 /**
  * function removes file from list of recordings by position
@@ -208,6 +215,7 @@ fun addCombinedName(name:String){
         PhaseType.WORD_LINKS -> {
             Workspace.activeWordLink.wordLinkRecordings.add(0, WordLinkRecording(name))
             Workspace.activeWordLink.chosenWordLinkFile = name
+            setWordLinkUploadState(WordLinkUploadState.UPLOAD_NEEDED)  // RK 12/28/23: upload needed for Issue #111
         }
         else -> {}
     }

@@ -83,8 +83,11 @@ class  RemoteCheckFrag : SlidePhaseFrag(), CoroutineScope by MainScope() {
         uploadAudioButtonManager = UploadAudioButtonManager(
             context!!,
             rootView.findViewById(R.id.upload_audio_botton),
-            { slide.backTranslationUploadState },
-            { slide.backTranslationUploadState = it },
+            // RK 12/28/23: Does this need its own upload state?  Or does it piggyback on the backtranslateion?
+            //{ slide.remoteCheckUploadState },
+            //{ slide.remoteCheckUploadState = it },
+            { slide.backTranslationUploadState},
+            { slide.backTranslationUploadState = it},
             { org.tyndalebt.storyproduceradv.tools.file.getChosenFilename(slideNum) },
             slideNum)
 

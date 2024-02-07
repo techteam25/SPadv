@@ -1,16 +1,24 @@
 package org.tyndalebt.storyproduceradv.model
 
+import android.content.Context
 import android.content.Intent
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextPaint
 import android.text.style.ClickableSpan
+import android.util.Base64
 import android.view.View
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
+import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import org.apache.commons.io.IOUtils
 import org.tyndalebt.storyproduceradv.R
+import org.tyndalebt.storyproduceradv.controller.remote.UploadAudioButtonManager
+import org.tyndalebt.storyproduceradv.controller.remote.sendProjectSpecificRequest
 import org.tyndalebt.storyproduceradv.controller.wordlink.WordLinksActivity
+import org.tyndalebt.storyproduceradv.tools.file.getChildInputStream
 
 /**
  * A list of all the word links (used for saving all word links in a single file)
@@ -28,6 +36,13 @@ data class WordLinkRecording (
         companion object
 }
 
+// RK 12/28/23: persists the upload state for issue #111
+enum class WordLinkUploadState {
+    @Json(name="Uploaded") UPLOADED,
+    @Json(name="UploadNeeded") UPLOAD_NEEDED,
+    @Json(name="NotUploaded") NOT_UPLOADED
+}
+
 @JsonClass(generateAdapter = true)
 data class WordLink (
         var term: String = "",
@@ -36,6 +51,7 @@ data class WordLink (
         var explanation: String = "",
         var relatedTerms: List<String> = listOf(),
         var wordLinkRecordings: MutableList<WordLinkRecording> = mutableListOf(),
+        var uploadState: WordLinkUploadState = WordLinkUploadState.NOT_UPLOADED,
         var chosenWordLinkFile: String = "") {
     companion object
 }
@@ -89,3 +105,126 @@ private fun createWordLinkClickableSpan(term: String, fragmentActivity: Fragment
         }
     }
 }
+
+// RK 12/28/23: Update the wordlink upload state (if remote/ROCC access)
+fun setWordLinkUploadState(value : WordLinkUploadState) {
+    if (Workspace.isRemote()) {
+        // uploadstate only matters if this is a remote context
+        Workspace.activeWordLink.uploadState = value
+    }
+}
+
+// RK 12/28/23: Spins through the wordlink list looking
+// for wordlinks that need an upload.  See Issue #111
+fun getWordLinksNeedsUpload(): MutableList<WordLink> {
+    val wordLinks = ArrayList<WordLink>()
+    val it: Iterator<WordLink> = Workspace.termToWordLinkMap.values.iterator()
+    while (it.hasNext()) {
+        val wordLink: WordLink = it.next()
+        if (wordLink.uploadState == WordLinkUploadState.UPLOAD_NEEDED) {
+            wordLinks.add(wordLink)
+        }
+    }
+    return wordLinks
+}
+
+// RK 02/07/2024
+// This will check the wordlinks for a particular slide and will return a
+// list of the wordlinks on this slide that need an upload
+// This allows the uplaod process to only update wordlinks for the current
+// slide instead of the entire list.  This mirrors what happens in the ROCC UI
+fun getWordLinksNeedsUploadForSlide(slideNum : Int?): MutableList<WordLink> {
+    if (slideNum == null) {
+        return getWordLinksNeedsUpload()
+        // val wordLinksRet: MutableList<WordLink> = mutableListOf()
+        // return wordLinksRet
+    }
+    val slide = Workspace.activeStory.slides[slideNum]
+    val wordLinks = Workspace.WLSTree.getWordLinksNeedUpdateForForText(slide.content)
+    return wordLinks
+}
+
+fun getWordLinksNotUpload(): MutableList<WordLink> {
+    val wordLinks = ArrayList<WordLink>()
+    val it: Iterator<WordLink> = Workspace.termToWordLinkMap.values.iterator()
+    while (it.hasNext()) {
+        val wordLink: WordLink = it.next()
+        if ((wordLink.uploadState == WordLinkUploadState.UPLOAD_NEEDED) ||
+            (wordLink.uploadState == WordLinkUploadState.NOT_UPLOADED)) {
+            wordLinks.add(wordLink)
+        }
+    }
+    return wordLinks
+}
+
+// RK 12/28/23:
+// Will upload all wordlinks that need uploading.  See Issue #111
+fun checkWordLinksNeedsUpload(context : Context, slideNumber : Int?, uploadMgr : UploadAudioButtonManager?) {
+    // val wordLinks = getWordLinksNeedsUpload()  // gives updates needed from all wordlinks
+    if (slideNumber == null) {
+        return   // for this scenario, if slidenumber is not defined then do nothing
+    }
+    val wordLinks = getWordLinksNeedsUploadForSlide(slideNumber)  // gives updates needed only for current slide
+    if (wordLinks.size > 0) {
+        for (i in wordLinks.indices) {
+            Toast.makeText(context, R.string.uploading_wordlink, Toast.LENGTH_SHORT)
+                .show()
+
+            var audioRecording = wordLinks[i].chosenWordLinkFile
+            audioRecording = Story.getFilename(audioRecording)
+            audioRecording = WORD_LINKS_DIR + "/" + audioRecording
+            val input = getChildInputStream(context, audioRecording)
+            val audioBytes = IOUtils.toByteArray(input)
+            val byteString = Base64.encodeToString(audioBytes, Base64.DEFAULT)
+
+            val js = HashMap<String, String>()
+            js["WordLink"] = wordLinks[i].term
+            js["BackTranslation"] = wordLinks[i].chosenWordLinkFile
+            js["Data"] = byteString
+
+            // XXXX val relativeUrl = context.getString(R.string.url_upload_wordlink)
+            val relativeUrl = context.getString(R.string.url_upload_audio)  // XXXX try to make this work for now
+
+            // XXXX these should not be necessary when the rocc adds real support for wordlinks
+            js["TemplateTitle"] = Workspace.activeStory.title
+            js["Language"] = Workspace.activeStory.language
+            if (slideNumber != null) {
+                js["SlideNumber"] = slideNumber.toString()
+            }
+            if (Workspace.activeStory.remoteId != null) {
+                js["StoryId"] = Workspace.activeStory.remoteId.toString()
+            }
+            // XXXX end - unnecessary items for success
+
+            sendProjectSpecificRequest(
+                context,
+                relativeUrl,
+                {
+                    Toast.makeText(
+                        context,
+                        R.string.upload_success,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    wordLinks[i].uploadState = WordLinkUploadState.UPLOADED
+                    if (uploadMgr != null) {
+                        uploadMgr.refreshBackground()
+                    }
+                },
+                {
+                    Toast.makeText(
+                        context,
+                        R.string.upload_failed,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    wordLinks[i].uploadState = WordLinkUploadState.UPLOAD_NEEDED  //still needed
+                    if (uploadMgr != null) {
+                        uploadMgr.refreshBackground()
+                    }
+                },
+                js
+            )
+        }
+    }
+}
+
+

@@ -3,9 +3,6 @@ package org.tyndalebt.storyproduceradv.controller.adapter
 import android.app.AlertDialog
 import android.content.Context
 import android.media.MediaPlayer
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.RecyclerView
-import androidx.appcompat.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,10 +10,17 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
 import org.tyndalebt.storyproduceradv.R
 import org.tyndalebt.storyproduceradv.controller.Modal
+import org.tyndalebt.storyproduceradv.controller.remote.BackTranslationFrag
+import org.tyndalebt.storyproduceradv.controller.wordlink.WordLinksRecordingToolbar
 import org.tyndalebt.storyproduceradv.model.PhaseType
+import org.tyndalebt.storyproduceradv.model.Story
+import org.tyndalebt.storyproduceradv.model.UploadState
 import org.tyndalebt.storyproduceradv.model.Workspace
 import org.tyndalebt.storyproduceradv.model.logging.saveLog
 import org.tyndalebt.storyproduceradv.tools.file.*
@@ -145,7 +149,10 @@ class RecordingsListAdapter(val values: MutableList<String>?, private val listen
     class RecordingsListModal(private val context: Context, private val toolbar: RecordingToolbar?) : ClickListeners, Modal {
         private var rootView: ViewGroup? = null
         private var dialog: AlertDialog? = null
-        private var displayNames: MutableList<String> = mutableListOf()
+
+        var displayNames: MutableList<String> = mutableListOf()
+        var initialChosenComboName = ""
+
         internal var recyclerView: androidx.recyclerview.widget.RecyclerView? = null
         private val audioPlayer: AudioPlayer = AudioPlayer()
         private var currentPlayingButton: ImageButton? = null
@@ -185,6 +192,7 @@ class RecordingsListAdapter(val values: MutableList<String>?, private val listen
             recyclerView?.adapter = RecordingsListAdapter(displayNames, this)
             recyclerView?.addItemDecoration(androidx.recyclerview.widget.DividerItemDecoration(context, androidx.recyclerview.widget.DividerItemDecoration.VERTICAL))
             recyclerView?.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
+            initialChosenComboName = getChosenCombName()
 
             if (!embedded) {
                 val tb = rootView?.findViewById<Toolbar>(R.id.toolbar2)
@@ -197,11 +205,18 @@ class RecordingsListAdapter(val values: MutableList<String>?, private val listen
                 val exit = rootView?.findViewById<ImageButton>(R.id.exitButton)
                 exit?.setOnClickListener {
                     dialog?.dismiss()
+                    checkUpdateChosenAudio()
                 }
                 dialog?.setOnDismissListener {
                     if (audioPlayer.isAudioPlaying) {
                         audioPlayer.stopAudio()
                     }
+                    val newNames = getRecordedDisplayNames(slideNum) ?:  mutableListOf()
+                    if (newNames.size == 0) {
+                        // all items were deleted.  Reset the buttons
+                        toolbar!!.updateInheritedToolbarButtonVisibility()
+                    }
+                    checkUpdateChosenAudio()
                 }
                 dialog?.show()
             }
@@ -258,6 +273,7 @@ class RecordingsListAdapter(val values: MutableList<String>?, private val listen
         }
 
         override fun onDeleteClick(name: String, pos: Int){
+            val deletedDisplayName = displayNames[pos]
             if (Workspace.activePhase.phaseType == PhaseType.WORD_LINKS) {
                 deleteWLAudioFileFromList(context, pos)
             } else {
@@ -265,15 +281,26 @@ class RecordingsListAdapter(val values: MutableList<String>?, private val listen
             }
             displayNames.removeAt(pos)
             recyclerView?.adapter!!.notifyDataSetChanged()
-            if ("${Workspace.activeDir}/$name" == getChosenDisplayName()) {
+            if (deletedDisplayName == getChosenDisplayName()) { // normally this is done be deleteAudioFiles
                 if (displayNames.size > 0) {
                     onRowClick(displayNames.size-1)
                 }
                 else {
                     setChosenFileIndex(-1)
-                    toolbar?.updateInheritedToolbarButtonVisibility()
-                    dialog?.dismiss()
                 }
+            }
+
+            // RK 12/29/23 - if no items left, update the display
+            if (displayNames.size == 0) {
+                toolbar?.updateInheritedToolbarButtonVisibility()
+                if (Workspace.activePhase.phaseType != PhaseType.WORD_LINKS) {
+                    dialog?.dismiss()  // dismiss the list dialog
+                }
+                else {
+                    // RK 02/07/24   not a dialog, collapse the sheet
+                    (toolbar as WordLinksRecordingToolbar).collapseBottomSheet()
+                }
+
             }
         }
 
@@ -288,6 +315,28 @@ class RecordingsListAdapter(val values: MutableList<String>?, private val listen
             if (audioPlayer.isAudioPlaying) {
                 currentPlayingButton?.setImageResource(R.drawable.ic_play_arrow_white_36dp)
                 audioPlayer.stopAudio()
+            }
+        }
+
+        // RK 12/28/23
+        // Watches for updates in the chosen audio file list
+        fun checkUpdateChosenAudio() {
+            var chosenDisplay = getChosenDisplayName()
+            var chosenComboName = getChosenCombName()
+            if (initialChosenComboName != chosenComboName) {
+                setUploadNeeded(true)
+                initialChosenComboName = chosenComboName
+            }
+        }
+
+        // RK 12/28/23
+        // If BackTransFrag, it will update the state of the upload icon
+        fun setUploadNeeded(bNeeded : Boolean) {
+
+            if ((toolbar != null) && (toolbar.parentFragment != null) &&
+                (toolbar.parentFragment is BackTranslationFrag)){
+                val backTransFrag = toolbar.parentFragment as BackTranslationFrag
+                backTransFrag.setBackTranslationUploadStateValue(UploadState.NOT_UPLOADED)
             }
         }
     }
