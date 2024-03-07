@@ -145,7 +145,7 @@ open class MainBaseActivity : BaseActivity() {
                 // If we get here, the user wants to browse for more templates, so,
                 // open the URL in a new activity
 
-                if (Workspace.checkForInternet(this) == false) {
+                if (!Workspace.checkForInternet(this)) {
                     val dialogBuilder = AlertDialog.Builder(this)
                     dialogBuilder.setTitle(R.string.more_templates)
                         .setMessage(R.string.remote_check_msg_no_connection)
@@ -172,7 +172,7 @@ open class MainBaseActivity : BaseActivity() {
                 // After the RegistrationActivity is complete, MainBaseActivity will then display
                 // the story template list
 
-                if (Workspace.checkForInternet(this) == false) {
+                if (!Workspace.checkForInternet(this)) {
                     val dialogBuilder = AlertDialog.Builder(this)
                     dialogBuilder.setTitle(R.string.registration_title)
                         .setMessage(R.string.remote_check_msg_no_connection)

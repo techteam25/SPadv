@@ -86,7 +86,7 @@ class MainActivity : MainBaseActivity(), Serializable {
                 this@MainActivity.applicationContext.registerReceiver(receiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
             }
         }
-        if (Workspace.InternetConnection == false) {
+        if (!Workspace.InternetConnection) {
             Toast.makeText(this,
                 this.getString(R.string.remote_check_msg_no_connection),
                 Toast.LENGTH_LONG).show()

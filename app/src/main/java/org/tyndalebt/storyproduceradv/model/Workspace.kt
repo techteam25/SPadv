@@ -1,6 +1,7 @@
 package org.tyndalebt.storyproduceradv.model
 
 import WordLinksCSVReader
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -27,6 +28,7 @@ import org.tyndalebt.storyproduceradv.BuildConfig
 import org.tyndalebt.storyproduceradv.R
 import org.tyndalebt.storyproduceradv.activities.BaseActivity
 import org.tyndalebt.storyproduceradv.activities.DownloadActivity
+import org.tyndalebt.storyproduceradv.controller.MainActivity
 import org.tyndalebt.storyproduceradv.model.messaging.Approval
 import org.tyndalebt.storyproduceradv.model.messaging.MessageROCC
 import org.tyndalebt.storyproduceradv.tools.file.deleteWorkspaceFile
@@ -115,6 +117,7 @@ object Workspace {
     var isInitialized = false
     var prefs: SharedPreferences? = null
     var startedMain = false
+    var WebSocketConnectionCounter = 0
     var InternetConnection = true
     // DKH - 05/12/2021
     // Issue #573: SP will hang/crash when submitting registration
@@ -213,11 +216,13 @@ object Workspace {
     }
 
     fun getRoccWebSocketsUrl(context: Context): String {
-        if (InternetConnection == false) {
-            Handler(Looper.getMainLooper()).post {
-                Toast.makeText(context,
-                    context.getString(R.string.remote_check_msg_no_connection),
-                    Toast.LENGTH_LONG).show()
+        if (WebSocketConnectionCounter > 0) {
+            if (WebSocketConnectionCounter == 1) {
+                Handler(Looper.getMainLooper()).post {
+                    Toast.makeText(context,
+                        context.getString(R.string.remote_check_msg_failed),
+                        Toast.LENGTH_LONG).show()
+                }
             }
         }
         var baseUrl = if (BuildConfig.ENABLE_IN_APP_ROCC_URL_SETTING) {
@@ -285,15 +290,15 @@ object Workspace {
                     val oldClient = messageClient
                     if (oldClient == null || !oldClient.isOpen) {
                         oldClient?.close()
-                        Log.e("@pwhite", "Restarting websocket.")
-                        val newClient = MessageWebSocketClient(URI(getRoccWebSocketsUrl(context)))
-                        newClient.connectBlocking()
-                        if (newClient.isOpen == false) {
-                            InternetConnection = false
-                        } else {
-                            InternetConnection = true
+                        if (Workspace.checkForInternet (context) == true) {
+                            Log.e("@pwhite", "Restarting websocket.")
+                            val newClient = MessageWebSocketClient(URI(getRoccWebSocketsUrl(context)))
+                            newClient.connectBlocking()
+                            if (newClient.isOpen != true) {
+                                WebSocketConnectionCounter += 1
+                            }
+                            messageClient = newClient
                         }
-                        messageClient = newClient
                     }
                 }
                 while (true) {
