@@ -22,8 +22,8 @@ class ApprovalIndicatorManager(
     val slide: Slide,
     val slideNumber: Int?
 ){
-    private var greenCheckmark: VectorDrawableCompat
-    private var grayCheckmark: VectorDrawableCompat
+    var greenCheckmark: VectorDrawableCompat
+    var grayCheckmark: VectorDrawableCompat
     private var approvalReceiveChannel: ReceiveChannel<Approval>? = null
 
     init {
@@ -44,12 +44,16 @@ class ApprovalIndicatorManager(
         approvalReceiveChannel = Workspace.approvalChannel.openSubscription()
         scope.launch(Dispatchers.Main) {
             for (approval in approvalReceiveChannel!!) {
-                if (approval.slideNumber == slideNumber && approval.storyId == Workspace.activeStory.remoteId) {
-                    approvedIndicator.background = if (approval.approvalStatus) { greenCheckmark } else { grayCheckmark }
-                }
-                Workspace.processStoryApproval()
+                processSlideApproval(approval)
             }
         }
+    }
+
+    fun processSlideApproval(approval : Approval) {   // function separated out for unit test
+        if (approval.slideNumber == slideNumber && approval.storyId == Workspace.activeStory.remoteId) {
+            approvedIndicator.background = if (approval.approvalStatus) { greenCheckmark } else { grayCheckmark }
+        }
+        Workspace.processStoryApproval()
     }
 
     public fun stop() {

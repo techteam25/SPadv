@@ -305,6 +305,7 @@
 
   "already_uploaded": "Rekodi iliyochaguliwa tayari imepakiwa",
   "uploading_audio": "Inapakia sauti",
+  "uploading_wordlink": "Inapakia kiungo cha neno",
   "upload_success": "Faili ya Sauti Imetumwa kwa Mafanikio",
   "upload_failed": "Imeshindwa kutuma sauti",
   "no_recording_found": "Hakuna rasimu ya sauti iliyopatikana",

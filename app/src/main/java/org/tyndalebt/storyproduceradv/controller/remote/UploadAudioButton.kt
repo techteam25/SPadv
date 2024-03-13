@@ -188,8 +188,8 @@ class UploadAudioButtonManager(
             // if we in the process of uploading, give that state a priority
             uploadAudioButton.background = uploadingIcon
         }
-        // else if (getWordLinksNeedsUpload().size > 0) {   // checks all wordlink needs upload
-        else if ((slideNumber != null) && getWordLinksNeedsUploadForSlide(slideNumber!!).size > 0) {
+        else if (getWordLinksNeedsUpload().size > 0) {   // checks all wordlink needs upload
+        // else if ((slideNumber != null) && getWordLinksNeedsUploadForSlide(slideNumber!!).size > 0) {
             // if wordlinks need an upload, ensure that the button is enabled
             uploadAudioButton.background = notUploadedIcon
         }

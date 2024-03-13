@@ -41,17 +41,20 @@ class  RemoteCheckFrag : SlidePhaseFrag(), CoroutineScope by MainScope() {
     private val storyName: String? = null
     private lateinit var sendMessageButton: Button
     private lateinit var messageSent: EditText
-    private lateinit var uploadAudioButtonManager: UploadAudioButtonManager
-    private lateinit var approvalIndicatorManager: ApprovalIndicatorManager
+    lateinit var uploadAudioButtonManager: UploadAudioButtonManager
+    lateinit var approvalIndicatorManager: ApprovalIndicatorManager
 
     private var resp: String? = null
 
-    private lateinit var msgAdapter: MessageAdapter
-    private lateinit var messagesView: ListView
+    lateinit var msgAdapter: MessageAdapter
+    lateinit var messagesView: ListView
 
     private lateinit var successToast: Toast
     private lateinit var noConnection: Toast
     private lateinit var unknownError: Toast
+
+    lateinit var whiteSendIcon : VectorDrawableCompat
+    lateinit var blackSendIcon : VectorDrawableCompat
 
     private var messageReceiveChannel: ReceiveChannel<MessageROCC>? = null
 
@@ -83,9 +86,7 @@ class  RemoteCheckFrag : SlidePhaseFrag(), CoroutineScope by MainScope() {
         uploadAudioButtonManager = UploadAudioButtonManager(
             context!!,
             rootView.findViewById(R.id.upload_audio_botton),
-            // RK 12/28/23: Does this need its own upload state?  Or does it piggyback on the backtranslateion?
-            //{ slide.remoteCheckUploadState },
-            //{ slide.remoteCheckUploadState = it },
+            // RK 12/28/23: No upload of its own.  This piggybacks on the backtranslateion upload
             { slide.backTranslationUploadState},
             { slide.backTranslationUploadState = it},
             { org.tyndalebt.storyproduceradv.tools.file.getChosenFilename(slideNum) },
@@ -137,7 +138,7 @@ class  RemoteCheckFrag : SlidePhaseFrag(), CoroutineScope by MainScope() {
         msgAdapter = MessageAdapter(context!!)
         messagesView.adapter = msgAdapter
         for (message in Workspace.messages) {
-            if (message.slideNumber == slideNum && message.storyId == Workspace.activeStory.remoteId) {
+            if (messageIsRelevant(message)) {
                 msgAdapter.add(message)
             }
         }
@@ -150,12 +151,7 @@ class  RemoteCheckFrag : SlidePhaseFrag(), CoroutineScope by MainScope() {
         messageReceiveChannel = Workspace.messageChannel.openSubscription()
         launch(Dispatchers.Main) {
             for (message in messageReceiveChannel!!) {
-                Log.e("@pwhite", "got message!")
-                msgAdapter.setQueuedMessages(Workspace.queuedMessages)
-                if (message.slideNumber == slideNum && message.storyId == Workspace.activeStory.remoteId) {
-                    msgAdapter.add(message)
-                }
-                messagesView.setSelection(msgAdapter.messageHistory.size - 1)
+                receiveMessageROCC(message)
             }
         }
 
@@ -165,29 +161,54 @@ class  RemoteCheckFrag : SlidePhaseFrag(), CoroutineScope by MainScope() {
         val prefs = activity!!.getSharedPreferences(R_CONSULTANT_PREFS, Context.MODE_PRIVATE)
         messageSent.setText(prefs.getString(storyName + slideNum + TO_SEND_MESSAGE, ""))
 
-        val whiteSendIcon = VectorDrawableCompat.create(resources, R.drawable.ic_send_white_24dp, null)!!
-        val blackSendIcon = VectorDrawableCompat.create(resources, R.drawable.ic_send_black_24dp, null)!!
+        whiteSendIcon = VectorDrawableCompat.create(resources, R.drawable.ic_send_white_24dp, null)!!
+        blackSendIcon = VectorDrawableCompat.create(resources, R.drawable.ic_send_black_24dp, null)!!
+        sendMessageButton.background = blackSendIcon  // initially it is blank and black
         sendMessageButton.setOnClickListener {
-            val messageText = messageSent.text.toString()
-            if (messageText.length > 0) {
-                val storyId = Workspace.activeStory.remoteId ?: 0
-                val message = MessageROCC(slideNum, storyId, false, false, Timestamp(0), messageText)
-                msgAdapter.addQueuedMessage(message)
-                launch {
-                    Workspace.toSendMessageChannel.send(message)
-                }
-                messageSent.setText("")
-                sendMessageButton.background = blackSendIcon;
-            }
+            sendMessageAction()
         }
 
         messageSent.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {}
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(text: CharSequence, start: Int, before: Int, count: Int) {
-                sendMessageButton.background = whiteSendIcon;
+                if (text.length > 0) {
+                    sendMessageButton.background = whiteSendIcon
+                }
+                else {
+                    sendMessageButton.background = blackSendIcon
+                }
+
             }
         })
+    }
+
+    fun receiveMessageROCC(message : MessageROCC) {
+        Log.e("@pwhite", "got message!")
+        msgAdapter.setQueuedMessages(Workspace.queuedMessages)
+        if (messageIsRelevant(message)) {
+            msgAdapter.add(message)
+        }
+        messagesView.setSelection(msgAdapter.messageHistory.size - 1)
+    }
+
+    fun sendMessageAction() {
+        val messageText = messageSent.text.toString()
+        if (messageText.length > 0) {
+            // RK 03/11/2024 - I don't think this will work if remoteID is null or zero.
+            // The ROCC does not know how to handle those cases
+            //  remoteID is normally initialized during first upload in
+            //  UploadAudioButtonManager then subsequently during story
+            //  load.  if no upload has yet occurred, the messages are not recognized
+            val storyId = Workspace.activeStory.remoteId ?: 0
+            val message = MessageROCC(slideNum, storyId, false, false, Timestamp(0), messageText)
+            msgAdapter.addQueuedMessage(message)
+            launch {
+                Workspace.toSendMessageChannel.send(message)
+            }
+            messageSent.setText("")
+            sendMessageButton.background = blackSendIcon;
+        }
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
@@ -249,8 +270,15 @@ class  RemoteCheckFrag : SlidePhaseFrag(), CoroutineScope by MainScope() {
         prefsEditor.putInt(R_LAST_ID + storyName + slideNum, lastID).apply()
     }
 
+    // RK 03/11/2024 - Please note that if the Worksace.activeStory.remoteID
+    // is null these messages are not properly handled.  remoteID is normally
+    // initialized during first upload in UploadAudioButtonManager then
+    // subsequently during story load.  if no upload has yet occurred,
+    // the messages are not recognized
     private fun messageIsRelevant(m: MessageROCC) =
-        m.storyId == Workspace.activeStory.remoteId && m.slideNumber == slideNum
+        Workspace.activeStory.remoteId != null &&
+        m.storyId == Workspace.activeStory.remoteId &&
+        m.slideNumber == slideNum
 
     companion object {
 

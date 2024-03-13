@@ -305,6 +305,7 @@
 
   "already_uploaded": "Rekaman yang dipilih sudah diunggah",
   "uploading_audio": "Mengunggah Audio",
+  "uploading_wordlink": "Mengunggah Tautan Kata",
   "upload_success": "File Audio Berhasil Dikirim",
   "upload_failed": "Pengunggahan audio gagal",
   "no_recording_found": "Tidak ada rekaman yang ditemukan",

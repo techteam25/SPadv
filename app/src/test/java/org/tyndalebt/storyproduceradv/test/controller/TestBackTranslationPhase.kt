@@ -1,15 +1,14 @@
 package org.tyndalebt.storyproduceradv.test.controller
 
-import android.net.Uri
+import android.content.Context
 import android.os.Build
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
-import androidx.viewpager.widget.ViewPager
 import com.getbase.floatingactionbutton.FloatingActionButton
+import kotlinx.coroutines.CoroutineScope
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -23,16 +22,11 @@ import org.tyndalebt.storyproduceradv.controller.SplashScreenActivity
 import org.tyndalebt.storyproduceradv.controller.adapter.RecordingsListAdapter
 import org.tyndalebt.storyproduceradv.controller.remote.BackTranslationFrag
 import org.tyndalebt.storyproduceradv.model.*
+import org.tyndalebt.storyproduceradv.model.messaging.Approval
 import org.tyndalebt.storyproduceradv.tools.file.assignNewAudioRelPath
-import org.tyndalebt.storyproduceradv.tools.file.getChosenCombName
-import org.tyndalebt.storyproduceradv.tools.file.getChosenDisplayName
 import org.tyndalebt.storyproduceradv.tools.file.getChosenFilename
-import org.tyndalebt.storyproduceradv.tools.file.getRecordedAudioFiles
-import org.tyndalebt.storyproduceradv.tools.file.getRecordedDisplayNames
-import org.tyndalebt.storyproduceradv.tools.file.setChosenFileIndex
-import org.tyndalebt.storyproduceradv.tools.file.updateDisplayName
-import org.tyndalebt.storyproduceradv.tools.toolbar.RecordingToolbar
 import org.tyndalebt.storyproduceradv.viewmodel.SlideViewModelBuilder
+import java.sql.Timestamp
 
 
 @RunWith(RobolectricTestRunner::class)
@@ -246,6 +240,105 @@ class TestTestBackTranslationPhase : BaseMultiRecordPhaseTest() {
       // xxxx Assert.assertFalse("Message modification flag should be false after send." ,slide.backTranslationTranscriptModified)
 //xxx      checkUploadButtons(fragView, false, false, slideNum)
    }
+
+   //
+   // Test: ApprovalTest
+   //
+   // Purpose:
+   //    Tests functionality for the Translate/Revise activity, audio files
+   //
+   // Steps:
+   //    1. Initialize the BackTranslationFrag screen
+   //    2. Simulate approval message for each slide
+   //    3. Check that slide and story approval properly set.
+   //    4. Disapprove slide 1 through the message
+   //    3. Check that slide and story approval properly reset.
+   //
+   // Author: Ray Kaestner 02/28/24
+   //
+   @Test
+   fun ApprovalTest() {
+
+      // init environment, need to set up remote registration file?
+      initProjectFiles(false)
+      mActivity = startAudioRecordActivity()
+      try {
+         mStory = loadStory(mActivity!!)
+         mStory!!.remoteId = 100  // null protection
+         Workspace.activeStory = mStory!!  // switches activePhase back to LEARN
+         Workspace.Stories.add(mStory!!)
+         var frag = startPagerFragment(0) as MultiRecordFrag
+         startPagerFragmentView(frag)
+         checkBackTranslationContent(frag, mBTFragView, 0)
+
+         doApprovalTest(frag, mBTFragView)
+
+      } catch (ex: Throwable) {
+         ex.printStackTrace()
+         Assert.assertTrue("Exception occurred. " + ex.message, false)
+      } finally {
+         cleanTempDirectories(mActivity!!)
+      }
+   }
+
+   fun doApprovalTest(
+      frag: MultiRecordFrag,
+      fragView: View?
+   ) {
+
+      var approvalMgr = mBTFrag.approvalIndicatorManager
+      var approvalBtn = approvalMgr.approvedIndicator
+      approvalMgr.start()
+      Assert.assertEquals ("Approval button should initially be false",
+         approvalBtn.background, approvalMgr.grayCheckmark)
+      Assert.assertFalse ("Story Approval should initially be false",
+         Workspace.activeStory.isApproved)
+
+      for (i in 0 until Workspace.activeStory.slides.size) {
+         doSlideApprovalTest(frag, fragView, i, false)
+      }
+
+      // disapprove slide 1
+      doSlideApprovalTest(frag, fragView, 1, true)
+
+   }
+
+   fun doSlideApprovalTest(
+      frag: MultiRecordFrag,
+      fragView: View?,
+      slideNum: Int,
+      bApproved: Boolean
+   ) {
+      startPagerFragment(slideNum)
+      val approvalMgr = mBTFrag.approvalIndicatorManager
+      val approvalBtn = approvalMgr.approvedIndicator
+      approvalMgr.start()
+
+      Workspace.activeSlideNum = slideNum  // from CircularViewPageHandler.onPageSelected()
+      val slide: Slide = Workspace.activeStory.slides[slideNum]
+
+      Assert.assertEquals ("Slide Approval should initially incorrect: " + slideNum,
+         bApproved, slide.isApproved)
+      var checkMark = if (bApproved) { approvalMgr.greenCheckmark } else {approvalMgr.grayCheckmark }
+      Assert.assertEquals ("Approval button should now be true",
+         checkMark, approvalBtn.background)
+      var approval = Approval(slideNum,  Workspace.activeStory.remoteId!!, Timestamp(0), !bApproved)
+      Workspace.approvalList.add(approval)
+      Workspace.processReceivedApprovals()
+      approvalMgr.processSlideApproval(approval)
+      Assert.assertEquals ("Slide Approval incorrect after message sent: " + slideNum,
+         !bApproved, slide.isApproved)
+      checkMark = if (!bApproved) { approvalMgr.greenCheckmark } else {approvalMgr.grayCheckmark }
+      Assert.assertEquals ("Approval button incorrect after message",
+         checkMark, approvalBtn.background)
+      var storyApproval = (slideNum >= (Workspace.activeStory.slides.size-2))
+      storyApproval = if (bApproved) { false } else {storyApproval}
+      Assert.assertEquals("Story approval incorrect: " + slideNum,
+         storyApproval, Workspace.activeStory.isApproved)
+      Assert.assertEquals("Workspace approval list should be empty after messages",
+         0, Workspace.approvalList.size)
+   }
+
 
    //
    // Test: BackTranslationAudioTest

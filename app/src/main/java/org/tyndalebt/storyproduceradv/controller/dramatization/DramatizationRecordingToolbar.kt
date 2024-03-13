@@ -21,13 +21,13 @@ import java.io.FileNotFoundException
  * together. A fifth button is added for sending the finished recording to a web server (not
  * currently implemented).
  */
-class DramatizationRecordingToolbar: MultiRecordRecordingToolbar() {
+open class DramatizationRecordingToolbar: MultiRecordRecordingToolbar() {
     private lateinit var checkButton: ImageButton
     private lateinit var sendAudioButton: ImageButton //Disable this old sendAudioButton or replace the function for the new "cloud upload thingy"
 
     private var enableSendAudioButton : Boolean = false
 
-    private var isAppendingOn = false
+    protected var isAppendingOn = false
     private val audioTempName = getTempAppendAudioRelPath()
 
     override fun onPause() {
@@ -106,23 +106,17 @@ class DramatizationRecordingToolbar: MultiRecordRecordingToolbar() {
     }
 
 
-    override fun micButtonOnClickListener(): View.OnClickListener {
-        return View.OnClickListener {
-            val wasRecording = voiceRecorder?.isRecording == true
-
-            stopToolbarMedia()
-
-            if (!wasRecording) {
-                if (isAppendingOn) {
-                    recordAudio(audioTempName)
-                } else {
-                    recordAudio(assignNewAudioRelPath())
-                }
-
-                micButton.setBackgroundResource(R.drawable.ic_pause_white_48dp)
-                checkButton.visibility = View.VISIBLE
-            }
+    // override the default behavior to allow appending
+    // additional audio to existing audio
+    protected override fun doRecordAudio() {
+        if (isAppendingOn) {
+            recordAudio(audioTempName)
+        } else {
+            recordAudio(assignNewAudioRelPath())
         }
+
+        micButton.setBackgroundResource(R.drawable.ic_pause_white_48dp)
+        checkButton.visibility = View.VISIBLE
     }
 
     private fun checkButtonOnClickListener(): View.OnClickListener{

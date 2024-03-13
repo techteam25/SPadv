@@ -208,27 +208,32 @@ open class RecordingToolbar : Fragment(){
               stopToolbarMedia()
 
               if (!wasRecording) {
-                  val recordingRelPath = assignNewAudioRelPath()
-                  //we may be overwriting things in other phases, but we do not care.
-                  if (storyRelPathExists(activity!!, recordingRelPath) &&
-                          (Workspace.activePhase.phaseType == PhaseType.LEARN ||
-                                  Workspace.activePhase.phaseType == PhaseType.WHOLE_STORY)) {
-                      val dialog = AlertDialog.Builder(activity!!)
-                              .setTitle(activity!!.getString(R.string.overwrite))
-                              .setMessage(activity!!.getString(R.string.learn_phase_overwrite))
-                              .setNegativeButton(activity!!.getString(R.string.no)) { _, _ ->
-                                  //do nothing
-                              }
-                              .setPositiveButton(activity!!.getString(R.string.yes)) { _, _ ->
-                                  //overwrite audio
-                                  recordAudio(recordingRelPath)
-                              }.create()
-                      dialog.show()
-                  } else {
-                      recordAudio(recordingRelPath)
-                  }
+                  doRecordAudio()
               }
           }
+    }
+
+    protected open fun doRecordAudio() {
+        val recordingRelPath = assignNewAudioRelPath()
+        //we may be overwriting things in other phases, but we do not care.
+        if (storyRelPathExists(activity!!, recordingRelPath) &&
+            (Workspace.activePhase.phaseType == PhaseType.LEARN ||
+                    Workspace.activePhase.phaseType == PhaseType.WHOLE_STORY)
+        ) {
+            val dialog = AlertDialog.Builder(activity!!)
+                .setTitle(activity!!.getString(R.string.overwrite))
+                .setMessage(activity!!.getString(R.string.learn_phase_overwrite))
+                .setNegativeButton(activity!!.getString(R.string.no)) { _, _ ->
+                    //do nothing
+                }
+                .setPositiveButton(activity!!.getString(R.string.yes)) { _, _ ->
+                    //overwrite audio
+                    recordAudio(recordingRelPath)
+                }.create()
+            dialog.show()
+        } else {
+            recordAudio(recordingRelPath)
+        }
     }
 
     /*

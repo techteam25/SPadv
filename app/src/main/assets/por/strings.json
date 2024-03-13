@@ -306,6 +306,7 @@
 
   "already_uploaded": "Gravação Enviada",
   "uploading_audio": "Áudio enviado",
+  "uploading_wordlink": "Link de palavra enviado",
   "upload_success": "Áudio enviado com sucesso!",
   "upload_failed": "Falha no envio do áudio",
   "no_recording_found": "Gravação não encontrada",

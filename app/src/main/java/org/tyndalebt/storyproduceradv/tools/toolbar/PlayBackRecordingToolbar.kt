@@ -28,7 +28,7 @@ open class PlayBackRecordingToolbar: RecordingToolbar() {
     private var audioPlayer: AudioPlayer = AudioPlayer()
     val isAudioPlaying : Boolean
         get() {return audioPlayer.isAudioPlaying}
-    private var slideNum : Int = 0
+    protected var slideNum : Int = 0
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
