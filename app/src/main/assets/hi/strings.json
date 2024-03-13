@@ -299,6 +299,7 @@
 
     "already_uploaded": "चयनित रिकॉर्डिंग पहले ही अपलोड हो चुकी है",
     "uploading_audio": "ऑडियो अपलोड हो रहा है",
+    "uploading_wordlink": "वर्ड लिंक अपलोड हो रहा है",
     "upload_success": "ऑडियो फ़ाइल सफलतापूर्वक भेजी गई",
     "upload_failed": "ऑडियो अपलोड विफ़ल रहा",
     "no_recording_found": "कोई रिकॉर्डिंग नहीं मिली",

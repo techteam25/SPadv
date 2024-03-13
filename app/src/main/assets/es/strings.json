@@ -306,6 +306,7 @@
 
   "already_uploaded": "Grabación seleccionada ya cargada",
   "uploading_audio": "Cargando Grabación",
+  "uploading_wordlink": "Cargando Enlace de términos",
   "upload_success": "Grabación Enviada Correctamente",
   "upload_failed": "Fallo en la carga de la grabación",
   "no_recording_found": "Grabación no encontrada",

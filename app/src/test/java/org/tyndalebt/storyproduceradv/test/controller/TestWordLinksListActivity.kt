@@ -32,7 +32,9 @@ class TestWordLinksListActivity : BaseMultiRecordPhaseTest() {
 
    var mWLLActivity : BaseActivity? = null
    var mWLActivity : WordLinksActivity? = null
-   var mLastTerm : String? = null
+
+   val wlTermName = "repent"
+   // val wlTermName2 = "Aaron"
 
    override fun getAudioFiles(slide : Slide) : MutableList<String> {
       return slide.communityWorkAudioFiles
@@ -81,8 +83,8 @@ class TestWordLinksListActivity : BaseMultiRecordPhaseTest() {
          checkWordLinksContent("Abram")
 
          // switch to a different wordlink and check for proper updates
-         wlActivity.replaceActivityWordLink("Aaron")
-         checkWordLinksContent("Aaron")
+         wlActivity.replaceActivityWordLink(wlTermName)
+         checkWordLinksContent(wlTermName)
 
       } catch (ex: Throwable) {
          ex.printStackTrace()
@@ -151,17 +153,15 @@ class TestWordLinksListActivity : BaseMultiRecordPhaseTest() {
          mStory = loadStory(activity!!)
          Workspace.activeStory = mStory!!  // switches activePhase back to LEARN
 
-         // open up the info on a wordlink using WordLinksActivity
-         mLastTerm = "Aaron"
-         var wlActivity = startWordLinksActivity(mLastTerm!!)
+         var wlActivity = startWordLinksActivity(wlTermName)
 
          var toolbarView = startRecordingToolbarView()
-         checkAudioRecordAudioContent(toolbarView, mLastTerm!!,  true, false)
+         checkAudioRecordAudioContent(toolbarView, wlTermName,  true, false)
          var toolbar = mWLActivity!!.getWLRecordingToolbar()
-         modifyAudioFiles(toolbar!!, toolbarView, mLastTerm!!, false)
+         modifyAudioFiles(toolbar!!, toolbarView, wlTermName, false)
 
          if (bRemote)  {
-            uploadTest(toolbar!!, toolbarView, mLastTerm!!)
+            uploadTest(toolbar!!, toolbarView, wlTermName)
          }
       }
       catch (ex : Throwable) {
@@ -231,7 +231,7 @@ class TestWordLinksListActivity : BaseMultiRecordPhaseTest() {
    }
 
    override fun getAudioFilesSize(slideNum : Int) : Int {
-      return getAudioFiles(mLastTerm!!).size
+      return getAudioFiles(wlTermName).size
    }
 
    fun uploadTest(toolBar : RecordingToolbar, toolbarFragView : View?, term : String) {
@@ -240,7 +240,7 @@ class TestWordLinksListActivity : BaseMultiRecordPhaseTest() {
       var toolbar = mWLActivity!!.getWLRecordingToolbar()
       val slideNum = 0
       doAddAudioFile(toolbarFragView, toolbar!!, slideNum, false)
-      var wordLink = Workspace.termToWordLinkMap.get(mLastTerm!!)
+      var wordLink = Workspace.termToWordLinkMap.get(wlTermName)
       wordLink!!.uploadState = WordLinkUploadState.UPLOAD_NEEDED
 
       var wordLinks2 = Workspace.WLSTree.getWordLinksNeedUpdateForForText("Jesus was teaching about " + term)
@@ -259,6 +259,17 @@ class TestWordLinksListActivity : BaseMultiRecordPhaseTest() {
          "Should be a wordlink needing upload before upload check",
          1, wordLinks.size
       )
+      wordLinks = getWordLinksNeedsUploadForSlide(slideNum)
+      Assert.assertEquals(
+         "Should be a wordlink in the current slide needing upload before upload check",
+         1, wordLinks.size
+      )
+
+      var displayName = Story.getDisplayName(wordLinks[0].chosenWordLinkFile)
+      Assert.assertNotNull("Wordlink has no displayname", displayName)
+      val index = displayName.indexOf(Workspace.activePhase.getDisplayNameAdditionalInfo())
+      Assert.assertTrue("DisplayName should be the default prompt", index > 0)
+
       checkWordLinksNeedsUpload(mWLActivity!!, slideNum, null)
       wordLinks = getWordLinksNeedsUpload()
 
@@ -364,9 +375,9 @@ class TestWordLinksListActivity : BaseMultiRecordPhaseTest() {
    }
 
    override fun doAddAudioFile(toolbarFragView : View?, recordingToolbar : RecordingToolbar, slideNum : Int, bList : Boolean) {
-      checkUploadNeeded(mLastTerm!!, false)
+      checkUploadNeeded(wlTermName, false)
       super.doAddAudioFile(toolbarFragView, recordingToolbar, slideNum, bList)
-      checkUploadNeeded(mLastTerm!!, true)
+      checkUploadNeeded(wlTermName, true)
    }
 
    fun checkModifySelectedFile(pos : Int) {

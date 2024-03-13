@@ -305,6 +305,7 @@
 
   "already_uploaded": "L'enregistrement sélectionné est dèjà mis en ligne",
   "uploading_audio": "Mettant en ligne l'audio",
+  "uploading_wordlink": "Mettant en ligne Word Link",
   "upload_success": "La mise en ligne de l'audio a réussi",
   "upload_failed": "La mise en ligne de l'audio a échouée",
   "no_recording_found": "Aucun enregistrement a été retrouvé",

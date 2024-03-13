@@ -77,8 +77,6 @@ class Slide{
     var backTranslationTranscriptModified = false
     var backTranslationTranscriptPresent = false
 
-    //var remoteCheckUploadState = UploadState.UPLOADED  // RK 12/28/23: upload not needed until a change
-
     //consultant approval
     var isChecked: Boolean = false
 

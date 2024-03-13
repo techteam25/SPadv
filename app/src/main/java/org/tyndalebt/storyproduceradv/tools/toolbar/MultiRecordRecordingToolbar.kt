@@ -61,10 +61,13 @@ open class MultiRecordRecordingToolbar: PlayBackRecordingToolbar() {
     protected open fun multiRecordButtonOnClickListener(): View.OnClickListener{
         return View.OnClickListener {
             stopToolbarMedia()
+            doAudioListDialog()
+         }
+    }
 
-            toolbarMediaListener.onStartedToolbarMedia()
-            
-            RecordingsListAdapter.RecordingsListModal(activity!!, this).show()
-        }
+    protected open fun doAudioListDialog() {
+        toolbarMediaListener.onStartedToolbarMedia()
+
+        RecordingsListAdapter.RecordingsListModal(activity!!, this).show()
     }
 }

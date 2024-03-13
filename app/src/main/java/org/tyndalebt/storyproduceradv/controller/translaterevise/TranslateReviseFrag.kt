@@ -6,11 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import org.tyndalebt.storyproduceradv.R
 import org.tyndalebt.storyproduceradv.controller.MultiRecordFrag
+import org.tyndalebt.storyproduceradv.tools.toolbar.MultiRecordRecordingToolbar
+import org.tyndalebt.storyproduceradv.tools.toolbar.RecordingToolbar
 
 /**
  * The fragment for the Draft view. This is where a user can draft out the story slide by slide
  */
 class TranslateReviseFrag : MultiRecordFrag() {
+    override var recordingToolbar: RecordingToolbar = MultiRecordRecordingToolbar() //This toolbar is specific to the slide-tellback
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

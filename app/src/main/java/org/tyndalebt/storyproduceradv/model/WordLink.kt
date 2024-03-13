@@ -19,6 +19,7 @@ import org.tyndalebt.storyproduceradv.controller.remote.UploadAudioButtonManager
 import org.tyndalebt.storyproduceradv.controller.remote.sendProjectSpecificRequest
 import org.tyndalebt.storyproduceradv.controller.wordlink.WordLinksActivity
 import org.tyndalebt.storyproduceradv.tools.file.getChildInputStream
+import org.tyndalebt.storyproduceradv.tools.file.getChosenCombName
 
 /**
  * A list of all the word links (used for saving all word links in a single file)
@@ -160,11 +161,12 @@ fun getWordLinksNotUpload(): MutableList<WordLink> {
 // RK 12/28/23:
 // Will upload all wordlinks that need uploading.  See Issue #111
 fun checkWordLinksNeedsUpload(context : Context, slideNumber : Int?, uploadMgr : UploadAudioButtonManager?) {
-    // val wordLinks = getWordLinksNeedsUpload()  // gives updates needed from all wordlinks
+
     if (slideNumber == null) {
         return   // for this scenario, if slidenumber is not defined then do nothing
     }
-    val wordLinks = getWordLinksNeedsUploadForSlide(slideNumber)  // gives updates needed only for current slide
+    //val wordLinks = getWordLinksNeedsUploadForSlide(slideNumber)  // gives updates needed only for current slide
+    val wordLinks = getWordLinksNeedsUpload()  // gives updates needed from all wordlinks
     if (wordLinks.size > 0) {
         for (i in wordLinks.indices) {
             Toast.makeText(context, R.string.uploading_wordlink, Toast.LENGTH_SHORT)
@@ -179,7 +181,14 @@ fun checkWordLinksNeedsUpload(context : Context, slideNumber : Int?, uploadMgr :
 
             val js = HashMap<String, String>()
             js["WordLink"] = wordLinks[i].term
-            js["BackTranslation"] = wordLinks[i].chosenWordLinkFile
+            var displayName = Story.getDisplayName(wordLinks[i].chosenWordLinkFile)
+            val fileName = Story.getFilename(wordLinks[i].chosenWordLinkFile)
+            if (displayName.indexOf(Workspace.activePhase.getDisplayNameAdditionalInfo()) > 0) {
+                displayName = ""  // do not send displayName if it is the prompt for "Press and hold"
+            }
+
+            js["textBackTranslation"] = displayName
+            js["audioRecordingFilename"] = fileName
             js["Data"] = byteString
 
             // XXXX val relativeUrl = context.getString(R.string.url_upload_wordlink)

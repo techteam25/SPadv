@@ -29,7 +29,7 @@ import java.util.*
 
 class BackTranslationFrag : MultiRecordFrag(), CoroutineScope by MainScope() {
 
-    override var recordingToolbar: RecordingToolbar = DramatizationRecordingToolbar() //This toolbar is specific to the slide-tellback
+    override var recordingToolbar: RecordingToolbar = BackTranslationRecordingToolbar() //This toolbar is specific to the slide-tellback
 
     lateinit var uploadAudioButtonManager: UploadAudioButtonManager
     lateinit var approvalIndicatorManager: ApprovalIndicatorManager
