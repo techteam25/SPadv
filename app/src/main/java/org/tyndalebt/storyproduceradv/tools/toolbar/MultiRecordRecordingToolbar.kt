@@ -3,7 +3,10 @@ package org.tyndalebt.storyproduceradv.tools.toolbar
 import android.view.View
 import android.widget.ImageButton
 import org.tyndalebt.storyproduceradv.R
+import org.tyndalebt.storyproduceradv.controller.MultiRecordFrag
 import org.tyndalebt.storyproduceradv.controller.adapter.RecordingsListAdapter
+import org.tyndalebt.storyproduceradv.model.PhaseType
+import org.tyndalebt.storyproduceradv.model.Workspace
 
 /**
  * A class responsible for listing recorded audio files from a recording toolbar.
@@ -21,6 +24,17 @@ open class MultiRecordRecordingToolbar: PlayBackRecordingToolbar() {
         rootView?.addView(multiRecordButton)
         
         rootView?.addView(toolbarButtonSpace())
+
+        commentIcon = toolbarButton(R.drawable.ic_comment_present_on_community_phase, R.id.comment_icon);
+        commentIcon.visibility = View.VISIBLE;
+//        checks the presence/absence of recorded comments on the community work phase and adds an icon if present
+        when (MultiRecordFrag.slideNumHolder != null) {
+            true -> if (Workspace.activeStory.slides[MultiRecordFrag.slideNumHolder!!].communityWorkAudioFiles.isNotEmpty() &&
+                Workspace.activePhase.phaseType != PhaseType.COMMUNITY_WORK) {
+                rootView?.addView(commentIcon);
+            }
+        }
+
     }
 
     override fun showInheritedToolbarButtons() {

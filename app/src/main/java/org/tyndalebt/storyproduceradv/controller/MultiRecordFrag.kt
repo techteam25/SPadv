@@ -40,11 +40,17 @@ abstract class MultiRecordFrag : SlidePhaseFrag(), PlayBackRecordingToolbar.Tool
                               container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
 
+        setSlideNumHolder();
+
         setToolbar()
 
         setupCameraAndEditButton()
 
         return rootView
+    }
+
+    private fun setSlideNumHolder() {
+        slideNumHolder = this.slideNum;
     }
 
     /**
@@ -216,9 +222,16 @@ abstract class MultiRecordFrag : SlidePhaseFrag(), PlayBackRecordingToolbar.Tool
 
         recordingToolbar.stopToolbarMedia()
     }
-    
+
+    /**
+     * Had to add a name to this companion to differentiate it from the other containing
+     * the comment circle function
+     *
+     * */
     companion object {
         private const val ACTIVITY_SELECT_IMAGE = 53
+        //tells the toolbar the slideNum to set commentIcon visibility
+        var slideNumHolder: Int? = null;
     }
 
     fun getRecordToolbar() : RecordingToolbar { // RK 09/29/23 for testing purposes - see TestTranslateReviseActivity

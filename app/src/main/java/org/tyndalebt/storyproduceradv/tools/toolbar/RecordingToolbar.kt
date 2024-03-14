@@ -42,6 +42,7 @@ open class RecordingToolbar : Fragment(){
     var rootView: LinearLayout? = null
     protected lateinit var appContext: Context
     protected lateinit var micButton: ImageButton
+    protected lateinit var commentIcon: ImageButton
 
     open lateinit var toolbarMediaListener : ToolbarMediaListener
     protected var voiceRecorder: AudioRecorder? = null
