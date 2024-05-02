@@ -1,31 +1,26 @@
 package org.tyndalebt.storyproduceradv.controller.remote
 
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
-import android.content.Intent
-import org.tyndalebt.storyproduceradv.model.UploadState
 import android.provider.Settings
-import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import android.util.Base64
 import android.util.Log
 import android.widget.*
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.android.volley.VolleyError
-import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.StringRequest
 import org.apache.commons.io.IOUtils
-import org.json.JSONObject
 import org.json.JSONException
+import org.json.JSONObject
 import org.tyndalebt.storyproduceradv.R
-import org.tyndalebt.storyproduceradv.controller.MainActivity
+import org.tyndalebt.storyproduceradv.model.UploadState
 import org.tyndalebt.storyproduceradv.model.Workspace
 import org.tyndalebt.storyproduceradv.model.checkWordLinksNeedsUpload
 import org.tyndalebt.storyproduceradv.model.getWordLinksNeedsUpload
-import org.tyndalebt.storyproduceradv.model.getWordLinksNeedsUploadForSlide
 import org.tyndalebt.storyproduceradv.tools.Network.VolleySingleton
 import org.tyndalebt.storyproduceradv.tools.file.getStoryChildInputStream
-import java.util.*
 import java.io.InputStream
-import kotlin.collections.HashMap
+import java.util.*
 
 class UploadAudioButtonManager(
     val context: Context, 
@@ -247,8 +242,22 @@ fun sendProjectSpecificRequest(
         Log.i("LOG_VOLLEY", it)
         var jsonObject: JSONObject? = null
         try {
-            jsonObject = JSONObject(it)
+            // RK 04/12/24
+            // There was a test case variable it contained warning text also
+            // The normal format looks like: {"StoryId":"3"}
+            // The warning format looked like the following:
+            //    <br />
+            //    <b>Warning</b>:  unlink(/var/www/html/roccdev.ttapps/Files/Projects/d930e413685ebbf1/WordLinks/685cb2ec71a258d063d52d805e5899f986426de6fa24d719c33186cb2171.m4a): No such file or directory in <b>/var/www/html/roccdev.ttapps/API/utils/Model.php</b> on line <b>900</b><br />
+            //    {"RecordingId":"3"}
+            var index = it.indexOf("{")
+            val text = if (index >= 0) it.substring(index, it.length) else it
+            jsonObject = JSONObject(text)
         } catch (e: JSONException) {
+            //   There was an example of the following error string in it:
+            //      "Internal server error. Please report this to the server administrator."
+            //   I wanted to display the error message, but toast should have shorter messages
+            // val textBuf: CharSequence = StringBuffer(context.getString(R.string.upload_failed) + "\n" + it)
+            // Toast.makeText(context, textBuf, Toast.LENGTH_LONG).show()
             Toast.makeText(context, R.string.upload_failed, Toast.LENGTH_SHORT).show()
         }
         if (jsonObject != null) {
@@ -259,9 +268,9 @@ fun sendProjectSpecificRequest(
         Log.e("LOG_VOLLEY", it.toString())
         val nr = it.networkResponse
         if (nr != null) {
-            Toast.makeText(context, "${nr.statusCode}: ${String(nr.data, Charsets.UTF_8)}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "${nr.statusCode}: ${String(nr.data, Charsets.UTF_8)}", Toast.LENGTH_LONG).show()
         } else {
-            Toast.makeText(context, R.string.upload_failed, Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, R.string.upload_failed, Toast.LENGTH_LONG).show()
         }
         onFailure(it)
     }) {

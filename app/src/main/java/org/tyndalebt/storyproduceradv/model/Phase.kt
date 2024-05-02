@@ -189,7 +189,7 @@ class Phase (val phaseType: PhaseType) {
     // This instructional string is appended to the generated display name
     fun getDisplayNameAdditionalInfo() : String {
         return when (phaseType) {
-            PhaseType.WORD_LINKS       -> " --> Press and hold to back translate"
+            PhaseType.WORD_LINKS       -> Companion.WORDLINK_EMPTY_DISPLAYNAME
             else -> ""
         }
     }
@@ -372,5 +372,7 @@ class Phase (val phaseType: PhaseType) {
                 else -> throw Exception("Unsupported stage to get a reference audio file for")
             }
         }
+
+        const val WORDLINK_EMPTY_DISPLAYNAME = " --> Press and hold to back translate"
     }
 }

@@ -145,13 +145,19 @@ fun getWordLinksNeedsUploadForSlide(slideNum : Int?): MutableList<WordLink> {
     return wordLinks
 }
 
-fun getWordLinksNotUpload(): MutableList<WordLink> {
+// returns a list of all wordlinks that need upload or that have
+// a recording that have never been uploaded
+fun getWordLinksNotUploadedNeedingUpload(): MutableList<WordLink> {
     val wordLinks = ArrayList<WordLink>()
     val it: Iterator<WordLink> = Workspace.termToWordLinkMap.values.iterator()
     while (it.hasNext()) {
         val wordLink: WordLink = it.next()
-        if ((wordLink.uploadState == WordLinkUploadState.UPLOAD_NEEDED) ||
-            (wordLink.uploadState == WordLinkUploadState.NOT_UPLOADED)) {
+        if (wordLink.uploadState == WordLinkUploadState.UPLOAD_NEEDED) {
+            wordLinks.add(wordLink)
+        }
+        else if ((wordLink.uploadState == WordLinkUploadState.NOT_UPLOADED) &&
+                    (wordLink.chosenWordLinkFile != null) &&
+                    (wordLink.chosenWordLinkFile.isNotEmpty())) {
             wordLinks.add(wordLink)
         }
     }
@@ -162,9 +168,6 @@ fun getWordLinksNotUpload(): MutableList<WordLink> {
 // Will upload all wordlinks that need uploading.  See Issue #111
 fun checkWordLinksNeedsUpload(context : Context, slideNumber : Int?, uploadMgr : UploadAudioButtonManager?) {
 
-    if (slideNumber == null) {
-        return   // for this scenario, if slidenumber is not defined then do nothing
-    }
     //val wordLinks = getWordLinksNeedsUploadForSlide(slideNumber)  // gives updates needed only for current slide
     val wordLinks = getWordLinksNeedsUpload()  // gives updates needed from all wordlinks
     if (wordLinks.size > 0) {
@@ -180,10 +183,10 @@ fun checkWordLinksNeedsUpload(context : Context, slideNumber : Int?, uploadMgr :
             val byteString = Base64.encodeToString(audioBytes, Base64.DEFAULT)
 
             val js = HashMap<String, String>()
-            js["WordLink"] = wordLinks[i].term
+            js["term"] = wordLinks[i].term
             var displayName = Story.getDisplayName(wordLinks[i].chosenWordLinkFile)
             val fileName = Story.getFilename(wordLinks[i].chosenWordLinkFile)
-            if (displayName.indexOf(Workspace.activePhase.getDisplayNameAdditionalInfo()) > 0) {
+            if (displayName.indexOf(Phase.WORDLINK_EMPTY_DISPLAYNAME) > 0) {
                 displayName = ""  // do not send displayName if it is the prompt for "Press and hold"
             }
 
@@ -191,19 +194,21 @@ fun checkWordLinksNeedsUpload(context : Context, slideNumber : Int?, uploadMgr :
             js["audioRecordingFilename"] = fileName
             js["Data"] = byteString
 
-            // XXXX val relativeUrl = context.getString(R.string.url_upload_wordlink)
-            val relativeUrl = context.getString(R.string.url_upload_audio)  // XXXX try to make this work for now
+            val relativeUrl = context.getString(R.string.url_upload_wordlink)
 
-            // XXXX these should not be necessary when the rocc adds real support for wordlinks
-            js["TemplateTitle"] = Workspace.activeStory.title
-            js["Language"] = Workspace.activeStory.language
-            if (slideNumber != null) {
-                js["SlideNumber"] = slideNumber.toString()
-            }
-            if (Workspace.activeStory.remoteId != null) {
-                js["StoryId"] = Workspace.activeStory.remoteId.toString()
-            }
-            // XXXX end - unnecessary items for success
+            // XXXX     For development testing of wordlinks until the server is updated, use the old url for now
+            // XXXX     the old url also  requires the following additional properties to work
+            // XXXX
+            // xxxx val relativeUrl = context.getString(R.string.url_upload_audio)  // temp fix for now
+            // XXXX js["TemplateTitle"] = Workspace.activeStory.title
+            // XXXX js["Language"] = Workspace.activeStory.language
+            // XXXX if (slideNumber != null) {
+            // XXXX     js["SlideNumber"] = slideNumber.toString()
+            // XXXX }
+            // XXXX if (Workspace.activeStory.remoteId != null) {
+            // XXXX    js["StoryId"] = Workspace.activeStory.remoteId.toString()
+            // XXXX }
+            // XXXX     end - development testing using the old url.
 
             sendProjectSpecificRequest(
                 context,
