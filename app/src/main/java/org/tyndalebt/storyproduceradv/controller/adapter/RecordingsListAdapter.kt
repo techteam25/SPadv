@@ -140,7 +140,16 @@ class RecordingsListAdapter(val values: MutableList<String>?, private val listen
                     .setView(newName)
                     .setNegativeButton(itemView.context.getString(R.string.cancel), null)
                     .setPositiveButton(itemView.context.getString(R.string.save)) { _, _ ->
-                        listeners.onRenameClick(position, newName.text.toString())
+                        var testName = newName.text.toString()
+                        if (testName.isEmpty()) {
+                            // RK - 05/01/2024
+                            // if for some reason the name was blank,
+                            // go back to the default name.
+                            // This code needs a name and causes problems if none results.
+                            testName = createRecordingCombinedName()
+                            testName = Story.getDisplayName(testName)
+                        }
+                        listeners.onRenameClick(position, testName)
                         notifyDataSetChanged()
                     }.create()
 
