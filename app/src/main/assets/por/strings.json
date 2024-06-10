@@ -306,9 +306,11 @@
 
   "already_uploaded": "Gravação Enviada",
   "uploading_audio": "Áudio enviado",
-  "uploading_wordlink": "Link de palavra enviado",
+  "uploading_wordlink": "Link de palavra enviado: ",
   "upload_success": "Áudio enviado com sucesso!",
   "upload_failed": "Falha no envio do áudio",
+  "wordlink_upload_success": "Link de palavra enviado com sucesso: ",
+  "wordlink_upload_failed": "Falha no envio do Link de palavra: ",
   "no_recording_found": "Gravação não encontrada",
   "upload_already_started": "Envio em Progresso",
   "cancel_uploaded": "Cancelamento de envio",

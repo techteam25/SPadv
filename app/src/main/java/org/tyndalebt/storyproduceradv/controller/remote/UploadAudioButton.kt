@@ -16,7 +16,8 @@ import org.tyndalebt.storyproduceradv.R
 import org.tyndalebt.storyproduceradv.model.UploadState
 import org.tyndalebt.storyproduceradv.model.Workspace
 import org.tyndalebt.storyproduceradv.model.checkWordLinksNeedsUpload
-import org.tyndalebt.storyproduceradv.model.getWordLinksNeedsUpload
+//import org.tyndalebt.storyproduceradv.model.getWordLinksNeedsUpload
+import org.tyndalebt.storyproduceradv.model.getWordLinksNotUploadedNeedingUpload
 import org.tyndalebt.storyproduceradv.tools.Network.VolleySingleton
 import org.tyndalebt.storyproduceradv.tools.file.getStoryChildInputStream
 import java.io.InputStream
@@ -70,8 +71,9 @@ class UploadAudioButtonManager(
         when (getUploadState()) {
             UploadState.UPLOADED -> {
                 // if we need to upload wordlinks, then allow an upload
-                if (getWordLinksNeedsUpload().size > 0) {
-                    checkWordLinksNeedsUpload(context, slideNumber, this)
+                //if (getWordLinksNeedsUpload().size > 0) {
+                if (getWordLinksNotUploadedNeedingUpload().size > 0) {
+                        checkWordLinksNeedsUpload(context, slideNumber, this)
                 }
                 else {
                     // no upload needed
@@ -148,6 +150,12 @@ class UploadAudioButtonManager(
                                 checkWordLinksNeedsUpload(context, slideNumber, this)
                             },
                             {
+                                val nr = it.networkResponse
+                                if (nr != null) {
+                                    // error message details are available
+                                    Toast.makeText(context, "${nr.statusCode}: ${String(nr.data, Charsets.UTF_8)}", Toast.LENGTH_LONG).show()
+                                }
+
                                 Toast.makeText(
                                     context,
                                     R.string.upload_failed,
@@ -183,7 +191,8 @@ class UploadAudioButtonManager(
             // if we in the process of uploading, give that state a priority
             uploadAudioButton.background = uploadingIcon
         }
-        else if (getWordLinksNeedsUpload().size > 0) {   // checks all wordlink needs upload
+        else if (getWordLinksNotUploadedNeedingUpload().size > 0) {   // checks all wordlink needs upload
+        // else if (getWordLinksNeedsUpload().size > 0) {   // checks all wordlink needs upload
         // else if ((slideNumber != null) && getWordLinksNeedsUploadForSlide(slideNumber!!).size > 0) {
             // if wordlinks need an upload, ensure that the button is enabled
             uploadAudioButton.background = notUploadedIcon
@@ -204,7 +213,7 @@ fun sendSlideSpecificRequest(
     slideNumber: Int,
     relativeUrl: String,
     content: String,
-    onSuccess: (JSONObject) -> Unit,
+    onSuccess: (JSONObject?) -> Unit,
     onFailure: (VolleyError) -> Unit,
     js: HashMap<String, String> = HashMap()) {
 
@@ -216,28 +225,33 @@ fun sendSlideSpecificRequest(
     js["SlideNumber"] = slideNumber.toString()
     js["Data"] = content
     sendProjectSpecificRequest(context, relativeUrl, {
-        val newStoryId = it.getInt("StoryId")
-        Log.e("@pwhite", "Received id $newStoryId")
-        if (Workspace.activeStory.remoteId == null) {
-            Log.i("@pwhite", "Setting active story id from null to $newStoryId")
-            Workspace.activeStory.remoteId = newStoryId
-        } else {
-            Log.e("SanityCheck", "Response id ($newStoryId) should be the same story id as stored (${Workspace.activeStory.remoteId})")
+        if (it != null) {
+            val newStoryId = it.getInt("StoryId")
+            Log.e("@pwhite", "Received id $newStoryId")
+            if (Workspace.activeStory.remoteId == null) {
+                Log.i("@pwhite", "Setting active story id from null to $newStoryId")
+                Workspace.activeStory.remoteId = newStoryId
+            } else {
+                Log.e(
+                    "SanityCheck",
+                    "Response id ($newStoryId) should be the same story id as stored (${Workspace.activeStory.remoteId})"
+                )
+            }
+            onSuccess(it)
         }
-        onSuccess(it)
     }, onFailure, js)
 }
 
 fun sendProjectSpecificRequest(
     context: Context,
     relativeUrl: String,
-    onSuccess: (JSONObject) -> Unit,
+    onSuccess: (JSONObject?) -> Unit,
     onFailure: (VolleyError) -> Unit,
     params: HashMap<String, String> = HashMap()) {
 
     params["Key"] = context.getString(R.string.api_token)
     params["PhoneId"] = getPhoneId(context)
-    val url = Workspace.getRoccUrlPrefix(context) + relativeUrl
+    var url = Workspace.getRoccUrlPrefix(context) + relativeUrl
     val req = object : StringRequest(Method.POST, url, {
         Log.i("LOG_VOLLEY", it)
         var jsonObject: JSONObject? = null
@@ -258,7 +272,15 @@ fun sendProjectSpecificRequest(
             //   I wanted to display the error message, but toast should have shorter messages
             // val textBuf: CharSequence = StringBuffer(context.getString(R.string.upload_failed) + "\n" + it)
             // Toast.makeText(context, textBuf, Toast.LENGTH_LONG).show()
-            Toast.makeText(context, R.string.upload_failed, Toast.LENGTH_SHORT).show()
+            val relativeUrl = context.getString(R.string.url_delete_wordlink_backtrans)
+            if ((it.length == 0) && (url.toString().indexOf(relativeUrl) > 0)) {
+                // delete wordlink could result in an empty it string.
+                // treat that one special
+                onSuccess(jsonObject)
+            }
+            else {
+                Toast.makeText(context, R.string.upload_failed, Toast.LENGTH_SHORT).show()
+            }
         }
         if (jsonObject != null) {
             onSuccess(jsonObject)
@@ -266,12 +288,6 @@ fun sendProjectSpecificRequest(
     }, {
         Log.e("LOG_VOLLEY", "HIT ERROR")
         Log.e("LOG_VOLLEY", it.toString())
-        val nr = it.networkResponse
-        if (nr != null) {
-            Toast.makeText(context, "${nr.statusCode}: ${String(nr.data, Charsets.UTF_8)}", Toast.LENGTH_LONG).show()
-        } else {
-            Toast.makeText(context, R.string.upload_failed, Toast.LENGTH_LONG).show()
-        }
         onFailure(it)
     }) {
         override fun getParams(): Map<String, String> {

@@ -305,9 +305,11 @@
 
   "already_uploaded": "Rekodi iliyochaguliwa tayari imepakiwa",
   "uploading_audio": "Inapakia sauti",
-  "uploading_wordlink": "Inapakia kiungo cha neno",
+  "uploading_wordlink": "Inapakia kiungo cha neno: ",
   "upload_success": "Faili ya Sauti Imetumwa kwa Mafanikio",
-  "upload_failed": "Imeshindwa kutuma sauti",
+  "upload_failed": "Imeshindwa kutuma kiungo cha neno",
+  "wordlink_upload_success": "Faili ya kiungo cha neno Imetumwa kwa Mafanikio: ",
+  "wordlink_upload_failed": "Imeshindwa kutuma kiungo cha neno: ",
   "no_recording_found": "Hakuna rasimu ya sauti iliyopatikana",
   "upload_already_started": "upakiaji tayari unaendelea",
   "cancel_uploaded": "Inaghairi upakiaji",

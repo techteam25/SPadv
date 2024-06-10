@@ -305,9 +305,11 @@
 
   "already_uploaded": "L'enregistrement sélectionné est dèjà mis en ligne",
   "uploading_audio": "Mettant en ligne l'audio",
-  "uploading_wordlink": "Mettant en ligne Word Link",
+  "uploading_wordlink": "Mettant en ligne Word Link: ",
   "upload_success": "La mise en ligne de l'audio a réussi",
   "upload_failed": "La mise en ligne de l'audio a échouée",
+  "wordlink_upload_success": "La mise en ligne de Word Link a réussi: ",
+  "wordlink_upload_failed": "La mise en ligne de Word Link a échouée: ",
   "no_recording_found": "Aucun enregistrement a été retrouvé",
   "upload_already_started": "La mise en ligne est en cours",
   "cancel_uploaded": "Annulant la mise en lighe",
