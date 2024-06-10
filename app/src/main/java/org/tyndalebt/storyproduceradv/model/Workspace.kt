@@ -512,6 +512,7 @@ object Workspace {
                     if (termToWordLinkMap.containsKey(wl.term)) {
                         termToWordLinkMap[wl.term]?.wordLinkRecordings = wl.wordLinkRecordings
                         termToWordLinkMap[wl.term]?.chosenWordLinkFile = wl.chosenWordLinkFile
+                        termToWordLinkMap[wl.term]?.uploadState = wl.uploadState
                     } else {
                         termToWordLinkMap[wl.term] = wl
                     }

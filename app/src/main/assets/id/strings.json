@@ -305,9 +305,11 @@
 
   "already_uploaded": "Rekaman yang dipilih sudah diunggah",
   "uploading_audio": "Mengunggah Audio",
-  "uploading_wordlink": "Mengunggah Tautan Kata",
+  "uploading_wordlink": "Mengunggah Tautan Kata: ",
   "upload_success": "File Audio Berhasil Dikirim",
   "upload_failed": "Pengunggahan audio gagal",
+  "wordlink_upload_success": "Tautan Kata Berhasil Dikirim: ",
+  "wordlink_upload_failed": "Pengunggahan Tautan Kata gagal: ",
   "no_recording_found": "Tidak ada rekaman yang ditemukan",
   "upload_already_started": "Pengunggahan sedang berlangsung",
   "cancel_uploaded": "Membatalkan pengunggahan",

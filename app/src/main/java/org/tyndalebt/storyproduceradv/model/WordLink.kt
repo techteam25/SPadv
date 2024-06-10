@@ -20,6 +20,7 @@ import org.tyndalebt.storyproduceradv.controller.remote.sendProjectSpecificReque
 import org.tyndalebt.storyproduceradv.controller.wordlink.WordLinksActivity
 import org.tyndalebt.storyproduceradv.tools.file.getChildInputStream
 import org.tyndalebt.storyproduceradv.tools.file.getChosenCombName
+import org.tyndalebt.storyproduceradv.tools.file.toJson
 
 /**
  * A list of all the word links (used for saving all word links in a single file)
@@ -169,68 +170,73 @@ fun getWordLinksNotUploadedNeedingUpload(): MutableList<WordLink> {
 fun checkWordLinksNeedsUpload(context : Context, slideNumber : Int?, uploadMgr : UploadAudioButtonManager?) {
 
     //val wordLinks = getWordLinksNeedsUploadForSlide(slideNumber)  // gives updates needed only for current slide
-    val wordLinks = getWordLinksNeedsUpload()  // gives updates needed from all wordlinks
+    //val wordLinks = getWordLinksNeedsUpload()  // gives updates needed from all wordlinks
+    val wordLinks = getWordLinksNotUploadedNeedingUpload()  // gives updates needed from all wordlinks
     if (wordLinks.size > 0) {
         for (i in wordLinks.indices) {
-            Toast.makeText(context, R.string.uploading_wordlink, Toast.LENGTH_SHORT)
+            var toastMsg = context.getString(R.string.uploading_wordlink) + wordLinks[i].term
+            Toast.makeText(context, toastMsg, Toast.LENGTH_SHORT)
                 .show()
-
-            var audioRecording = wordLinks[i].chosenWordLinkFile
-            audioRecording = Story.getFilename(audioRecording)
-            audioRecording = WORD_LINKS_DIR + "/" + audioRecording
-            val input = getChildInputStream(context, audioRecording)
-            val audioBytes = IOUtils.toByteArray(input)
-            val byteString = Base64.encodeToString(audioBytes, Base64.DEFAULT)
 
             val js = HashMap<String, String>()
             js["term"] = wordLinks[i].term
-            var displayName = Story.getDisplayName(wordLinks[i].chosenWordLinkFile)
-            val fileName = Story.getFilename(wordLinks[i].chosenWordLinkFile)
-            if (displayName.indexOf(Phase.WORDLINK_EMPTY_DISPLAYNAME) > 0) {
-                displayName = ""  // do not send displayName if it is the prompt for "Press and hold"
+
+            var indexNo = 1
+            for (j in wordLinks[i].wordLinkRecordings.indices) {
+                var audioRec = wordLinks[i].wordLinkRecordings[j]
+
+                var backTrans = Story.getDisplayName(audioRec.audioRecordingFilename)
+                if (backTrans.indexOf(Phase.WORDLINK_EMPTY_DISPLAYNAME) < 0) {
+                    js["textBackTranslation$indexNo"]  = backTrans
+                    indexNo++
+                }
             }
-
-            js["textBackTranslation"] = displayName
-            js["audioRecordingFilename"] = fileName
-            js["Data"] = byteString
-
-            val relativeUrl = context.getString(R.string.url_upload_wordlink)
-
-            // XXXX     For development testing of wordlinks until the server is updated, use the old url for now
-            // XXXX     the old url also  requires the following additional properties to work
-            // XXXX
-            // xxxx val relativeUrl = context.getString(R.string.url_upload_audio)  // temp fix for now
-            // XXXX js["TemplateTitle"] = Workspace.activeStory.title
-            // XXXX js["Language"] = Workspace.activeStory.language
-            // XXXX if (slideNumber != null) {
-            // XXXX     js["SlideNumber"] = slideNumber.toString()
-            // XXXX }
-            // XXXX if (Workspace.activeStory.remoteId != null) {
-            // XXXX    js["StoryId"] = Workspace.activeStory.remoteId.toString()
-            // XXXX }
-            // XXXX     end - development testing using the old url.
+            var resId = R.string.url_upload_wordlink_backtrans
+            if ((wordLinks[i].wordLinkRecordings.size <= 0) || (indexNo == 1)) {
+                resId = R.string.url_delete_wordlink_backtrans
+            }
+            val relativeUrl = context.getString(resId)
 
             sendProjectSpecificRequest(
                 context,
                 relativeUrl,
                 {
-                    Toast.makeText(
-                        context,
-                        R.string.upload_success,
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    wordLinks[i].uploadState = WordLinkUploadState.UPLOADED
+                    worklinkUploadSuccess(context, wordLinks[i])
                     if (uploadMgr != null) {
                         uploadMgr.refreshBackground()
                     }
                 },
                 {
-                    Toast.makeText(
-                        context,
-                        R.string.upload_failed,
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    wordLinks[i].uploadState = WordLinkUploadState.UPLOAD_NEEDED  //still needed
+                    val nr = it.networkResponse
+                    if ((resId == R.string.url_delete_wordlink_backtrans) &&
+                        (nr != null) && (nr.statusCode == 404)) {
+
+                        // Note that the most common error for delete
+                        // is that the item does not exist.  This is a valid
+                        // error, but should be ignored, meaning that the item
+                        // has already been deleted
+                        worklinkUploadSuccess(context, wordLinks[i])
+                    }
+                    else {
+                        if (nr != null) {
+                            // error message details are available
+                            Toast.makeText(context, "${nr.statusCode}: ${String(nr.data, Charsets.UTF_8)}", Toast.LENGTH_LONG).show()
+                        }
+
+                        var toastMsg =
+                            context.getString(R.string.wordlink_upload_failed) + wordLinks[i].term
+                        Toast.makeText(
+                            context,
+                            toastMsg,
+                            Toast.LENGTH_LONG
+                        ).show()
+
+                        modifyUploadStateAndSave(
+                            context,
+                            wordLinks[i],
+                            WordLinkUploadState.UPLOAD_NEEDED
+                        )
+                    }
                     if (uploadMgr != null) {
                         uploadMgr.refreshBackground()
                     }
@@ -239,6 +245,39 @@ fun checkWordLinksNeedsUpload(context : Context, slideNumber : Int?, uploadMgr :
             )
         }
     }
+}
+
+private fun worklinkUploadSuccess(context : Context, wordLink: WordLink) {
+    var toastMsg = context.getString(R.string.wordlink_upload_success) + wordLink.term
+    Toast.makeText(
+        context,
+        toastMsg,
+        Toast.LENGTH_LONG
+    ).show()
+    modifyUploadStateAndSave(context, wordLink, WordLinkUploadState.UPLOADED)
+
+}
+
+private fun modifyUploadStateAndSave(context: Context, wordLink: WordLink, uploadState: WordLinkUploadState) {
+    if (Workspace.isRemote() &&
+         (wordLink.uploadState != uploadState)) {
+        wordLink.uploadState = uploadState
+        doSaveWordLink(context, wordLink)
+    }
+}
+
+/**
+ * Saves the specified word link to the workspace and exports an up-to-date json file for all word links
+ **/
+
+fun doSaveWordLink(context: Context, wordLink: WordLink) {
+    Workspace.termToWordLinkMap[wordLink.term] = wordLink   // replace the list item with the new definition
+    val wordLinkList = WordLinkList(Workspace.termToWordLinkMap.values.toList())
+    Thread(Runnable{
+        context.let {
+            wordLinkList.toJson(it)
+        }
+    }).start()  // save the list
 }
 
 
