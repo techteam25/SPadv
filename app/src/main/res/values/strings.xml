@@ -368,7 +368,7 @@ video_share
     <!-- Upload for Remote Phases -->
     <string name="already_uploaded">Selected recording already uploaded</string>
     <string name="uploading_audio">Uploading Audio</string>
-    <string name="uploading_wordlink">Uploading Word Link: </string>
+    <string name="uploading_wordlink">Uploading Word Link(s) </string>
     <string name="upload_success">Audio File Sent Successfully</string>
     <string name="upload_failed">Audio upload failed</string>
     <string name="wordlink_upload_success">WordLink Sent Successfully: </string>
