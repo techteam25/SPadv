@@ -173,10 +173,13 @@ fun checkWordLinksNeedsUpload(context : Context, slideNumber : Int?, uploadMgr :
     //val wordLinks = getWordLinksNeedsUpload()  // gives updates needed from all wordlinks
     val wordLinks = getWordLinksNotUploadedNeedingUpload()  // gives updates needed from all wordlinks
     if (wordLinks.size > 0) {
+        var toastMsg = context.getString(R.string.uploading_wordlink)
+        Toast.makeText(context, toastMsg, Toast.LENGTH_SHORT)
+            .show()
         for (i in wordLinks.indices) {
-            var toastMsg = context.getString(R.string.uploading_wordlink) + wordLinks[i].term
-            Toast.makeText(context, toastMsg, Toast.LENGTH_SHORT)
-                .show()
+            //var toastMsg = context.getString(R.string.uploading_wordlink) + wordLinks[i].term
+            //Toast.makeText(context, toastMsg, Toast.LENGTH_SHORT)
+            //    .show()
 
             val js = HashMap<String, String>()
             js["term"] = wordLinks[i].term
@@ -228,7 +231,7 @@ fun checkWordLinksNeedsUpload(context : Context, slideNumber : Int?, uploadMgr :
                         Toast.makeText(
                             context,
                             toastMsg,
-                            Toast.LENGTH_LONG
+                            Toast.LENGTH_SHORT
                         ).show()
 
                         modifyUploadStateAndSave(
@@ -249,11 +252,11 @@ fun checkWordLinksNeedsUpload(context : Context, slideNumber : Int?, uploadMgr :
 
 private fun worklinkUploadSuccess(context : Context, wordLink: WordLink) {
     var toastMsg = context.getString(R.string.wordlink_upload_success) + wordLink.term
-    Toast.makeText(
-        context,
-        toastMsg,
-        Toast.LENGTH_LONG
-    ).show()
+    //Toast.makeText(
+    //    context,
+    //    toastMsg,
+    //    Toast.LENGTH_SHORT
+    //).show()
     modifyUploadStateAndSave(context, wordLink, WordLinkUploadState.UPLOADED)
 
 }
