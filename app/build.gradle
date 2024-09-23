@@ -7,14 +7,14 @@ apply plugin: 'com.google.gms.google-services'
 def keystorePropertiesFile = new File(rootProject.projectDir, 'keystore.properties')
 
 android {
-    compileSdkVersion 33
+    compileSdkVersion 34
     buildToolsVersion '30.0.3'
     defaultConfig {
         applicationId "org.tyndalebt.storyproduceradv"
         minSdkVersion 24
-        targetSdkVersion 33
-        versionCode 57
-        versionName '2.19'
+        targetSdkVersion 34
+        versionCode 59
+        versionName '2.22'
         vectorDrawables.useSupportLibrary = true
 
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
