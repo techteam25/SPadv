@@ -3,21 +3,65 @@ package org.tyndalebt.storyproduceradv.model
 import android.content.Context
 import android.graphics.BitmapFactory
 import android.graphics.Rect
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.documentfile.provider.DocumentFile
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import org.tyndalebt.storyproduceradv.R
 import org.tyndalebt.storyproduceradv.BuildConfig
+import org.tyndalebt.storyproduceradv.controller.JsonHelper
 import org.tyndalebt.storyproduceradv.tools.file.getChildDocuments
 import org.tyndalebt.storyproduceradv.tools.file.getStoryFileDescriptor
 import org.tyndalebt.storyproduceradv.tools.file.getText
+import java.io.IOException
+import java.nio.charset.StandardCharsets
 import java.util.*
 
+var languageStringsMap: HashMap<String, String> = HashMap()
+
+val prompt_en = "Use this slide to compose and record a song for the Bible story! Or ask questions to help people think about the story!  You can choose to include it or not include it when you make a video."
+val prompt_es = "Utilice esta diapositiva para componer y grabar una canción para la historia bíblica. ¡O haga preguntas para ayudar a la gente a pensar en la historia!  Pueda optar por incluirla o no incluirla cuando haga un vídeo."
+val prompt_fr = "Utilisez cette diapositive pour composer et enregistrer une chanson pour le récit biblique ! Ou posez des questions pour aider les gens à réfléchir à l'histoire ! Vous pouvez choisir de l'inclure ou non lorsque vous créez une vidéo."
+val prompt_hi = "बाइबिल कहानी के लिए एक गीत लिखने और रिकॉर्ड करने के लिए इस स्लाइड का उपयोग करें! या लोगों को कहानी के बारे में सोचने में मदद करने के लिए प्रश्न पूछें! जब आप वीडियो बनाते हैं तो आप इसे शामिल करना या न करना चुन सकते हैं।"
+val prompt_id = "Gunakan slide ini untuk membuat dan merekam lagu untuk cerita Alkitab! Atau ajukan pertanyaan untuk membantu orang berpikir tentang ceritanya! Anda dapat memilih untuk memasukkannya atau tidak memasukkannya saat Anda membuat video."
+val prompt_po = "Use este slide para compor e gravar uma música para a história da Bíblia! Ou faça perguntas para ajudar as pessoas a pensar sobre a história! Você pode optar por incluí-lo ou não ao fazer um vídeo."
+val prompt_sw = "Katika ukurasa huu, tunga na urekodi wimbo kwa ajili ya hadithi ya Biblia! Au, uliza maswali ya majadiliano kuhusu hadithi. Unaweza kuchagua kujumuisha au kutenga ukurasa huu unapokamilisha video."
+val prompt_tp = "Kamapim nupela song long poromanim stori!  Bihain, taim yu pinisim wok na kamapim vidio, yu ken skruim singsing long stori vidio o yu ken larim song i stap nating."
+
+val la_English = "English"
+val la_French = "French"
+val la_Hindi = "Hindi"
+val la_Indonesian = "Indonesian"
+val la_Portuguese = "Portuguese"
+val la_Spanish = "Spanish"
+val la_Swahili = "Swahili"
+val la_TokPisin = "Tok Pisin"
+val la_Bislama = "Bislama"
+val la_Khmer = "Khmer"
+val la_Nepali = "Nepali"
+val la_Telugu = "Telugu"
 
 fun parseBloomHTML(context: Context, storyPath: DocumentFile): Story? {
     //See if there is a BLOOM html file there
     val childDocs = getChildDocuments(context, storyPath.name!!)
     var html_name = ""
+
+    languageStringsMap[la_English] = prompt_en
+    languageStringsMap[la_French] = prompt_fr
+    languageStringsMap[la_Hindi] = prompt_hi
+    languageStringsMap[la_Indonesian] = prompt_id
+    languageStringsMap[la_Portuguese] = prompt_po
+    languageStringsMap[la_Spanish] = prompt_es
+    languageStringsMap[la_Swahili] = prompt_sw
+    languageStringsMap[la_TokPisin] = prompt_tp
+        // These do not have translations currently - so we will set them to english
+    languageStringsMap[la_Bislama] = prompt_en
+    languageStringsMap[la_Khmer] = prompt_en
+    languageStringsMap[la_Nepali] = prompt_en
+    languageStringsMap[la_Telugu] = prompt_en
+
     for (f in childDocs) {
         if (f.endsWith(".html") || f.endsWith(".htm")){
             html_name = f
@@ -55,7 +99,8 @@ fun parseBloomHTML(context: Context, storyPath: DocumentFile): Story? {
     //Add the song slide
     slide = Slide()
     slide.slideType = SlideType.LOCALSONG
-    slide.content = context.getString(R.string.LS_prompt)
+//    slide.content = context.getString(R.string.LS_prompt)
+    slide.content = languageStringsMap[Workspace.parseLanguage].toString()
     slide.musicFile = MUSIC_NONE
     slides.add(slide)
 
