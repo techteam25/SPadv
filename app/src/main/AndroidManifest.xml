@@ -92,6 +92,10 @@
             android:screenOrientation="portrait" /> <!-- Learn -->
 
         <activity
+            android:name="org.tyndalebt.storyproduceradv.controller.export.TemplateActivity"
+            android:screenOrientation="portrait" /> <!-- Create Template -->
+
+        <activity
             android:name="org.tyndalebt.storyproduceradv.controller.export.VideoActivity"
             android:screenOrientation="portrait" /> <!-- Videos -->
         <activity

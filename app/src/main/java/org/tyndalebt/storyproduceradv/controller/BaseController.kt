@@ -55,8 +55,7 @@ open class BaseController(
         //  8/8/2022 DBH - Don't process wordlinks or videos folder as a bloom folder
         if (file.name == WORD_LINKS_DIR || file.name == VIDEO_DIR) {
             onUpdateStoryAsync(files, index, current, total)
-        }
-        else {
+        } else {
             view.updateReadingTemplatesDialog(current, total, file.name.orEmpty())
             subscriptions.add(
                     Single.fromCallable {

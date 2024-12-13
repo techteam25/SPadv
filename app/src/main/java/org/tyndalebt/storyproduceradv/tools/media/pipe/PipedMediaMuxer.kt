@@ -198,6 +198,10 @@ class PipedMediaMuxer
             try {
                 while (!mSource.isDone && mComponentState != PipedMediaSource.State.CLOSED) {
                     buffer = mSource.getBuffer(info)
+                    if (info.size == 0) {
+                        Log.v(TAG, "no size")
+                        break
+                    }
                     if (MediaHelper.VERBOSE)
                         Log.v(TAG, "[track " + mTrackIndex + "] writing output buffer of size "
                                 + info.size + " for time " + info.presentationTimeUs)

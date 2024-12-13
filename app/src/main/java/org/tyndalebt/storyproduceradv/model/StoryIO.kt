@@ -236,26 +236,26 @@ fun unzipIfZipped(context: Context, file: DocumentFile, existingFolders: Array<a
     val name = file.name!!.substringBeforeLast(".","")
     val sourceFile = File("${context.filesDir}/${file.name!!}")
     val zipFile = ZipFile(sourceFile.absolutePath)
-    var workspaceBloomExits:Boolean = false
+    var workspaceBloomExists:Boolean = false
 
     try
     {
-        // if user copied directly to SP Workspace folder. workspaceBloomExits = true and copy to sourceFile.
+        // if user copied directly to SP Workspace folder. workspaceBloomExists = true and copy to sourceFile.
         // If downloaded, it only exists on sourceFile.
         val uri = getWorkspaceUri(file.name!!)
         if (uri != null) {
             try {
                 val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
                 inputStream!!.close()
-                workspaceBloomExits = true
+                workspaceBloomExists = true
                 if (Workspace.isUnitTest) {
-                    workspaceBloomExits = false;  // copyToFilesDir will fail
+                    workspaceBloomExists = false;  // copyToFilesDir will fail
                 }
             } catch (e: java.lang.Exception) {
-                workspaceBloomExits = false
+                workspaceBloomExists = false
             }
         }
-        if (workspaceBloomExits) {
+        if (workspaceBloomExists) {
             //copy file to internal files directory to perform the normal "File" operations on.
             copyToFilesDir(context, uri!!, sourceFile)
         }
@@ -301,7 +301,7 @@ fun unzipIfZipped(context: Context, file: DocumentFile, existingFolders: Array<a
     catch(e: Exception) { }
     //delete copied and original zip file to save space
     sourceFile.delete()
-    if (workspaceBloomExits) {
+    if (workspaceBloomExists) {
         deleteWorkspaceFile(context, file.name!!)
     }
     return name

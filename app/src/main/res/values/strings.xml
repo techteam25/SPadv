@@ -226,6 +226,8 @@
     <string name="delete_video_title">Delete Video file?</string>
     <string name="delete_video_message">Do you want to delete this video?</string>
     <string name="video_copy">Go to videos folder</string>
+    <string name="new_template">Create new template</string>
+    <string name="create">Create</string>
     <string name="copy_video_files">Copy</string>
     <string name="overwrite_video_title">Overwrite Files?</string>
     <string name="overwrite_video_message">One or more of the selected video files already exists in the copy folder.  Do you want to overwrite the files?</string>
@@ -322,7 +324,7 @@
     <string name="export_start">Create Video</string>
     <string name="export_cancel">Cancel</string>
     <string name="export_cancel_comment">Do not leave this screen until the video is complete.</string>
-video_share
+
     <!-- ListView -->
     <string name="title_activity_splash_screen">Story Publisher Adv</string>
 
@@ -347,6 +349,11 @@ video_share
     <string name="no_videos">No Videos to Share</string>
     <string name="send_video">Send Video:</string>
     <string name="file_view">File view:</string>
+
+    <!-- create template -->
+    <string name="enter_new_title">Enter new title:</string>
+    <string name="enter_new_language">Enter new language:</string>
+    <string name="choose_unique_title">Please select a unique title for new template.</string>
 
     <!-- app menus -->
     <string name="menu_search">Search</string>

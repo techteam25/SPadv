@@ -194,6 +194,7 @@ class VideoListHelper : RefreshViewListener, OnCheckedChangeListener {
         }
         else {
             var videoBtn: Button = mActivity!!.findViewById(R.id.copy_share_btn)
+            var templateBtn: Button = mActivity!!.findViewById(R.id.new_template_btn)
             var gpText: TextView = mActivity!!.findViewById(R.id.dumbphone_3gp)
             var mp4Text: TextView = mActivity!!.findViewById(R.id.smartphone_mp4)
 
@@ -202,7 +203,9 @@ class VideoListHelper : RefreshViewListener, OnCheckedChangeListener {
                 mp4Text!!.visibility = View.GONE
                 videoBtn!!.visibility = View.GONE
             }
-
+            templateBtn.setOnClickListener {
+                mActivity!!.createTemplate()
+            }
             videoBtn.setOnClickListener {
                 mActivity!!.showVideos()
             }

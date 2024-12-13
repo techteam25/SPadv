@@ -25,6 +25,7 @@ import org.tyndalebt.storyproduceradv.controller.RegistrationActivity
 import org.tyndalebt.storyproduceradv.controller.SelectTemplatesFolderController
 import org.tyndalebt.storyproduceradv.controller.SelectTemplatesFolderController.Companion.SELECT_TEMPLATES_FOLDER_REQUEST_CODES
 import org.tyndalebt.storyproduceradv.controller.SelectTemplatesFolderController.Companion.UPDATE_TEMPLATES_FOLDER
+import org.tyndalebt.storyproduceradv.controller.export.TemplateActivity
 import org.tyndalebt.storyproduceradv.controller.remote.RemoteCheckFrag
 import org.tyndalebt.storyproduceradv.controller.remote.getPhoneId
 import org.tyndalebt.storyproduceradv.controller.wordlink.WordLinksListActivity
@@ -111,7 +112,16 @@ open class BaseActivity : AppCompatActivityMTT(), BaseActivityView {
             //ex.printStackTrace()
         }
     }
-    
+
+    override fun createTemplate() {
+        try {
+            startActivity(Intent(this, TemplateActivity::class.java))
+        }
+        catch (ex : Throwable) {
+            //ex.printStackTrace()
+        }
+    }
+
     override fun showBackupRestore() {
         try {
             startActivity(Intent(this, BackupRestoreActivity::class.java))  // TODO - fixme!
