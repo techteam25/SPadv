@@ -85,6 +85,11 @@ class TemplateActivity : MainBaseActivity()  {
             story.localCredits = ""
             val count = story!!.slides.size
             for (slide in story!!.slides) {
+                var narrationFolder: String = ""
+                val segments = slide.narrationFile.split("/")
+                if (segments.size > 1) {
+                    narrationFolder = segments[0]
+                }
                 if (slide.translatedContent != "") {
                     slide.content = slide.translatedContent
                     slide.translatedContent = ""
@@ -96,9 +101,13 @@ class TemplateActivity : MainBaseActivity()  {
                         Log.d("deleteNarration", "/$destStoryName/${slide.narrationFile}")
                     }
                     var destName = getFileNameFromCombined(slide.chosenTranslateReviseFile)
-                    slide.narrationFile = destName.replace("project", "audio")
+                    if (narrationFolder == "") {
+                        slide.narrationFile = destName.replace("project/", "")
+                    } else {
+                        slide.narrationFile = destName.replace("project", narrationFolder)
+                    }
                     val srcUri = Uri.parse(Workspace.workdocfile.uri.toString() + Uri.encode("/$destStoryName/$destName"))
-                    val destDirUri = Uri.parse(Workspace.workdocfile.uri.toString() + Uri.encode("/${destStoryName}/audio"))
+                    val destDirUri = Uri.parse(Workspace.workdocfile.uri.toString() + Uri.encode("/${destStoryName}/${narrationFolder}"))
                     copyFile(this, srcUri, destDirUri)
                 }
                 deleteFileArray(slide.voiceStudioAudioFiles, destStoryName)
