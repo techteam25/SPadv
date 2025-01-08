@@ -1,12 +1,10 @@
 package org.tyndalebt.storyproduceradv.controller.export
 
-import android.R.string
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
@@ -38,7 +36,8 @@ class TemplateActivity : MainBaseActivity()  {
         var txtLanguage: EditText = findViewById(R.id.new_language)
 
         txtTitle.setText(Workspace.activeStory.title)
-        txtLanguage.setText(Workspace.activeStory.language)
+        val reg = Workspace.registration
+        txtLanguage.setText(reg.getString("language", ""))
         createBtn.setOnClickListener {
             if (txtTitle.text.toString() != Workspace.activeStory.title) {
                 buildTemplate(txtTitle.text.toString(), txtLanguage.text.toString())
@@ -78,6 +77,12 @@ class TemplateActivity : MainBaseActivity()  {
             story.lastPhaseType = PhaseType.LEARN
             story.lastSlideNum = 0
             story.isApproved = false
+            story.outputVideos = ArrayList()
+            val arrList = java.util.ArrayList<String>()
+            arrList.add(story.learnAudioFile)
+            deleteFileArray(arrList, destStoryName)
+            story.learnAudioFile = ""
+            story.localCredits = ""
             val count = story!!.slides.size
             for (slide in story!!.slides) {
                 if (slide.translatedContent != "") {
@@ -105,6 +110,8 @@ class TemplateActivity : MainBaseActivity()  {
                 deleteRecordingList(slide.draftRecordings, destStoryName)
                 deleteRecordingList(slide.backTranslationRecordings, destStoryName)
 
+                slide.isApproved = false
+                slide.isChecked = false
                 slide.voiceStudioAudioFiles = ArrayList()
                 slide.translateReviseAudioFiles = ArrayList()
                 slide.communityWorkAudioFiles = ArrayList()
