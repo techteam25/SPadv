@@ -40,7 +40,15 @@ class TemplateActivity : MainBaseActivity()  {
         txtLanguage.setText(reg.getString("language", ""))
         createBtn.setOnClickListener {
             if (txtTitle.text.toString() != Workspace.activeStory.title) {
-                buildTemplate(txtTitle.text.toString(), txtLanguage.text.toString())
+                val dialog = AlertDialog.Builder(this)
+                        .setTitle("")
+                        .setMessage(R.string.new_template_wait)
+                        .setNegativeButton(getString(R.string.cancel), null)
+                        .setPositiveButton(getString(R.string.ok)) { _, _ ->
+                            buildTemplate(txtTitle.text.toString(), txtLanguage.text.toString())
+                        }
+                        .create()
+                dialog.show()
             } else {
                 msgDialog = AlertDialog.Builder(this)
                         .setTitle(R.string.choose_unique_title)
@@ -64,6 +72,7 @@ class TemplateActivity : MainBaseActivity()  {
         }
 
     }
+
     private fun buildTemplate(destStoryName: String, destLanguage: String) {
         val srcStoryName = Workspace.activeStory.title
         if (createNewTemplate(srcStoryName, destStoryName)) {
@@ -79,9 +88,11 @@ class TemplateActivity : MainBaseActivity()  {
             story.isApproved = false
             story.outputVideos = ArrayList()
             val arrList = java.util.ArrayList<String>()
-            arrList.add(story.learnAudioFile)
-            deleteFileArray(arrList, destStoryName)
-            story.learnAudioFile = ""
+            if (story.learnAudioFile != "") {
+                arrList.add(story.learnAudioFile)
+                deleteFileArray(arrList, destStoryName)
+                story.learnAudioFile = ""
+            }
             story.localCredits = ""
             val count = story!!.slides.size
             for (slide in story!!.slides) {

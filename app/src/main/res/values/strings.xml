@@ -354,6 +354,7 @@
     <string name="enter_new_title">Enter new title:</string>
     <string name="enter_new_language">Enter new language:</string>
     <string name="choose_unique_title">Please select a unique title for new template.</string>
+    <string name="new_template_wait">Please wait while the app processes files to create a new template.\n\n Press OK to continue.</string>
 
     <!-- app menus -->
     <string name="menu_search">Search</string>

@@ -202,6 +202,7 @@ class VideoListHelper : RefreshViewListener, OnCheckedChangeListener {
                 gpText!!.visibility = View.GONE
                 mp4Text!!.visibility = View.GONE
                 videoBtn!!.visibility = View.GONE
+                templateBtn.visibility = View.GONE
             }
             templateBtn.setOnClickListener {
                 mActivity!!.createTemplate()
