@@ -93,18 +93,17 @@ class VideoListHelper : RefreshViewListener, OnCheckedChangeListener {
         videosAdapter!!.setVideoPaths(exportedVideos)
 
         if (mbVideoUI) {
-            var copyBtn: Button = mActivity!!.findViewById(R.id.copy_files)
-            var gpBtn: CheckBox = mActivity!!.findViewById(R.id.dumbphone_3gp)
-            var mp4Btn: CheckBox = mActivity!!.findViewById(R.id.smartphone_mp4)
+            val copyBtn: Button = mActivity!!.findViewById(R.id.copy_files)
+            val gpBtn: CheckBox = mActivity!!.findViewById(R.id.dumbphone_3gp)
+            val mp4Btn: CheckBox = mActivity!!.findViewById(R.id.smartphone_mp4)
 
-            copyBtn!!.setEnabled(false)  // start off invisible until edit mode
+            copyBtn.isEnabled = false  // start off invisible until edit mode
 
             if (!exportedVideos.isNotEmpty()) {
-                gpBtn!!.visibility = View.GONE
-                mp4Btn!!.visibility = View.GONE
-                copyBtn!!.visibility = View.GONE
+                gpBtn.visibility = View.GONE
+                mp4Btn.visibility = View.GONE
+                copyBtn.visibility = View.GONE
             }
-
             // RK 6-13-2023 - See issue #75 for more details on the copy button
             copyBtn.setOnClickListener {
                 val builder: AlertDialog.Builder = AlertDialog.Builder(mActivity!!)
@@ -193,22 +192,27 @@ class VideoListHelper : RefreshViewListener, OnCheckedChangeListener {
             })
         }
         else {
-            var videoBtn: Button = mActivity!!.findViewById(R.id.copy_share_btn)
-            var templateBtn: Button = mActivity!!.findViewById(R.id.new_template_btn)
-            var gpText: TextView = mActivity!!.findViewById(R.id.dumbphone_3gp)
-            var mp4Text: TextView = mActivity!!.findViewById(R.id.smartphone_mp4)
+            val videoBtn: Button = mActivity!!.findViewById(R.id.copy_share_btn)
+            val gpText: TextView = mActivity!!.findViewById(R.id.dumbphone_3gp)
+            val mp4Text: TextView = mActivity!!.findViewById(R.id.smartphone_mp4)
+            val templateBtn: Button = mActivity!!.findViewById(R.id.new_template_btn)
 
-            if (!exportedVideos.isNotEmpty()) {
+            if (exportedVideos.isEmpty()) {
                 gpText!!.visibility = View.GONE
                 mp4Text!!.visibility = View.GONE
                 videoBtn!!.visibility = View.GONE
                 templateBtn.visibility = View.GONE
             }
-            templateBtn.setOnClickListener {
-                mActivity!!.createTemplate()
-            }
             videoBtn.setOnClickListener {
                 mActivity!!.showVideos()
+            }
+            if (Workspace.registration.getString("newLanguage") == "") {
+                templateBtn.visibility = View.GONE
+            } else {
+                templateBtn.visibility = View.VISIBLE
+                templateBtn.setOnClickListener {
+                    mActivity!!.createTemplate()
+                }
             }
         }
     }
@@ -526,7 +530,6 @@ class VideoListHelper : RefreshViewListener, OnCheckedChangeListener {
         }
     }
 }
-
 
 interface RefreshViewListener {
     fun refreshViews()

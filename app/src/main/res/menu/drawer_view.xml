@@ -26,6 +26,12 @@
             android:id="@+id/backup_restore"
             android:title="@string/backup_restore" />
         <item
+            android:id="@+id/help_me"
+            android:title="@string/help_me" />
+        <item
+            android:id="@+id/templates_created"
+            android:title="@string/templates_created" />
+        <item
             android:id="@+id/nav_spadv_website"
             android:title="@string/spadv_website" />
         <item

@@ -3,6 +3,7 @@ package org.tyndalebt.storyproduceradv.model
 import android.content.Context
 import com.squareup.moshi.Json
 import org.tyndalebt.storyproduceradv.R
+import org.tyndalebt.storyproduceradv.TemplateListActivity
 import org.tyndalebt.storyproduceradv.controller.MainActivity
 import org.tyndalebt.storyproduceradv.controller.RegistrationActivity
 import org.tyndalebt.storyproduceradv.controller.export.FinalizeActivity
@@ -36,7 +37,8 @@ enum class PhaseType {
     @Json(name="CREATE") FINALIZE,
     @Json(name="SHARE") SHARE,
     @Json(name="COPY_VIDEOS") COPY_VIDEOS,
-    @Json(name="BACKUP_RESTORE") BACKUP_RESTORE
+    @Json(name="BACKUP_RESTORE") BACKUP_RESTORE,
+    @Json(name="LIST_TEMPLATES") LIST_TEMPLATES
 }
 
 /**
@@ -235,6 +237,7 @@ class Phase (val phaseType: PhaseType) {
             PhaseType.SHARE            -> ShareActivity::class.java
             PhaseType.COPY_VIDEOS      -> VideoActivity::class.java
             PhaseType.BACKUP_RESTORE   -> BackupRestoreActivity::class.java
+            PhaseType.LIST_TEMPLATES   -> TemplateListActivity::class.java
         }
     }
 
@@ -297,7 +300,7 @@ class Phase (val phaseType: PhaseType) {
         // in the story.  We now check to see if the slide exist before trying to determine it's
         // type
         Workspace.activeStory.slides.getOrNull(slideNum)?.let {    // see if this is a valid slide number
-            val slideType = it?.slideType  // slide exists, determine if it displayable
+            val slideType = it.slideType  // slide exists, determine if it displayable
             return when (phaseType) {
                 PhaseType.VOICE_STUDIO -> slideType in arrayOf(
                         SlideType.FRONTCOVER, SlideType.NUMBEREDPAGE,
@@ -339,7 +342,7 @@ class Phase (val phaseType: PhaseType) {
          * get the filename for the HTML help doc
          * @return String
          */
-        fun getHelpDocFileLang(phase: PhaseType, Language: String) : String {
+        private fun getHelpDocFileLang(phase: PhaseType, Language: String) : String {
             return "${Language}/${phase.name.toLowerCase()}.html"
         }
 

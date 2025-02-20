@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_export"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="org.tyndalebt.storyproduceradv.controller.export.VideoActivity">
+
+    <LinearLayout
+        android:id="@+id/main_linear_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/share_section"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/no_templates_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/nav_drawer_margin"
+                android:text="@string/no_templates"
+                android:textSize="@dimen/large_text" />
+
+            <!-- RK 02/09/23 -
+              Issue #14
+              The list space has been expanded vertically to use the
+              whole space in case the list is longer.
+                -->
+            <ListView
+                android:id="@+id/videos_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            </ListView>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingBottom="4dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/copy_files"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:layout_gravity="right|center_vertical"
+                android:background="@drawable/button"
+                android:text="@string/copy_video_files" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

@@ -1,7 +1,6 @@
 package org.tyndalebt.storyproduceradv.model
 
 import WordLinksCSVReader
-import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -9,7 +8,6 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.*
-import android.os.storage.StorageManager
 import android.preference.PreferenceManager
 import android.provider.Settings.Secure
 import android.util.Log
@@ -28,15 +26,9 @@ import org.tyndalebt.storyproduceradv.BuildConfig
 import org.tyndalebt.storyproduceradv.R
 import org.tyndalebt.storyproduceradv.activities.BaseActivity
 import org.tyndalebt.storyproduceradv.activities.DownloadActivity
-import org.tyndalebt.storyproduceradv.controller.MainActivity
 import org.tyndalebt.storyproduceradv.model.messaging.Approval
 import org.tyndalebt.storyproduceradv.model.messaging.MessageROCC
-import org.tyndalebt.storyproduceradv.tools.file.deleteWorkspaceFile
-import org.tyndalebt.storyproduceradv.tools.file.getChildOutputStream
-import org.tyndalebt.storyproduceradv.tools.file.wordLinkListFromJson
-import org.tyndalebt.storyproduceradv.tools.file.workspaceRelPathExists
-import org.tyndalebt.storyproduceradv.tools.sqlite.EventTableHelper
-import org.tyndalebt.storyproduceradv.tools.sqlite.EventTable
+import org.tyndalebt.storyproduceradv.tools.file.*
 import java.io.*
 import java.net.URI
 import java.sql.Timestamp
@@ -49,7 +41,8 @@ internal const val SLIDE_NUM = "CurrentSlideNum"
 internal const val DEMO_FOLDER = "000 Unlocked demo story Storm"
 internal const val PHASE = "Phase"
 
-val WORD_LINKS_DIR = "wordlinks"
+const val WORD_LINKS_DIR = "wordlinks"
+const val NEW_TEMPLATES_DIR = "newtemplates"
 internal const val WORD_LINKS_CSV = "wordlinks.csv"
 internal const val WORD_LINKS_JSON_FILE = "wordlinks.json"
 internal const val WORD_LINKS_CLICKED_TERM = "ClickedTerm"
@@ -629,7 +622,7 @@ object Workspace {
         var tmpSize = storyList.size - 1
         for (idx in tmpSize downTo 0)
         {
-            if (storyList[idx].name == WORD_LINKS_DIR || storyList[idx].name == VIDEO_DIR) {
+            if (storyList[idx].name == WORD_LINKS_DIR || storyList[idx].name == VIDEO_DIR || storyList[idx].name == NEW_TEMPLATES_DIR) {
                 storyList.removeAt(idx)
             }
         }

@@ -16,7 +16,9 @@ import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import io.reactivex.disposables.CompositeDisposable
+import org.tyndalebt.storyproduceradv.HelpActivity
 import org.tyndalebt.storyproduceradv.R
+import org.tyndalebt.storyproduceradv.TemplateListActivity
 import org.tyndalebt.storyproduceradv.controller.export.VideoActivity
 import org.tyndalebt.storyproduceradv.controller.storylist.BackupRestoreActivity
 import org.tyndalebt.storyproduceradv.controller.BaseController
@@ -107,6 +109,24 @@ open class BaseActivity : AppCompatActivityMTT(), BaseActivityView {
     override fun showVideos() {
         try {
             startActivity(Intent(this, VideoActivity::class.java))
+        }
+        catch (ex : Throwable) {
+            //ex.printStackTrace()
+        }
+    }
+
+    override fun helpMe() {
+        try {
+            startActivity(Intent(this, HelpActivity::class.java))
+        }
+        catch (ex : Throwable) {
+            //ex.printStackTrace()
+        }
+    }
+
+    override fun templatesCreated() {
+        try {
+            startActivity(Intent(this, TemplateListActivity::class.java))
         }
         catch (ex : Throwable) {
             //ex.printStackTrace()

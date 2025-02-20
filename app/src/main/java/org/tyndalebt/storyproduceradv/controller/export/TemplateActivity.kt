@@ -1,24 +1,24 @@
 package org.tyndalebt.storyproduceradv.controller.export
 
 import android.app.AlertDialog
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.StrictMode
+import android.os.StrictMode.ThreadPolicy
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import androidx.documentfile.provider.DocumentFile
 import org.tyndalebt.storyproduceradv.R
 import org.tyndalebt.storyproduceradv.activities.MainBaseActivity
 import org.tyndalebt.storyproduceradv.model.*
 import org.tyndalebt.storyproduceradv.tools.file.*
-import java.io.InputStream
 
 class TemplateActivity : MainBaseActivity()  {
 
-    // private val mHelper = VideoListHelper()
-    private var msgDialog: AlertDialog? = null
     /**
      * Returns the the video paths that are saved in preferences and then checks to see that they actually are files that exist
      * @return Array list of video paths
@@ -26,29 +26,33 @@ class TemplateActivity : MainBaseActivity()  {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_template)
-        doSetContentView(R.layout.activity_create_template)
         initActionBar()
         invalidateOptionsMenu()
 
         var createBtn: Button = findViewById(R.id.create_template_btn)
         var cancelBtn: Button = findViewById(R.id.cancel_action)
         var txtTitle: EditText = findViewById(R.id.new_title)
-        var txtLanguage: EditText = findViewById(R.id.new_language)
+        var lblNumber: TextView = findViewById(R.id.story_number)
+        var destStoryName = ""
 
-        txtTitle.setText(Workspace.activeStory.title)
-        val reg = Workspace.registration
-        txtLanguage.setText(reg.getString("language", ""))
+        var array = Workspace.activeStory.title.split(" ").toTypedArray()
+        lblNumber.text = array[0]
+        var newArray = array.drop(1).toTypedArray()
+        destStoryName = newArray.joinToString(" ")
+
+        txtTitle.setText(destStoryName)
         createBtn.setOnClickListener {
-            if (txtTitle.text.toString() != Workspace.activeStory.title) {
-                val dialog = AlertDialog.Builder(this)
+            if (txtTitle.text.toString() != destStoryName) {
+                destStoryName = lblNumber.text.toString() + " " + txtTitle.text.toString()
+                msgDialog = AlertDialog.Builder(this)
                         .setTitle("")
                         .setMessage(R.string.new_template_wait)
                         .setNegativeButton(getString(R.string.cancel), null)
                         .setPositiveButton(getString(R.string.ok)) { _, _ ->
-                            buildTemplate(txtTitle.text.toString(), txtLanguage.text.toString())
+                            buildTemplate(destStoryName)
                         }
                         .create()
-                dialog.show()
+                msgDialog.show()
             } else {
                 msgDialog = AlertDialog.Builder(this)
                         .setTitle(R.string.choose_unique_title)
@@ -73,8 +77,10 @@ class TemplateActivity : MainBaseActivity()  {
 
     }
 
-    private fun buildTemplate(destStoryName: String, destLanguage: String) {
+    private fun buildTemplate(pDestStoryName: String) {
         val srcStoryName = Workspace.activeStory.title
+        val destStoryName = "$NEW_TEMPLATES_DIR/$pDestStoryName"
+        val destLanguage = Workspace.registration.getString("newLanguage")
         if (createNewTemplate(srcStoryName, destStoryName)) {
             // Read up new json and change it to use translated name, audio files, text (if present) and clear translated fields
             val destUri = Uri.parse(Workspace.workdocfile.uri.toString() + Uri.encode("/$destStoryName"))
@@ -144,7 +150,24 @@ class TemplateActivity : MainBaseActivity()  {
                 slide.backTranslationRecordings = RecordingList()
             }
             story.toJson(this)
-            initWorkspace()
+            zipTemplate(this, Workspace.workdocfile.uri, destStoryName, "$destStoryName.zip")
+            if (Build.VERSION.SDK_INT > 8) {
+                val policy = ThreadPolicy.Builder()
+                        .permitAll().build()
+                StrictMode.setThreadPolicy(policy)
+                msgDialog.dismiss()
+                msgDialog = AlertDialog.Builder(this)
+                        .setTitle(R.string.upload_server)
+                        .setMessage(R.string.template_upload_wait)
+                        .setPositiveButton(this.getString(R.string.ok)) { _, _ ->
+                            if (goForIt(pDestStoryName)) {
+                                this.finish()
+                            }
+                        }
+                        .setNegativeButton(getString(R.string.cancel)) { _, _ -> this.finish()}
+                        .create()
+                msgDialog.show()
+            }
         }
     }
 
@@ -210,44 +233,6 @@ class TemplateActivity : MainBaseActivity()  {
         return true
     }
 
-
-    private fun copyFolderTemplate(context : Context, srcUri : Uri, dstUri : Uri, baseSrcUri : Uri, relPath : String) : Boolean {
-
-        if (!fileExists(context, dstUri)) {
-            createFolder(context, dstUri, "", true)
-        }
-
-        if (fileExists(context, srcUri) && isDirectory(context, srcUri)) {
-
-            val lastSegment = lastSegmentName(srcUri)
-            val dstDirUri = Uri.parse(dstUri.toString() + Uri.encode("/$lastSegment"))
-
-            if (!fileExists(context, dstDirUri)) {
-                // create the destination folder
-                createFolder(context, dstUri, lastSegment, false)
-            }
-
-            val children = getFolderChildren(context, baseSrcUri, relPath)
-            for (child in children) {
-                var relPath2 = relPath + "/" + child
-                val newUri = Uri.parse(baseSrcUri.toString() + Uri.encode("/${relPath2}"))
-
-                if (isDirectory(context, newUri)) {
-                    // if this is another directory
-                    // create a new directory uri and copy it
-                    copyFolderTemplate(context, newUri, dstDirUri, baseSrcUri, relPath2)
-                }
-                else {
-                    if (!copyFile(context, newUri, dstDirUri)) {
-                        return false
-                    }
-                }
-            }
-            return false
-        }
-        return true
-    }
-
     // If this menu item is selected, do nothing
     // since this is the currently selected page.
     override fun getMenuItemId() : Int {
@@ -260,17 +245,6 @@ class TemplateActivity : MainBaseActivity()  {
 
     override fun getTitleColor2() : Int {
         return R.color.darkGray
-    }
-
-    override fun openHelpFile() : InputStream {
-        return  Phase.openHelpDocFile(PhaseType.COPY_VIDEOS, Workspace.activeStory.language,this)
-    }
-
-    //Override setContentView to coerce into child view.
-    fun doSetContentView(id: Int) {
-        //val layout : LinearLayout = findViewById(R.id.linear_layout)
-        //val inflater = layoutInflater
-        //inflater.inflate(id, layout)
     }
 
     override fun onActivityResult(request: Int, result: Int, data: Intent?) {

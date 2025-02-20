@@ -67,11 +67,17 @@ class DrawerItemClickListener(private val activity: BaseActivity) : AdapterView.
                 activity.showBackupRestore()
             }
             8 -> {
+                activity.helpMe()
+            }
+            9 -> {
+                activity.templatesCreated()
+            }
+            10 -> {
                 goToURL(activity, Workspace.URL_FOR_WEBSITE)
                 //Workspace.addDemoToWorkspace(activity)
                 //activity.showAboutDialog()
             }
-            9 -> {
+            11 -> {
                 activity.showAboutDialog()
             }
         }

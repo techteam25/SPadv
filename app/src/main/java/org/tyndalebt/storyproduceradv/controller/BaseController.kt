@@ -6,6 +6,7 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import org.tyndalebt.storyproduceradv.model.NEW_TEMPLATES_DIR
 import org.tyndalebt.storyproduceradv.model.VIDEO_DIR
 import org.tyndalebt.storyproduceradv.model.WORD_LINKS_DIR
 import org.tyndalebt.storyproduceradv.model.Workspace
@@ -53,7 +54,7 @@ open class BaseController(
     fun updateStoryAsync(files: List<DocumentFile>, index: Int, current: Int, total: Int) {
         val file = files.get(index)
         //  8/8/2022 DBH - Don't process wordlinks or videos folder as a bloom folder
-        if (file.name == WORD_LINKS_DIR || file.name == VIDEO_DIR) {
+        if (file.name == WORD_LINKS_DIR || file.name == VIDEO_DIR || file.name == NEW_TEMPLATES_DIR) {
             onUpdateStoryAsync(files, index, current, total)
         } else {
             view.updateReadingTemplatesDialog(current, total, file.name.orEmpty())

@@ -1,24 +1,15 @@
 package org.tyndalebt.storyproduceradv.controller.export
 
-import android.content.Context
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.view.View
 import android.widget.LinearLayout
-import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
 import org.tyndalebt.storyproduceradv.R
 import org.tyndalebt.storyproduceradv.activities.MainBaseActivity
-import org.tyndalebt.storyproduceradv.controller.SelectTemplatesFolderController
 import org.tyndalebt.storyproduceradv.model.Phase
 import org.tyndalebt.storyproduceradv.model.PhaseType
 import org.tyndalebt.storyproduceradv.model.Workspace
 import java.io.InputStream
-
 
 class VideoActivity : MainBaseActivity()  {
 

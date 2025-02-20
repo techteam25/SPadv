@@ -587,6 +587,12 @@ public class DownloadActivity extends BaseActivity {
             case R.id.video_share:
                 showVideos();
                 break;
+            case R.id.help_me:
+                helpMe();
+                break;
+            case R.id.templates_created:
+                templatesCreated();
+                break;
             case R.id.nav_spadv_website:
                 org.tyndalebt.storyproduceradv.tools.file.FileIO.goToURL(this, Workspace.URL_FOR_WEBSITE);
                 break;

@@ -1,6 +1,9 @@
 package org.tyndalebt.storyproduceradv.model
 
 import android.content.Context
+import android.net.Uri
+import android.os.Environment
+import android.provider.DocumentsContract
 import androidx.documentfile.provider.DocumentFile
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.squareup.moshi.Moshi
@@ -9,12 +12,11 @@ import org.tyndalebt.storyproduceradv.BuildConfig
 import org.tyndalebt.storyproduceradv.R
 import org.tyndalebt.storyproduceradv.tools.file.*
 import timber.log.Timber
-import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.InputStream
+import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
-
+import java.util.zip.ZipEntry
+import java.util.zip.ZipOutputStream
 
 fun Story.toJson(context: Context){
     // DKH - Updated 06/02/2021  for Issue 555: Report Story Parse Exceptions and Handle them appropriately
@@ -85,7 +87,12 @@ fun storyFromJson(context: Context, storyTitle: DocumentFile): Story?{
                 .add(UriAdapter())
                 .build()
         val adapter = Story.jsonAdapter(moshi)
-        fileContents = getStoryText(context, filePath, storyTitle.name!!)
+        // get "name" of story.  Could be off main spadv folder or could be a subfolder off newtemplates.  Look for this in the path
+        var name = storyTitle.name
+        if (storyTitle.uri.path!!.contains(NEW_TEMPLATES_DIR)) {
+            name = "$NEW_TEMPLATES_DIR/$name"
+        }
+        fileContents = getStoryText(context, filePath, name!!)
                 ?: return null
         return adapter.fromJson(fileContents)
     } catch (e: Exception) {
@@ -141,7 +148,7 @@ fun storyFromJson(context: Context, storyTitle: DocumentFile): Story?{
             //  Unable to write backup file
             val errInfo =   "Method: " + Throwable().stackTrace[0].methodName + ", " +
                     "Unable to create/write story.json backup file" + ", " +
-                    "File: "   + fileContents + ", "
+                    "File: "   + fileContents + ", " +
                     "Err: "    + e.toString()
 
             // Record the error message & exception (includes stack trace) in FireBase
@@ -225,6 +232,74 @@ fun isZipped(fileName: String?): Boolean {
     return fileName?.substringAfterLast(".", "")?.let {
         arrayOf("zip", "bloom", "bloomd", "bloomSource").contains(it)
     } == true
+}
+
+fun zipTemplateCommon(context: Context, documentUri: Uri, relInputPath: String, zos:ZipOutputStream, relZipPath: String) {
+    val buffer = ByteArray(1024)
+
+    val children = getFolderChildren(context, documentUri, relInputPath)
+    try {
+        children.forEach { file ->
+            val inputPath = getAbsolutePathFromDocumentFile(context, documentUri) + "$relInputPath/$file"
+            val f = File(inputPath)
+            if (f.isDirectory) {
+                val ze = ZipEntry("$relZipPath$file/")
+                zos.putNextEntry(ze)
+                zipTemplateCommon(context, documentUri,"$relInputPath/$file", zos, "$relZipPath$file/")
+            } else {
+                val ze = ZipEntry(relZipPath + File(file).name)
+                zos.putNextEntry(ze)
+                val `in` = FileInputStream(inputPath)
+                while (true) {
+                    val len = `in`.read(buffer)
+                    if (len <= 0) break
+                    zos.write(buffer, 0, len)
+                }
+                `in`.close()
+            }
+        }
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+}
+
+fun zipTemplate(context: Context, documentUri: Uri, relInputPath: String, relOutputZipFilePath: String) {
+
+    val zipFilePath = getAbsolutePathFromDocumentFile(context, documentUri) + relOutputZipFilePath
+    try {
+        val fos = FileOutputStream(zipFilePath)
+        val zos = ZipOutputStream(fos)
+
+        zipTemplateCommon(context, documentUri, relInputPath, zos, "")
+
+        zos.closeEntry()
+        zos.close()
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+}
+
+fun getAbsolutePathFromDocumentFile(context: Context, documentUri: Uri): String? {
+    val path = documentUri.path
+    if (path?.contains("/document/") == true) {
+        val documentId = DocumentsContract.getDocumentId(documentUri)
+        val split = documentId.split(":")
+        if (split.size >= 2) {
+            val type = split[0]
+            val id = split[1]
+            if ("primary".equals(type, ignoreCase = true)) {
+                val ret = Environment.getExternalStorageDirectory().path + "/" + id + "/"
+                return ret
+            } else {
+                // Handle other types if needed
+                return null
+            }
+        } else {
+            return null
+        }
+    } else {
+        return path
+    }
 }
 
 fun unzipIfZipped(context: Context, file: DocumentFile, existingFolders: Array<androidx.documentfile.provider.DocumentFile?>): String? {

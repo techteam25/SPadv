@@ -14,18 +14,23 @@ import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
 import org.tyndalebt.storyproduceradv.R
 import org.tyndalebt.storyproduceradv.controller.MainActivity
-import org.tyndalebt.storyproduceradv.model.Phase
-import org.tyndalebt.storyproduceradv.model.PhaseType
-import org.tyndalebt.storyproduceradv.model.Workspace
 import org.tyndalebt.storyproduceradv.tools.file.goToURL
 import java.io.InputStream
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Build
+import android.util.Log
 import androidx.core.content.res.ResourcesCompat
+import org.apache.commons.net.ftp.FTP
+import org.apache.commons.net.ftp.FTPClient
+import org.tyndalebt.storyproduceradv.model.*
+import java.io.File
+import java.io.FileInputStream
 
 open class MainBaseActivity : BaseActivity() {
 
-    protected var mDrawerLayout: DrawerLayout? = null
+    private var mDrawerLayout: DrawerLayout? = null
+    protected lateinit var msgDialog: AlertDialog
 
     //override fun onCreate(savedInstanceState: Bundle?) {
     //    super.onCreate(savedInstanceState)
@@ -195,6 +200,12 @@ open class MainBaseActivity : BaseActivity() {
             R.id.backup_restore -> {
                 showBackupRestore()
             }
+            R.id.help_me -> {
+                helpMe()
+            }
+            R.id.templates_created -> {
+                templatesCreated()
+            }
             R.id.nav_spadv_website -> {
                 goToURL(this, Workspace.URL_FOR_WEBSITE)
             }
@@ -245,5 +256,68 @@ open class MainBaseActivity : BaseActivity() {
         return retVal
     }
 
+    fun goForIt(pFileName: String) : Boolean {
+        val destStoryName = "$NEW_TEMPLATES_DIR/$pFileName.zip"
+        val ftpFile = getAbsolutePathFromDocumentFile(this, Workspace.workdocfile.uri) + destStoryName
+        var con: FTPClient? = null
+
+        val user: String = "ftpstory"
+        val pwd: String = "StoryProducer"
+        val basePath: String = "/var/www/html/Files/newtemplates"
+        val host: String = "rocc.ttapps.org"
+        try {
+            con = FTPClient()
+            con.connect(host)
+            if (con.login(user, pwd)) {
+                con.enterLocalPassiveMode() // important!
+                con.setFileType(FTP.BINARY_FILE_TYPE)
+                // ok, if this errors, already exists
+                val lang = Workspace.registration.getString("newLanguage")
+                // directory created by server admin (Robin/TECH/etc) should always exist since choice list is based on it
+                if (!con.changeWorkingDirectory("$basePath/files/$lang")) {
+                    con.logout()
+                    con.disconnect()
+                }
+                val `in` = FileInputStream(File(ftpFile))
+                val result = con.storeFile("$pFileName.zip", `in`)
+                `in`.close()
+                if (result) {
+                    con.logout()
+                    con.disconnect()
+                    // Delete zip file, indicating success and not try to upload again
+                    val deleteUri = Uri.parse(Workspace.workdocfile.uri.toString() + Uri.encode("/$destStoryName"))
+                    org.tyndalebt.storyproduceradv.tools.file.deleteFile(this, deleteUri)
+                    Log.v("upload result", "succeeded")
+                    msgDialog.dismiss()
+                    return true
+                } else {
+                    con.logout()
+                    con.disconnect()
+                    // Failed, show message that we will try again later
+                    msgDialog.dismiss()
+                    msgDialog = AlertDialog.Builder(this)
+                            .setTitle(R.string.template_upload_failed)
+                            .setMessage(R.string.template_upload_retry)
+                            .setPositiveButton(R.string.ok) { _, _ -> }
+                            .setCancelable(false)
+                            .create()
+
+                    msgDialog?.show()
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            msgDialog.dismiss()
+            msgDialog = AlertDialog.Builder(this)
+                    .setTitle(e.localizedMessage)
+                    .setMessage(R.string.template_upload_retry)
+                    .setPositiveButton(R.string.ok) { _, _ -> }
+                    .setCancelable(false)
+                    .create()
+
+            msgDialog?.show()
+        }
+        return false
+    }
 }
 

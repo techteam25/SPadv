@@ -30,9 +30,9 @@
     <string name="stage_locked">stage locked</string>
     <string name="edit_image">edit image</string>
     <string name="edit_text">edit text</string>
-    
-   <string name="exit_application">Exit Application?</string>
-   <string name="quit_question">Are you sure you want to quit?</string>
+
+    <string name="exit_application">Exit Application?</string>
+    <string name="quit_question">Are you sure you want to quit?</string>
 
     <!-- Phases -->
     <string name="registration_title">Registration</string>
@@ -187,7 +187,7 @@
     <string name="space_less_than_one_meg">Less than 1mb</string>
     <string name="space_mb">mb</string>
     <string name="space_gb">gb</string>
-    
+
     <!-- Learn Phase -->
     <string name="learn_phase_practice">Retell the whole story in your language!</string>
     <string name="learn_phase_overwrite">Are you sure you want to overwrite your current recording?</string>
@@ -232,28 +232,28 @@
     <string name="overwrite_video_title">Overwrite Files?</string>
     <string name="overwrite_video_message">One or more of the selected video files already exists in the copy folder.  Do you want to overwrite the files?</string>
     <string name="use_copy_folder_message">Copy files to the folder:\n\n</string>
-    <string name="change_copy_folder">Change folder</string>    
-    <string name="copy_folder_not_found_message">The copy folder was not found.  Would you like to specify a new one?\n\n</string>   
+    <string name="change_copy_folder">Change folder</string>
+    <string name="copy_folder_not_found_message">The copy folder was not found.  Would you like to specify a new one?\n\n</string>
     <string name="export_dumbphone_cb">3gp </string>
     <string name="export_smartphone_cb">mp4 </string>
     <string name="select_all_text">Select all:</string>
-        
+
     <string name="sdcard">sdcard</string>
     <string name="internal">internal</string>
     <string name="external">external</string>
-            
+
     <!-- Backup/Restore -->
     <string name="backup_menu_item">Backup</string>
-    <string name="restore_menu_item">Restore</string>    
-    <string name="delete_menu_item">Delete</string>  
-    
+    <string name="restore_menu_item">Restore</string>
+    <string name="delete_menu_item">Delete</string>
+
     <string name="delete_stories_title">Delete Stories?</string>
     <string name="delete_stories_message">Do you want to delete the selected stories?</string>
     <string name="backup_warning">WARNING: One or more of the selected stories to delete are not backed up in the backup folder.</string>
     <string name="use_backup_folder_message">Backup the selected stories to the folder:\n\n</string>
     <string name="restore_story_message">Select the story you wish to restore</string>
-    <string name="change_backup_folder">Change folder</string>    
-    <string name="backup_folder_not_found_message">The backup folder was not found.  Would you like to find or create a new one?  Note: It is recommended to backup your files to an external drive if possible.\n\n</string>   
+    <string name="change_backup_folder">Change folder</string>
+    <string name="backup_folder_not_found_message">The backup folder was not found.  Would you like to find or create a new one?  Note: It is recommended to backup your files to an external drive if possible.\n\n</string>
     <string name="overwrite_backup_title">Overwrite Backup Files?</string>
     <string name="overwrite_backup_message">One or more of the selected backup stories already exists in the copy folder.  Do you want to overwrite the story files?</string>
     <string name="overwrite_backup_message_single_file">The selected backup story already exists in the copy folder.  Do you want to overwrite the story files?</string>
@@ -266,7 +266,7 @@
     <string name="read_only_title">Read-Only</string>
     <string name="read_only_message">Unable to open the story because it is read-only.  Is there a problem with the external storage (SD card) on your device?  Try to reboot your device.</string>
 
-                
+
     <!-- Whole Story Back Translation phase -->
     <string name="wsbt_alert_title">Finish Draft Phase</string>
     <string name="wsbt_alert_text">Please record a translation for each slide.</string>
@@ -325,6 +325,15 @@
     <string name="export_cancel">Cancel</string>
     <string name="export_cancel_comment">Do not leave this screen until the video is complete.</string>
 
+    <!-- Help me -->
+    <string name="allow_create_template">You will now be able to create templates in the View + Share screen</string>
+    <string name="incorrect_password">Incorrect password.  Please try again or select Create new templates to confirm proper password</string>
+    <string name="select_language">Please select a language.</string>
+    <string name="help_general_usage">General Usage issue</string>
+    <string name="help_create_template">Create new templates</string>
+    <string name="help_activate_template">Activate new templates</string>
+    <string name="enter_password">Enter password:</string>
+
     <!-- ListView -->
     <string name="title_activity_splash_screen">Story Publisher Adv</string>
 
@@ -355,6 +364,10 @@
     <string name="enter_new_language">Enter new language:</string>
     <string name="choose_unique_title">Please select a unique title for new template.</string>
     <string name="new_template_wait">Please wait while the app processes files to create a new template.\n\n Press OK to continue.</string>
+    <string name="template_upload_failed">New template upload failed</string>
+    <string name="template_upload_retry">Please retry the upload by selecting the Templates I have created menu item, once this phone has internet again</string>
+    <string name="upload_server">Uploading to server...</string>
+    <string name="template_upload_wait">Please wait while the new template is uploaded to the server. This could take awhile.\n\n Press OK to continue.</string>
 
     <!-- app menus -->
     <string name="menu_search">Search</string>
@@ -367,7 +380,10 @@
     <string name="spadv_website">SPadv - website</string>
     <string name="video_share">Copy/Share Video Files</string>
     <string name="backup_restore">Translation Data Backup</string>
-            
+    <string name="help_me">Help me</string>
+    <string name="templates_created">Templates I have created</string>
+    <string name="no_templates">You have not created any templates</string>
+
     <!-- Main Story Page -->
     <string name="all_stories_tab">All Stories</string>
     <string name="in_progress_tab">In Progress</string>

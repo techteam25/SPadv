@@ -161,6 +161,12 @@ class WordLinksListActivity : BaseActivity(), SearchView.OnQueryTextListener {
                 R.id.video_share -> {
                     showVideos()
                 }
+                R.id.help_me -> {
+                    helpMe()
+                }
+                R.id.templates_created -> {
+                    templatesCreated()
+                }
                 R.id.nav_spadv_website -> {
                     goToURL(this, Workspace.URL_FOR_WEBSITE)
                 }

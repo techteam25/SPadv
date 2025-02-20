@@ -297,6 +297,9 @@
   "spadv_website": "SPadv - website",
   "video_share": "Copy/Share Video Files",
   "backup_restore": "Translation Data Backup",
+  "help_me": "Help me",
+  "templates_created": "Templates I have created",
+  "no_templates": "You have not created any templates",
 
   "all_stories_tab": "All Stories",
   "in_progress_tab": "In Progress",
