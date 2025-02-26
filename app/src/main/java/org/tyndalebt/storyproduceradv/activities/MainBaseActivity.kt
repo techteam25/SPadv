@@ -271,12 +271,13 @@ open class MainBaseActivity : BaseActivity() {
             if (con.login(user, pwd)) {
                 con.enterLocalPassiveMode() // important!
                 con.setFileType(FTP.BINARY_FILE_TYPE)
-                // ok, if this errors, already exists
                 val lang = Workspace.registration.getString("newLanguage")
                 // directory created by server admin (Robin/TECH/etc) should always exist since choice list is based on it
-                if (!con.changeWorkingDirectory("$basePath/files/$lang")) {
+//                if (!con.changeWorkingDirectory("$basePath/files/$lang")) {
+                if (!con.changeWorkingDirectory(lang)) {
                     con.logout()
                     con.disconnect()
+                    return false
                 }
                 val `in` = FileInputStream(File(ftpFile))
                 val result = con.storeFile("$pFileName.zip", `in`)

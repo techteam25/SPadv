@@ -34,6 +34,7 @@ class HelpActivity : BaseActivity() {
 
     private var mDrawerLayout: DrawerLayout? = null
     private lateinit var msgDialog: AlertDialog
+    val selectOne: String = "Select one"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -296,7 +297,7 @@ class HelpActivity : BaseActivity() {
         }
         // Valid, save the language path selection
         val mViewS = findViewById<Spinner>(R.id.new_language)
-        if (mViewS.selectedItem.toString() == "") {
+        if (mViewS.selectedItem.toString() == "" || mViewS.selectedItem.toString() == selectOne) {
             languageNotChosen()
             return
         }
@@ -342,8 +343,11 @@ class HelpActivity : BaseActivity() {
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         pSpinner.adapter = spinnerAdapter
 
+        spinnerAdapter.add(selectOne)
         for (i in choiceStrings!!.indices) {
-            spinnerAdapter.add(choiceStrings[i])
+            if (choiceStrings[i] != "home") {
+                spinnerAdapter.add(choiceStrings[i])
+            }
         }
         spinnerAdapter.notifyDataSetChanged()
     }
@@ -381,10 +385,7 @@ class HelpActivity : BaseActivity() {
             con.connect(host)
             if (con.login(user, pwd)) {
                 con.enterLocalPassiveMode() // important!
-                if (!con.changeWorkingDirectory("$basePath/files")) {
-                    con.logout()
-                    con.disconnect()
-                }
+                // starting folder should be folder that has all the folders of each language (plus "home" which we will ignore later, if present)
                 var result: Boolean = false
                 var fList = con.listNames()
                 if (fList.isNotEmpty()) {
@@ -393,7 +394,6 @@ class HelpActivity : BaseActivity() {
                 if (result) {
                     con.logout()
                     con.disconnect()
-                    // Delete zip file, indicating success and not try to upload again
                     Log.v("list result", "succeeded")
                     return fList
                 } else {
