@@ -164,6 +164,9 @@ class WordLinksListActivity : BaseActivity(), SearchView.OnQueryTextListener {
                 R.id.help_me -> {
                     helpMe()
                 }
+                R.id.create_template_mode -> {
+                    createTemplateMode()
+                }
                 R.id.templates_created -> {
                     templatesCreated()
                 }

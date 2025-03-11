@@ -590,6 +590,9 @@ public class DownloadActivity extends BaseActivity {
             case R.id.help_me:
                 helpMe();
                 break;
+            case R.id.create_template_mode:
+                createTemplateMode();
+                break;
             case R.id.templates_created:
                 templatesCreated();
                 break;

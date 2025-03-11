@@ -29,7 +29,7 @@ import java.io.FileInputStream
 
 open class MainBaseActivity : BaseActivity() {
 
-    private var mDrawerLayout: DrawerLayout? = null
+    protected var mDrawerLayout: DrawerLayout? = null
     protected lateinit var msgDialog: AlertDialog
 
     //override fun onCreate(savedInstanceState: Bundle?) {
@@ -202,6 +202,9 @@ open class MainBaseActivity : BaseActivity() {
             }
             R.id.help_me -> {
                 helpMe()
+            }
+            R.id.create_template_mode -> {
+                createTemplateMode()
             }
             R.id.templates_created -> {
                 templatesCreated()

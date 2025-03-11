@@ -24,42 +24,31 @@
             android:maxHeight="?android:attr/actionBarSize"
             android:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
 
-        <TextView
-            android:id="@+id/help_me_with"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="40dp"
-            android:text="@string/help_me_with"
-            android:textSize="@dimen/header_text" />
-
         <Button
-            android:id="@+id/btn_general_usage"
+            android:id="@+id/btn_activate_mode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:layout_gravity="center"
             android:background="@drawable/button"
-            android:text="@string/help_general_usage" />
+            android:text="@string/activate_new_template" />
 
-        <Button
-            android:id="@+id/btn_create_new_templates"
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/sw_hide_show"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:layout_gravity="center"
-            android:background="@drawable/button"
-            android:text="@string/help_create_template" />
+            android:textSize="@dimen/large_text"
+            android:text="@string/new_template"/>
 
         <TextView
-            android:id="@+id/email_instructions"
+            android:id="@+id/lbl_show_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="40dp"
-            android:gravity="center_horizontal"
-            android:text="@string/help_extra_email_text"
-            android:textSize="@dimen/large_text" />
+            android:textSize="@dimen/large_text"
+            android:textColor="@color/white"/>
 
         <TextView
             android:id="@+id/password"

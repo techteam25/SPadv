@@ -16,6 +16,7 @@ import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import io.reactivex.disposables.CompositeDisposable
+import org.tyndalebt.storyproduceradv.ActivateTemplateActivity
 import org.tyndalebt.storyproduceradv.HelpActivity
 import org.tyndalebt.storyproduceradv.R
 import org.tyndalebt.storyproduceradv.TemplateListActivity
@@ -118,6 +119,15 @@ open class BaseActivity : AppCompatActivityMTT(), BaseActivityView {
     override fun helpMe() {
         try {
             startActivity(Intent(this, HelpActivity::class.java))
+        }
+        catch (ex : Throwable) {
+            //ex.printStackTrace()
+        }
+    }
+
+    override fun createTemplateMode() {
+        try {
+            startActivity(Intent(this, ActivateTemplateActivity::class.java))
         }
         catch (ex : Throwable) {
             //ex.printStackTrace()

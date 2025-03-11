@@ -209,9 +209,13 @@ class VideoListHelper : RefreshViewListener, OnCheckedChangeListener {
             if (Workspace.registration.getString("newLanguage") == "") {
                 templateBtn.visibility = View.GONE
             } else {
-                templateBtn.visibility = View.VISIBLE
-                templateBtn.setOnClickListener {
-                    mActivity!!.createTemplate()
+                if (Workspace.registration.getString("createTemplate") == mActivity!!.getString(R.string.create_template_is_hidden)) {
+                    templateBtn.visibility = View.GONE
+                } else {
+                        templateBtn.visibility = View.VISIBLE
+                        templateBtn.setOnClickListener {
+                            mActivity!!.createTemplate()
+                        }
                 }
             }
         }

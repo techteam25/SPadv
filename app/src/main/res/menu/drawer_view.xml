@@ -29,6 +29,9 @@
             android:id="@+id/help_me"
             android:title="@string/help_me" />
         <item
+            android:id="@+id/create_template_mode"
+            android:title="@string/create_template_mode" />
+        <item
             android:id="@+id/templates_created"
             android:title="@string/templates_created" />
         <item

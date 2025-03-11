@@ -10,6 +10,7 @@
         <item>@string/video_share</item>
         <item>@string/backup_restore</item>
         <item>@string/help_me</item>
+        <item>@string/create_template_mode</item>
         <item>@string/templates_created</item>
         <item>@string/spadv_website</item>
         <item>@string/about</item>

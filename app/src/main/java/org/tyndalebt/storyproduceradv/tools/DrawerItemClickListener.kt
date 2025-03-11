@@ -70,14 +70,17 @@ class DrawerItemClickListener(private val activity: BaseActivity) : AdapterView.
                 activity.helpMe()
             }
             9 -> {
-                activity.templatesCreated()
+                activity.createTemplateMode()
             }
             10 -> {
+                activity.templatesCreated()
+            }
+            11 -> {
                 goToURL(activity, Workspace.URL_FOR_WEBSITE)
                 //Workspace.addDemoToWorkspace(activity)
                 //activity.showAboutDialog()
             }
-            11 -> {
+            12 -> {
                 activity.showAboutDialog()
             }
         }

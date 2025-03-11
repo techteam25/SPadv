@@ -331,8 +331,12 @@
     <string name="select_language">Please select a language.</string>
     <string name="help_general_usage">General Usage issue</string>
     <string name="help_create_template">Create new templates</string>
-    <string name="help_activate_template">Activate new templates</string>
+    <string name="help_extra_email_text">Add to the default text in the email\nthen hit send</string>
     <string name="enter_password">Enter password:</string>
+    <string name="create_template_mode">Create Template mode</string>
+    <string name="activate_new_template">Activate new template mode</string>
+    <string name="create_template_is_visible">is visible</string>
+    <string name="create_template_is_hidden">is hidden</string>
 
     <!-- ListView -->
     <string name="title_activity_splash_screen">Story Publisher Adv</string>
@@ -381,6 +385,7 @@
     <string name="video_share">Copy/Share Video Files</string>
     <string name="backup_restore">Translation Data Backup</string>
     <string name="help_me">Help me</string>
+    <string name="help_me_with">Help me with:</string>
     <string name="templates_created">Templates I have created</string>
     <string name="no_templates">You have not created any templates</string>
 
