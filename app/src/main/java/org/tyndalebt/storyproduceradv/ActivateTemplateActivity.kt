@@ -259,6 +259,8 @@ class ActivateTemplateActivity : MainBaseActivity() {
         val host: String = "rocc.ttapps.org"
         try {
             con = FTPClient()
+            con.autodetectUTF8 = true
+            con.controlEncoding = "UTF-8"
             con.connect(host)
             if (con.login(user, pwd)) {
                 con.enterLocalPassiveMode() // important!
