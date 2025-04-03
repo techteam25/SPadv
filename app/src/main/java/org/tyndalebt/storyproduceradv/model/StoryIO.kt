@@ -235,8 +235,6 @@ fun isZipped(fileName: String?): Boolean {
 }
 
 fun zipTemplateCommon(context: Context, documentUri: Uri, relInputPath: String, zos:ZipOutputStream, relZipPath: String) {
-    val buffer = ByteArray(1024)
-
     val children = getFolderChildren(context, documentUri, relInputPath)
     try {
         children.forEach { file ->
@@ -250,8 +248,7 @@ fun zipTemplateCommon(context: Context, documentUri: Uri, relInputPath: String, 
             } else {
                 val ze = ZipEntry(relZipPath + File(file).name)
                 zos.putNextEntry(ze)
-                val content = readFileShared(context, relFile)
-                zos.write(content.toByteArray(), 0, content.length)
+                copySharedToZip(context, relFile, zos)
             }
         }
     } catch (e: Exception) {

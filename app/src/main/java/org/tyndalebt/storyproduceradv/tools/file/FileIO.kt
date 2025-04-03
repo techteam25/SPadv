@@ -18,6 +18,7 @@ import org.tyndalebt.storyproduceradv.model.Story
 import org.tyndalebt.storyproduceradv.model.WORD_LINKS_DIR
 import org.tyndalebt.storyproduceradv.model.Workspace
 import java.io.*
+import java.util.zip.ZipOutputStream
 import kotlin.math.max
 import kotlin.math.min
 
@@ -722,6 +723,7 @@ fun goToURL(context: Context, url: String) {
     context.startActivity(openURL)
 }
 
+// Don't remove the next 4 routines, even though they may be unused.  It has important procedure information regarding permissions if needed later
 fun readFileShared(context: Context, fileName: String) : String {
     val resolver = context.contentResolver
     val fileUri = getWorkspaceUri(fileName)
@@ -770,7 +772,6 @@ fun readFileInternal(context:Context, fileName: String?, folder:String): String?
     return builder.toString()
 }
 
-// Don't remove this routine, even though it may be unused.  It has important procedure information regarding permissions if needed later
 fun writeFileInternal(context: Context, fileName: String?, folder: String, content: String) {
     try {
         val appSpecificInternalStorageDirectory = context.getExternalFilesDir(folder)
@@ -783,4 +784,48 @@ fun writeFileInternal(context: Context, fileName: String?, folder: String, conte
     catch (ex : Throwable) {
         ex.printStackTrace()
     }
+}
+
+// ReadFileInternal and WriteFileShared combined
+fun copyInternalToShared(context: Context, fileName: String, folderInput:String, folderOutput:String)  : Boolean{
+    try {
+        val appSpecificInternalStorageDirectory = context.getExternalFilesDir(folderInput)
+        val file = File(appSpecificInternalStorageDirectory, fileName)
+        val iStream = FileInputStream(file)
+        val fileUri = getWorkspaceUri(folderOutput)
+        val oPfd = getPFD(context, fileUri!!, fileName, "", "w")
+        val oStream = ParcelFileDescriptor.AutoCloseOutputStream(oPfd)
+        val bArray = ByteArray(100000)
+        var bytesRead = iStream.read(bArray)
+        while(bytesRead > 0){ //eof not reached
+            oStream.write(bArray,0,bytesRead)
+            bytesRead = iStream.read(bArray)
+        }
+        iStream.close()
+        oStream.close()
+        return true
+    } catch (e: Exception) {
+        FirebaseCrashlytics.getInstance().recordException(e)
+    }
+    return false
+}
+
+fun copySharedToZip(context:Context, fileName: String, zos: ZipOutputStream): Boolean {
+    val resolver = context.contentResolver
+    val fileUri = getWorkspaceUri(fileName)
+    val buffer = ByteArray(1024)
+    try {
+        val stream = resolver.openInputStream(fileUri!!)
+        while (true) {
+            val len = stream!!.read(buffer)
+            if (len <= 0) break
+            zos.write(buffer, 0, len)
+        }
+        stream.close()
+        return true
+    }
+    catch (ex : Throwable) {
+        ex.printStackTrace()
+    }
+    return false
 }

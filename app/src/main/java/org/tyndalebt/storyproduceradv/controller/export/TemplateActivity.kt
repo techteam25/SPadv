@@ -16,6 +16,7 @@ import org.tyndalebt.storyproduceradv.R
 import org.tyndalebt.storyproduceradv.activities.MainBaseActivity
 import org.tyndalebt.storyproduceradv.model.*
 import org.tyndalebt.storyproduceradv.tools.file.*
+import java.io.File
 
 class TemplateActivity : MainBaseActivity()  {
 
@@ -151,8 +152,11 @@ class TemplateActivity : MainBaseActivity()  {
             }
             story.toJson(this)
             zipTemplate(this, Workspace.workdocfile.uri, destStoryName, "$pDestStoryName.zip")
-            val content = readFileInternal(this, "$pDestStoryName.zip", "zipTemp")
-            writeFileShared(this, "$pDestStoryName.zip", content!!)
+            copyInternalToShared(this, "$pDestStoryName.zip", "zipTemp", NEW_TEMPLATES_DIR)
+                // Delete zip from Internal folder now that is has copied
+            val appSpecificInternalStorageDirectory = this.getExternalFilesDir("zipTemp")
+            val zipFile = File(appSpecificInternalStorageDirectory, "$pDestStoryName.zip")
+            zipFile.delete()
             if (Build.VERSION.SDK_INT > 8) {
                 val policy = ThreadPolicy.Builder()
                         .permitAll().build()
