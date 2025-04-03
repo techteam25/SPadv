@@ -240,7 +240,8 @@ fun zipTemplateCommon(context: Context, documentUri: Uri, relInputPath: String, 
     val children = getFolderChildren(context, documentUri, relInputPath)
     try {
         children.forEach { file ->
-            val inputPath = getAbsolutePathFromDocumentFile(context, documentUri) + "$relInputPath/$file"
+            val relFile = "$relInputPath/$file"
+            val inputPath = getAbsolutePathFromDocumentUri(context, documentUri) + relFile
             val f = File(inputPath)
             if (f.isDirectory) {
                 val ze = ZipEntry("$relZipPath$file/")
@@ -249,13 +250,8 @@ fun zipTemplateCommon(context: Context, documentUri: Uri, relInputPath: String, 
             } else {
                 val ze = ZipEntry(relZipPath + File(file).name)
                 zos.putNextEntry(ze)
-                val `in` = FileInputStream(inputPath)
-                while (true) {
-                    val len = `in`.read(buffer)
-                    if (len <= 0) break
-                    zos.write(buffer, 0, len)
-                }
-                `in`.close()
+                val content = readFileShared(context, relFile)
+                zos.write(content.toByteArray(), 0, content.length)
             }
         }
     } catch (e: Exception) {
@@ -265,7 +261,10 @@ fun zipTemplateCommon(context: Context, documentUri: Uri, relInputPath: String, 
 
 fun zipTemplate(context: Context, documentUri: Uri, relInputPath: String, relOutputZipFilePath: String) {
 
-    val zipFilePath = getAbsolutePathFromDocumentFile(context, documentUri) + relOutputZipFilePath
+    val zipFilePath = File(context.getExternalFilesDir("zipTemp"), relOutputZipFilePath)
+    if (zipFilePath.exists()) { // In case it already exists
+        zipFilePath.delete()
+    }
     try {
         val fos = FileOutputStream(zipFilePath)
         val zos = ZipOutputStream(fos)
@@ -279,7 +278,7 @@ fun zipTemplate(context: Context, documentUri: Uri, relInputPath: String, relOut
     }
 }
 
-fun getAbsolutePathFromDocumentFile(context: Context, documentUri: Uri): String? {
+fun getAbsolutePathFromDocumentUri(context: Context, documentUri: Uri): String? {
     val path = documentUri.path
     if (path?.contains("/document/") == true) {
         val documentId = DocumentsContract.getDocumentId(documentUri)

@@ -24,8 +24,7 @@ import androidx.core.content.res.ResourcesCompat
 import org.apache.commons.net.ftp.FTP
 import org.apache.commons.net.ftp.FTPClient
 import org.tyndalebt.storyproduceradv.model.*
-import java.io.File
-import java.io.FileInputStream
+import org.tyndalebt.storyproduceradv.tools.file.getWorkspaceUri
 
 open class MainBaseActivity : BaseActivity() {
 
@@ -261,12 +260,10 @@ open class MainBaseActivity : BaseActivity() {
 
     fun goForIt(pFileName: String) : Boolean {
         val destStoryName = "$NEW_TEMPLATES_DIR/$pFileName.zip"
-        val ftpFile = getAbsolutePathFromDocumentFile(this, Workspace.workdocfile.uri) + destStoryName
         var con: FTPClient? = null
 
         val user: String = "ftpstory"
         val pwd: String = "StoryProducer"
-        val basePath: String = "/var/www/html/Files/newtemplates"
         val host: String = "rocc.ttapps.org"
         try {
             con = FTPClient()
@@ -278,15 +275,16 @@ open class MainBaseActivity : BaseActivity() {
                 con.setFileType(FTP.BINARY_FILE_TYPE)
                 val lang = Workspace.registration.getString("newLanguage")
                 // directory created by server admin (Robin/TECH/etc) should always exist since choice list is based on it
-//                if (!con.changeWorkingDirectory("$basePath/files/$lang")) {
                 if (!con.changeWorkingDirectory(lang)) {
                     con.logout()
                     con.disconnect()
                     return false
                 }
-                val `in` = FileInputStream(File(ftpFile))
+                val resolver = this.contentResolver
+                val fileUri = getWorkspaceUri(destStoryName)
+                val `in` = resolver.openInputStream(fileUri!!)
                 val result = con.storeFile("$pFileName.zip", `in`)
-                `in`.close()
+                `in`!!.close()
                 if (result) {
                     con.logout()
                     con.disconnect()
@@ -326,4 +324,3 @@ open class MainBaseActivity : BaseActivity() {
         return false
     }
 }
-

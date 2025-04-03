@@ -13,13 +13,11 @@ import android.provider.DocumentsContract
 import android.util.LruCache
 import androidx.documentfile.provider.DocumentFile
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import org.tyndalebt.storyproduceradv.model.NEW_TEMPLATES_DIR
 import org.tyndalebt.storyproduceradv.model.Story
 import org.tyndalebt.storyproduceradv.model.WORD_LINKS_DIR
 import org.tyndalebt.storyproduceradv.model.Workspace
-import java.io.File
-import java.io.FileDescriptor
-import java.io.InputStream
-import java.io.OutputStream
+import java.io.*
 import kotlin.math.max
 import kotlin.math.min
 
@@ -722,4 +720,67 @@ fun goToURL(context: Context, url: String) {
     val openURL = Intent(Intent.ACTION_VIEW)
     openURL.data = Uri.parse(url)
     context.startActivity(openURL)
+}
+
+fun readFileShared(context: Context, fileName: String) : String {
+    val resolver = context.contentResolver
+    val fileUri = getWorkspaceUri(fileName)
+    try {
+        val stream = resolver.openInputStream(fileUri!!)
+            // Perform operations on "stream".
+        val reader = BufferedReader(InputStreamReader(stream))
+        val builder = StringBuilder()
+        while (true) {
+            val line  = reader.readLine() ?: break
+            builder.append(line)
+        }
+        stream!!.close()
+        return builder.toString()
+    }
+    catch (ex : Throwable) {
+        ex.printStackTrace()
+    }
+    return ""
+}
+
+fun writeFileShared(context: Context, fileName: String, content: String) {
+    try {
+        val fileUri = getWorkspaceUri(NEW_TEMPLATES_DIR)
+        val oPfd = getPFD(context, fileUri!!, fileName, "", "w")
+        val oStream = ParcelFileDescriptor.AutoCloseOutputStream(oPfd)
+        oStream.write(content.toByteArray(), 0, content.length)
+        oStream.close()
+    }
+    catch (ex : Throwable) {
+            ex.printStackTrace()
+    }
+}
+
+fun readFileInternal(context:Context, fileName: String?, folder:String): String?{
+    val appSpecificInternalStorageDirectory = context.getExternalFilesDir(folder)
+    val file = File(appSpecificInternalStorageDirectory, fileName)
+    val fis = FileInputStream(file)
+    val reader = BufferedReader(InputStreamReader(fis))
+    val builder = java.lang.StringBuilder()
+    var  line: String?
+    while (reader.readLine().also { line = it } != null){
+        builder.append(line)
+    }
+    fis.close()
+    return builder.toString()
+}
+
+// Don't remove this routine, even though it may be unused.  It has important procedure information regarding permissions if needed later
+fun writeFileInternal(context: Context, fileName: String?, folder: String, content: String) {
+    try {
+        val appSpecificInternalStorageDirectory = context.getExternalFilesDir(folder)
+        val file = File(appSpecificInternalStorageDirectory, fileName)
+        file.createNewFile()
+        val fos = FileOutputStream(file, false)
+        fos.write(content.toByteArray())
+        fos.close()
+    }
+    catch (ex : Throwable) {
+        ex.printStackTrace()
+    }
 }

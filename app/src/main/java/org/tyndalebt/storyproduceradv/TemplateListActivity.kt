@@ -64,7 +64,7 @@ class TemplateListActivity : MainBaseActivity() {
 
         try {
             val srcZipFolder = "$NEW_TEMPLATES_DIR/"
-            val zipFolder = getAbsolutePathFromDocumentFile(this, Workspace.workdocfile.uri) + srcZipFolder
+            val zipFolder = getAbsolutePathFromDocumentUri(this, Workspace.workdocfile.uri) + srcZipFolder
             val dir = File(zipFolder)
             if (dir.exists() && dir.isDirectory) {
                 val list = dir.listFiles()

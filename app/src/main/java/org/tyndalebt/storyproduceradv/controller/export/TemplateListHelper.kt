@@ -155,7 +155,7 @@ class TemplateListHelper : RefreshViewListener, OnCheckedChangeListener {
     fun buildTemplateList(): MutableList<String> {
         val folderTemplateList = getChildDocuments(mActivity!!, NEW_TEMPLATES_DIR)
         val templatesCreated: MutableList<String> = ArrayList()
-        val basePath = getAbsolutePathFromDocumentFile(mActivity!!, Workspace.workdocfile.uri)
+        val basePath = getAbsolutePathFromDocumentUri(mActivity!!, Workspace.workdocfile.uri)
         for (i in 0 until folderTemplateList.size) {
             val templateFolder = basePath + "$NEW_TEMPLATES_DIR/${folderTemplateList[i]}"
             val dir = File(templateFolder)

@@ -155,7 +155,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-core:17.2.2'
     implementation 'com.google.firebase:firebase-messaging:23.0.8'
     implementation 'org.jsoup:jsoup:1.11.3'
-    implementation 'net.lingala.zip4j:zip4j:2.3.1'
+    implementation 'net.lingala.zip4j:zip4j:2.11.5'
     implementation 'io.reactivex.rxjava2:rxkotlin:2.4.0'
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
     // DKH - 08/26/2021 Added by Cedarville for Wordlinks

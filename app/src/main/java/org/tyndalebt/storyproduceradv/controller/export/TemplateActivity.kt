@@ -150,7 +150,9 @@ class TemplateActivity : MainBaseActivity()  {
                 slide.backTranslationRecordings = RecordingList()
             }
             story.toJson(this)
-            zipTemplate(this, Workspace.workdocfile.uri, destStoryName, "$destStoryName.zip")
+            zipTemplate(this, Workspace.workdocfile.uri, destStoryName, "$pDestStoryName.zip")
+            val content = readFileInternal(this, "$pDestStoryName.zip", "zipTemp")
+            writeFileShared(this, "$pDestStoryName.zip", content!!)
             if (Build.VERSION.SDK_INT > 8) {
                 val policy = ThreadPolicy.Builder()
                         .permitAll().build()
