@@ -24,8 +24,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/activity_horizontal_margin"
-                android:drawableEnd="@drawable/ic_dumbphone"
-                android:text="@string/export_dumbphone" />
+                android:text="@string/export_dumbphone"
+                app:drawableEndCompat="@drawable/ic_dumbphone" />
 
             <TextView
                 android:id="@+id/smartphone_mp4"

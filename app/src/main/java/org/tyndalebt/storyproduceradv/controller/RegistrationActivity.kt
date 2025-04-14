@@ -689,7 +689,7 @@ open class RegistrationActivity : AppCompatActivityMTT() {
         emailIntent.type = "text/plain"
 
         emailIntent.putExtra(Intent.EXTRA_EMAIL, TO)
-        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "StoryProducer Registration Info")
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "StoryPublisherAdv Registration Info")
         emailIntent.putExtra(Intent.EXTRA_TEXT, message)
 
         try {
