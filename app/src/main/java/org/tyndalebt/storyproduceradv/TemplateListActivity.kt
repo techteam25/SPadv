@@ -70,7 +70,9 @@ class TemplateListActivity : MainBaseActivity() {
                 val list = dir.listFiles()
                 if (list != null) {
                     for (file in list) {
-                        if (file.name.contains(".zip")) {
+                        val templateZip = "$file.zip"
+                        val zipFile = File(templateZip)
+                        if (zipFile.exists()) {
                             zipList.add(file.name.replace(".zip", ""))
                         }
                     }

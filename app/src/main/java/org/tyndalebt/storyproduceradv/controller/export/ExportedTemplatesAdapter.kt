@@ -10,6 +10,7 @@ import android.widget.ImageButton
 import android.widget.TextView
 import org.tyndalebt.storyproduceradv.R
 import org.tyndalebt.storyproduceradv.model.NEW_TEMPLATES_DIR
+import org.tyndalebt.storyproduceradv.tools.file.deleteWorkspaceFile
 import java.io.File
 
 class ExportedTemplatesAdapter(private val listHelper: TemplateListHelper) : BaseAdapter() {
@@ -76,16 +77,33 @@ class ExportedTemplatesAdapter(private val listHelper: TemplateListHelper) : Bas
         var rowView : View? = null
 
         rowView = mInflater.inflate(R.layout.created_template_row, null)
-        mListViews!!.set(position, rowView)  // cache the view for use later
+        mListViews!![position] = rowView  // cache the view for use later
 
         val holder = RowViewHolder()
         holder.textView = rowView.findViewById(R.id.video_title)
         holder.textView!!.text = fileName
 
         holder.uploadButton = rowView.findViewById(R.id.file_upload_button)
+        holder.deleteButton = rowView.findViewById(R.id.file_delete_button)
         if (zipFiles[position] == "") {
             holder.uploadButton!!.visibility = View.GONE
+            holder.deleteButton!!.setOnClickListener {
+                var msgDialog = AlertDialog.Builder(listHelper.mActivity!!)
+                        .setTitle(R.string.delete_template_title)
+                        .setMessage(fileName)
+                        .setPositiveButton(R.string.yes) { _, _ ->
+                            val templateName = "$NEW_TEMPLATES_DIR/$fileName"
+                            if (deleteWorkspaceFile(listHelper.mActivity!!, templateName)) {
+                                listHelper.buildTemplateList()
+                            }
+                        }
+                        .setNegativeButton(R.string.no) { _, _ -> listHelper.mActivity!!.finish()}
+                        .create()
+                msgDialog.show()
+            }
+
         } else {
+            holder.deleteButton!!.visibility = View.GONE
             holder.uploadButton!!.setOnClickListener {
                 var msgDialog = AlertDialog.Builder(listHelper.mActivity!!)
                         .setTitle(R.string.upload_server)
@@ -108,6 +126,7 @@ class ExportedTemplatesAdapter(private val listHelper: TemplateListHelper) : Bas
     class RowViewHolder {
         var textView: TextView? = null
         var uploadButton: ImageButton? = null
+        var deleteButton: ImageButton? = null
     }
 }
 

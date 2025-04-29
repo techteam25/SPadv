@@ -372,6 +372,7 @@
     <string name="template_upload_retry">Please retry the upload by selecting the Templates I have created menu item, once this phone has internet again</string>
     <string name="upload_server">Uploading to server...</string>
     <string name="template_upload_wait">Please wait while the new template is uploaded to the server. This could take awhile.\n\n Press OK to continue.</string>
+    <string name="delete_template_title">Delete Template file?</string>
 
     <!-- app menus -->
     <string name="menu_search">Search</string>

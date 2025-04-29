@@ -3,28 +3,28 @@ package org.tyndalebt.storyproduceradv.activities
 import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.os.Build
+import android.provider.DocumentsContract
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.webkit.WebView
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
-import org.tyndalebt.storyproduceradv.R
-import org.tyndalebt.storyproduceradv.controller.MainActivity
-import org.tyndalebt.storyproduceradv.tools.file.goToURL
-import java.io.InputStream
-import android.graphics.drawable.ColorDrawable
-import android.net.Uri
-import android.os.Build
-import android.util.Log
-import androidx.core.content.res.ResourcesCompat
 import org.apache.commons.net.ftp.FTP
 import org.apache.commons.net.ftp.FTPClient
+import org.tyndalebt.storyproduceradv.R
+import org.tyndalebt.storyproduceradv.controller.MainActivity
 import org.tyndalebt.storyproduceradv.model.*
 import org.tyndalebt.storyproduceradv.tools.file.getWorkspaceUri
+import org.tyndalebt.storyproduceradv.tools.file.goToURL
+import java.io.InputStream
 
 open class MainBaseActivity : BaseActivity() {
 
@@ -259,7 +259,27 @@ open class MainBaseActivity : BaseActivity() {
     }
 
     fun goForIt(pFileName: String) : Boolean {
-        val destStoryName = "$NEW_TEMPLATES_DIR/$pFileName.zip"
+        // if upload is successful, also send a blank file to indicate in the root level of that user, what files were uploaded
+        val lang = Workspace.registration.getString("newLanguage")
+        if (goForItInternal(NEW_TEMPLATES_DIR, "$pFileName.zip", lang, "$pFileName.zip")) {
+            // Usage
+            val tempFileName = "emptyFile.txt"
+            val fileUri = getWorkspaceUri(tempFileName)
+            try {
+                DocumentsContract.createDocument(this.contentResolver, Workspace.workdocfile.uri, "*/*", tempFileName)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                return false
+            }
+            return goForItInternal(".", tempFileName, "", "$lang - $pFileName")
+        } else {
+            return false
+        }
+    }
+        // Transfer file from pSourcePath/pSourceFilename via FTP to pDestPath/pDestFileName
+    private fun goForItInternal(pSourcePath: String, pSourceFileName: String, pDestPath: String, pDestFileName: String) : Boolean {
+
+        val sourceFilePath = "$pSourcePath/$pSourceFileName"
         var con: FTPClient? = null
 
         val user: String = "ftpstory"
@@ -273,24 +293,26 @@ open class MainBaseActivity : BaseActivity() {
             if (con.login(user, pwd)) {
                 con.enterLocalPassiveMode() // important!
                 con.setFileType(FTP.BINARY_FILE_TYPE)
-                val lang = Workspace.registration.getString("newLanguage")
+                //val lang = Workspace.registration.getString("newLanguage")
                 // directory created by server admin (Robin/TECH/etc) should always exist since choice list is based on it
-                if (!con.changeWorkingDirectory(lang)) {
-                    con.logout()
-                    con.disconnect()
-                    return false
+                if (pDestPath.isNotEmpty()) {
+                    if (!con.changeWorkingDirectory(pDestPath)) {
+                        con.logout()
+                        con.disconnect()
+                        return false
+                    }
                 }
                 val resolver = this.contentResolver
-                val fileUri = getWorkspaceUri(destStoryName)
+                val fileUri = getWorkspaceUri(sourceFilePath)
                 val `in` = resolver.openInputStream(fileUri!!)
-                val result = con.storeFile("$pFileName.zip", `in`)
+                val result = con.storeFile(pDestFileName, `in`)
                 `in`!!.close()
                 if (result) {
                     con.logout()
                     con.disconnect()
                     // Delete zip file, indicating success and not try to upload again
-                    val deleteUri = Uri.parse(Workspace.workdocfile.uri.toString() + Uri.encode("/$destStoryName"))
-                    org.tyndalebt.storyproduceradv.tools.file.deleteFile(this, deleteUri)
+                    val deleteUri = getWorkspaceUri(sourceFilePath)
+                    org.tyndalebt.storyproduceradv.tools.file.deleteFile(this, deleteUri!!)
                     Log.v("upload result", "succeeded")
                     msgDialog.dismiss()
                     return true

@@ -23,8 +23,8 @@
 
     <ImageButton
         android:id="@+id/file_upload_button"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:layout_marginLeft="4dp"
         android:layout_marginRight="2dp"
         android:layout_marginTop="18dp"
@@ -32,5 +32,16 @@
         android:backgroundTint="@color/transparent"
         android:contentDescription="@string/share"
         android:src="@drawable/ic_cloud_upload_24dp" />
+    <ImageButton
+        android:id="@+id/file_delete_button"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="2dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginBottom="18dp"
+        android:backgroundTint="@color/transparent"
+        android:contentDescription="@string/share"
+        android:src="@drawable/ic_delete_forever_white_36dp" />
 
 </LinearLayout>
