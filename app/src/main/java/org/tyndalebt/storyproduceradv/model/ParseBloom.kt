@@ -42,6 +42,7 @@ val la_Bislama = "Bislama"
 val la_Khmer = "Khmer"
 val la_Nepali = "Nepali"
 val la_Telugu = "Telugu"
+val la_Urdu = "Urdu"
 
 fun parseBloomHTML(context: Context, storyPath: DocumentFile): Story? {
     //See if there is a BLOOM html file there
@@ -61,6 +62,7 @@ fun parseBloomHTML(context: Context, storyPath: DocumentFile): Story? {
     languageStringsMap[la_Khmer] = prompt_en
     languageStringsMap[la_Nepali] = prompt_en
     languageStringsMap[la_Telugu] = prompt_en
+    languageStringsMap[la_Urdu] = prompt_en
 
     for (f in childDocs) {
         if (f.endsWith(".html") || f.endsWith(".htm")){

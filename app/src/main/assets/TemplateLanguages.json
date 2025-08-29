@@ -69,6 +69,11 @@
             "filename": "Telugu",
             "roman": "no",
             "displayname": "తెలుగు"
+        },
+        {
+            "filename": "Urdu",
+            "roman": "no",
+            "displayname": "اردو"
         }
     ]
 }
