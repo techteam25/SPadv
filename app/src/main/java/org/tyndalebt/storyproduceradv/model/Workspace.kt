@@ -854,8 +854,12 @@ object Workspace {
             Lang = "sw"
         } else if (pChosenLanguage == "Tok Pisin") {
             Lang = "tpi"
-        } else if (pChosenLanguage == "") {
-            Lang = ""
+        } else if (pChosenLanguage == "Telugu") {
+            Lang = "tel"
+        } else if (pChosenLanguage == "Urdu") {
+            Lang = "urd"
+        } else if (pChosenLanguage == "Nepali") {
+            Lang = "nep"
         }
         else {   // English or not defined
             Lang = "en"
