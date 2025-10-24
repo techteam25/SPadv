@@ -46,6 +46,11 @@
             "displayname": "नेपाली"
         },
         {
+            "filename": "Punjabi",
+            "roman": "no",
+            "displayname": "پنجابی"
+        },
+        {
             "filename": "Portuguese",
             "roman": "yes",
             "displayname": "Português"
