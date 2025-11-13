@@ -32,9 +32,9 @@ open class MultiRecordRecordingToolbar: PlayBackRecordingToolbar() {
             true -> if (Workspace.activeStory.slides[MultiRecordFrag.slideNumHolder!!].communityWorkAudioFiles.isNotEmpty() &&
                 Workspace.activePhase.phaseType != PhaseType.COMMUNITY_WORK) {
                 rootView?.addView(commentIcon);
+// TM  needs stuff added here
             }
         }
-
     }
 
     override fun showInheritedToolbarButtons() {
@@ -64,7 +64,7 @@ open class MultiRecordRecordingToolbar: PlayBackRecordingToolbar() {
 
     protected open fun doAudioListDialog() {
         toolbarMediaListener.onStartedToolbarMedia()
-
-        RecordingsListAdapter.RecordingsListModal(activity!!, this).show()
+// TM replace activity!! with requireactivity
+        RecordingsListAdapter.RecordingsListModal(requireActivity(), this).show()
     }
 }

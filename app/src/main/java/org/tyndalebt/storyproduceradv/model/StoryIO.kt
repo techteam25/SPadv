@@ -17,6 +17,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
+//import kotlinx.serialization.*
+//import kotlinx.serialization.json.*
 
 fun Story.toJson(context: Context){
     // DKH - Updated 06/02/2021  for Issue 555: Report Story Parse Exceptions and Handle them appropriately
@@ -32,6 +34,11 @@ fun Story.toJson(context: Context){
             .add(UriAdapter())
             .build()
     val adapter = Story.jsonAdapter(moshi)
+//    data class Story(
+//        val id: String,
+//        val title: String
+//        // ... other properties
+//    )
     val oStream = getStoryChildOutputStream(context,
             filePath,"",this.title)
     if(oStream != null) {

@@ -131,7 +131,7 @@ Translate and produce stories (starting with templates in a major language made 
    the package name ends with ".debug" (line 12):
       SPadf/app/google-services.json
         "android_client_info": {
-          "package_name": "org.tyndalebt.storyproduceradv.debug"
+          "package_name": "org.tyndalebt.storyproduceradv"
         }
 
    Once built, use the Device Manager (accessible from the menu "Tools->Device Manager") to

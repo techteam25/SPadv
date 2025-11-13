@@ -3,6 +3,8 @@ package org.tyndalebt.storyproduceradv.model
 import android.content.Context
 import androidx.documentfile.provider.DocumentFile
 import org.jsoup.nodes.Element
+import kotlinx.serialization.*
+import kotlinx.serialization.json.*
 
 class NumberedPageSlideBuilder : SlideBuilder() {
 

@@ -1,27 +1,37 @@
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'com.google.firebase.crashlytics'
-apply plugin: 'com.google.gms.google-services'
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'org.jetbrains.kotlin.kapt'
+
+    // TM  needed for JsonAdapter error
+    id 'com.google.devtools.ksp' version '1.9.10-1.0.13' apply false
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.6.0" // Or your specific Kotlin version
+
+    // Apply the Google services plugin
+    id 'com.google.gms.google-services'
+    // Apply the Firebase Crashlytics plugin
+    id 'com.google.firebase.crashlytics'
+    // TM id 'kotlin-kapt'
+}
 
 def keystorePropertiesFile = new File(rootProject.projectDir, 'keystore.properties')
 
 android {
-    compileSdkVersion 34
-    buildToolsVersion '30.0.3'
+    namespace "org.tyndalebt.storyproduceradv"
+    // buildToolsVersion '33.0.1'
     defaultConfig {
         applicationId "org.tyndalebt.storyproduceradv"
-        minSdkVersion 24
-        targetSdkVersion 34
+        minSdk 24
+        compileSdk 34
+        targetSdk 34
         versionCode 69
         versionName '2.35'
         vectorDrawables.useSupportLibrary = true
-
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     signingConfigs {
         if (keystorePropertiesFile.isFile()) {
@@ -101,106 +111,124 @@ android {
     productFlavors {
     }
     packagingOptions {
-        pickFirst("META-INF/atomicfu.kotlin_module")
+        resources {
+            pickFirsts += ['META-INF/atomicfu.kotlin_module']
+        }
     }
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
-    }
-    lintOptions {
-        abortOnError false
     }
     testOptions {
         unitTests {
             includeAndroidResources = true
         }
     }
-}
 
+    kotlinOptions {
+        jvmTarget = '17' // Or your desired JVM target version
+        freeCompilerArgs += [
+                "-opt-in=kotlin.RequiresOptIn",   // TM  changed from -Xopt-in
+                "-Xstring-concat=inline"
+        ]
+    }
+    lint {
+        abortOnError false
+    }
+}
 
 repositories {
     mavenCentral()
     maven { url 'https://jitpack.io' }
     google()
-    jcenter()
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.0"
-    implementation 'org.java-websocket:Java-WebSocket:1.4.1'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.9.10'
+    // TM  needed for JsonAdapter error
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+    // the following line eliminates the dup class error somehow - Tim
+    implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
+    implementation 'org.java-websocket:Java-WebSocket:1.6.0'
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'com.google.android.material:material:1.3.0'
-    implementation 'androidx.core:core-ktx:1.3.2'
-    implementation 'androidx.recyclerview:recyclerview:1.1.0'
-    implementation 'androidx.preference:preference:1.1.0'
-    implementation 'net.i2p.android.ext:floatingactionbutton:1.10.1'
-    implementation 'com.github.futuresimple:android-floating-action-button:1.10.1'
-    implementation 'androidx.legacy:legacy-support-v13:1.0.0'
+
+//    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'com.google.android.material:material:1.10.0'
+    implementation 'androidx.core:core-ktx:1.13.1'
+    implementation 'androidx.recyclerview:recyclerview:1.3.2'
+    implementation 'androidx.preference:preference:1.2.1'
+//    implementation 'net.i2p.android.ext:floatingactionbutton:1.10.1'
+//    implementation 'com.github.futuresimple:android-floating-action-button:1.10.1'
+    implementation 'androidx.legacy:legacy-support-v13:1.0.0'   // TIM
     implementation 'com.googlecode.mp4parser:isoparser:1.1.22'
-    implementation 'org.apache.commons:commons-io:1.3.2'
-    implementation 'com.android.volley:volley:1.1.1'
-    implementation 'com.arthenica:mobile-ffmpeg-full:4.2.LTS'
-    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation "commons-io:commons-io:2.11.0"
+//    implementation 'org.apache.commons:commons-io:2.15.1'
+    implementation 'com.android.volley:volley:1.2.1'
+
+// needed for ffmpeg dependency is no longer available - should be in spadv/app/libs folder
+    implementation(files("Libs/ffmpeg-kit-full-6.0-2.LTS.aar"))
+//    implementation 'com.arthenica:mobile-ffmpeg-full:4.2.2.LTS'
+//    implementation 'com.arthenica:ffmpeg-kit-full:6.0-2'
+    implementation 'com.arthenica:smart-exception-java:0.2.1'
+    implementation 'com.google.code.gson:gson:2.13.2'
     implementation 'com.google.firebase:firebase-analytics:17.6.0'
     implementation 'com.google.firebase:firebase-crashlytics:17.2.2'
-    implementation 'com.github.codekidX:storage-chooser:2.0.3'
-    implementation 'com.squareup.moshi:moshi:1.8.0'
-    implementation 'com.opencsv:opencsv:4.3.2'
-    implementation 'org.jsoup:jsoup:1.11.3'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation 'androidx.webkit:webkit:1.1.0'
+    implementation 'com.github.codekidX:storage-chooser:2.0.4.4'
+
+    implementation 'com.squareup.moshi:moshi:1.15.2'
+    implementation 'com.squareup.moshi:moshi-kotlin:1.15.2'
+//    ksp 'com.squareup.moshi:moshi-kotlin-codegen:1.15.2'
+
+    implementation 'com.opencsv:opencsv:5.9'
+    implementation 'org.jsoup:jsoup:1.21.2'
+    //implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    //implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'androidx.webkit:webkit:1.14.0'
     implementation 'com.google.firebase:firebase-core:17.2.2'
     implementation 'com.google.firebase:firebase-messaging:23.0.8'
-    implementation 'org.jsoup:jsoup:1.11.3'
     implementation 'net.lingala.zip4j:zip4j:2.11.5'
-    implementation 'io.reactivex.rxjava2:rxkotlin:2.4.0'
+    implementation 'io.reactivex.rxjava2:rxkotlin:2.2.0'
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
     // DKH - 08/26/2021 Added by Cedarville for Wordlinks
     // implementation 'androidx.coordinatorlayout:coordinatorlayout:1.1.0'
     // Issue 166, Cedarville pull #519
-    implementation 'androidx.coordinatorlayout:coordinatorlayout:1.1.0'
+    implementation 'androidx.coordinatorlayout:coordinatorlayout:1.3.0'
     //  was told the following line was not supported.. replaced with the line below
     //   but both of the two lines below that were also mentioned in the website
     //   https://stackoverflow.com/questions/57655435/what-replaced-appcompat-v7-in-androidx
     //implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'androidx.appcompat:appcompat:1.0.2'
-    //implementation 'com.google.android.material:material:1.0.0'
     //implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
-    implementation 'com.android.support.constraint:constraint-layout:2.0.4'
-
-    kapt 'com.squareup.moshi:moshi-kotlin-codegen:1.6.0'
-    testImplementation 'junit:junit:4.12'
-    testImplementation 'androidx.test:core:1.2.0'
-    testImplementation 'org.robolectric:robolectric:4.5.1'
-    testImplementation 'org.mockito:mockito-core:3.11.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test:runner:1.2.0'
-    androidTestImplementation 'androidx.annotation:annotation:1.1.0'
-    androidTestImplementation 'androidx.test:rules:1.2.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2' // Or the latest 6.x.x version
+//    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:6.0.1' // Or the latest 6.x.x version
+    testImplementation 'androidx.test:core:1.5.0'   // TM
+    testImplementation 'org.robolectric:robolectric:4.9'
+    testImplementation 'org.mockito:mockito-core:5.20.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test:runner:1.7.0'
+    //androidTestImplementation 'androidx.annotation:annotation:1.1.0'
+    androidTestImplementation 'androidx.test:rules:1.5.0'   // TM
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-intents:3.2.0'
-    androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
-    implementation 'com.jakewharton.timber:timber:4.7.1'
+    androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.4.0-alpha05'
+    implementation 'com.jakewharton.timber:timber:5.0.1'
 
     // Replace bundled strings dynamically
-    implementation 'dev.b3nedikt.restring:restring:5.1.2'
+    implementation 'dev.b3nedikt.restring:restring:5.1.2'    // TM
 
     // Intercept view inflation
-    implementation 'dev.b3nedikt.viewpump:viewpump:4.0.7'
+    implementation 'dev.b3nedikt.viewpump:viewpump:4.0.14'
 
     // Allows to update the text of views at runtime without recreating the activity
     implementation 'dev.b3nedikt.reword:reword:4.0.1'
 
     // Jackson
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.8.5'
-    implementation 'com.fasterxml.jackson.core:jackson-core:2.8.5'
-    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.8.5'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.1'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.17.1'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.17.1'
 
     // ftp
-    implementation 'commons-net:commons-net:3.9.0'
+    implementation 'commons-net:commons-net:3.10.0'
 }
 

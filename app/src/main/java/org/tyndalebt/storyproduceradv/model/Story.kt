@@ -9,6 +9,9 @@ import org.tyndalebt.storyproduceradv.model.logging.LogEntry
 import org.tyndalebt.storyproduceradv.tools.file.getFileType
 import java.io.File
 import java.util.*
+// TM the following needed?
+//import kotlinx.serialization.*
+//import kotlinx.serialization.json.*
 
 
 internal const val PROJECT_DIR = "project"
@@ -19,6 +22,11 @@ internal val RE_DISPLAY_NAME = "([^|]+)[|.]".toRegex()
 internal val RE_FILENAME = "([^|]+[|])?(.*)".toRegex()
 
 @JsonClass(generateAdapter = true)
+// TM the following needed?
+//data class Story(
+//    val id: String,
+//    val title: String
+//)
 
 class Story(var title: String, var slides: List<Slide>){
 

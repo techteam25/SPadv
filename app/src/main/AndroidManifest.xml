@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="org.tyndalebt.storyproduceradv">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- now in app: build.gradlegradle
+    package="org.tyndalebt.storyproduceradv">   -->
     <!-- IMPORTANT for allowing recording and also writing to sd card -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -11,6 +11,7 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
+        xmlns:tools="http://schemas.android.com/tools"
         android:name=".App"
         android:allowBackup="true"
         android:fullBackupContent="false"
@@ -60,9 +61,11 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity> <!-- RK 09/29/23 if you want to enable FIREBASE Analytics, remove the following element -->
+
         <meta-data
             android:name="firebase_analytics_collection_deactivated"
-            android:value="@bool/FIREBASE_ANALYTICS_DEACTIVATED" />
+            android:value="@bool/FIREBASE_ANALYTICS_DEACTIVATED"
+            tools:replace="android:value" />
 
         <!--
  Set custom default icon. This is used when no icon is set for incoming notification messages.
