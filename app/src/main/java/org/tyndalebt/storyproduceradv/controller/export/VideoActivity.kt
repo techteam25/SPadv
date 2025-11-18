@@ -3,6 +3,7 @@ package org.tyndalebt.storyproduceradv.controller.export
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.widget.LinearLayout
 import org.tyndalebt.storyproduceradv.R
 import org.tyndalebt.storyproduceradv.activities.MainBaseActivity
@@ -31,8 +32,8 @@ class VideoActivity : MainBaseActivity()  {
         mHelper.initView(this, null)
         runOnUiThread{
             //This allows the video file to write if it just did
-            val handler = Handler()
-            handler.postDelayed({
+            var colorHandler: Handler = Handler(Looper.getMainLooper())
+            colorHandler.postDelayed({
                 mHelper!!.refreshViews()
                 //your code here
             }, 3000)

@@ -11,6 +11,9 @@ import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.google.gson.TypeAdapter
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import org.apache.commons.io.IOUtils
@@ -22,6 +25,9 @@ import org.tyndalebt.storyproduceradv.tools.file.getChildInputStream
 import org.tyndalebt.storyproduceradv.tools.file.getChosenCombName
 import org.tyndalebt.storyproduceradv.tools.file.toJson
 
+val gson = GsonBuilder().create()
+//val jsonString = gson.toJson(this)
+
 /**
  * A list of all the word links (used for saving all word links in a single file)
  **/
@@ -29,6 +35,7 @@ import org.tyndalebt.storyproduceradv.tools.file.toJson
 class WordLinkList (val wordLinks: List<WordLink>) {
     companion object
 }
+
 
 @JsonClass(generateAdapter = true)
 data class WordLinkRecording (
@@ -67,7 +74,7 @@ data class WordLink (
  **/
 fun stringToWordLink (string: String, fragmentActivity: FragmentActivity?) : SpannableString {
     val spannableString = SpannableString(string)
-    if (Workspace.termFormToTermMap.containsKey(string.toLowerCase())) {
+    if (Workspace.termFormToTermMap.containsKey(string.lowercase())) {
         val clickableSpan = createWordLinkClickableSpan(string, fragmentActivity)
         spannableString.setSpan(clickableSpan, 0, string.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
     }
@@ -97,7 +104,7 @@ private fun createWordLinkClickableSpan(term: String, fragmentActivity: Fragment
         }
 
         override fun updateDrawState(drawState: TextPaint) {
-            val wordLink = Workspace.termToWordLinkMap[Workspace.termFormToTermMap[term.toLowerCase()]]
+            val wordLink = Workspace.termToWordLinkMap[Workspace.termFormToTermMap[term.lowercase()]]
             val hasRecording = wordLink?.wordLinkRecordings?.isNotEmpty()
 
             if(hasRecording != null && hasRecording){

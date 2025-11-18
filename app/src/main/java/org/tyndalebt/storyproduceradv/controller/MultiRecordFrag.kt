@@ -97,7 +97,7 @@ abstract class MultiRecordFrag : SlidePhaseFrag(), PlayBackRecordingToolbar.Tool
             val editBox = rootView?.findViewById<View>(R.id.fragment_dramatization_edit_text) as EditText?
             editBox?.visibility = View.INVISIBLE
 
-            val editFab = rootView!!.findViewById<View>(R.id.edit_text_view) as ImageView?
+            val editFab = rootView.findViewById<View>(R.id.edit_text_view) as ImageView?
             editFab?.visibility = View.VISIBLE
             editFab?.setOnClickListener {
                 val editText = EditText(context)
@@ -119,7 +119,7 @@ abstract class MultiRecordFrag : SlidePhaseFrag(), PlayBackRecordingToolbar.Tool
                         .setNegativeButton(R.string.cancel, null)
                         .setPositiveButton(R.string.save) { _, _ ->
                             Workspace.activeSlide!!.translatedContent = editText.text.toString()
-                            setPic(rootView!!.findViewById(R.id.fragment_image_view) as ImageView)
+                            setPic(rootView.findViewById(R.id.fragment_image_view) as ImageView)
                         }.create()
 
                 dialog.show()
@@ -130,7 +130,7 @@ abstract class MultiRecordFrag : SlidePhaseFrag(), PlayBackRecordingToolbar.Tool
         // If we have a numbered page, only show the restore on the Translate_Revise Phase
         if(slideType == SlideType.NUMBEREDPAGE && Workspace.activePhase.phaseType == PhaseType.TRANSLATE_REVISE) {
 
-            val editFab = rootView!!.findViewById<View>(R.id.restore_image_view) as ImageView?
+            val editFab = rootView.findViewById<View>(R.id.restore_image_view) as ImageView?
             editFab?.visibility = View.VISIBLE
             editFab?.setOnClickListener {
                 val dialog = AlertDialog.Builder(context)
@@ -139,7 +139,7 @@ abstract class MultiRecordFrag : SlidePhaseFrag(), PlayBackRecordingToolbar.Tool
                         .setNegativeButton(R.string.no, null)
                         .setPositiveButton(R.string.yes) { _, _ ->
                             Workspace.activeStory.slides[slideNum].imageFile = "${slideNum}.jpg"
-                            setPic(rootView!!.findViewById(R.id.fragment_image_view) as ImageView)
+                            setPic(rootView.findViewById(R.id.fragment_image_view) as ImageView)
                         }
                         .create()
 
@@ -181,7 +181,7 @@ abstract class MultiRecordFrag : SlidePhaseFrag(), PlayBackRecordingToolbar.Tool
             "${Workspace.activeStory.title}/${Workspace.activeStory.slides[slideNum].imageFile}"
         )
         tempPicFile?.delete()
-        setPic(rootView!!.findViewById(R.id.fragment_image_view) as ImageView)
+        setPic(rootView.findViewById(R.id.fragment_image_view) as ImageView)
     }
 
     /**

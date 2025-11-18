@@ -328,7 +328,12 @@ open class MainBaseActivity : BaseActivity() {
                             .setCancelable(false)
                             .create()
 
-                    msgDialog?.show()
+                    if (msgDialog != null) {
+                        msgDialog.show()
+                    }
+                    msgDialog?.let {
+                        it.show()
+                    }
                 }
             }
         } catch (e: Exception) {
@@ -341,7 +346,12 @@ open class MainBaseActivity : BaseActivity() {
                     .setCancelable(false)
                     .create()
 
-            msgDialog?.show()
+            if (msgDialog != null) {
+                msgDialog.show()
+            }
+            msgDialog?.let {
+                it.show()
+            }
         }
         return false
     }

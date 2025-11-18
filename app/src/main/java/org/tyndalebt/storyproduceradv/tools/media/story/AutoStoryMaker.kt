@@ -8,17 +8,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-
-/*
 import com.arthenica.mobileffmpeg.Config
 import com.arthenica.mobileffmpeg.FFmpeg
-*/
-
-import com.arthenica.ffmpegkit.FFmpegKitConfig
-import com.arthenica.ffmpegkit.FFmpegKit
-import com.arthenica.ffmpegkit.FFmpegSession
-import com.arthenica.ffmpegkit.ReturnCode
-
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import org.tyndalebt.storyproduceradv.R
 import org.tyndalebt.storyproduceradv.model.*
@@ -31,7 +22,6 @@ import java.io.Closeable
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
-
 
 /**
  * AutoStoryMaker is a layer of abstraction above [StoryMaker] that handles all of the
@@ -135,14 +125,14 @@ class AutoStoryMaker(private val context: Context) : Thread(), Closeable {
         video3gpFile.delete()  //just in case it's still there.
 
         try{
-// TM
-            FFmpegKitConfig.clearSessions()
-            FFmpegKitConfig.enableStatisticsCallback { newStatistics -> time3GPms = newStatistics.time.toInt() }
-            FFmpegKit.execute("-i ${videoTempFile.absolutePath} " +
+            Config.resetStatistics()
+            Config.enableStatisticsCallback { newStatistics -> time3GPms = newStatistics.time }
+            FFmpeg.execute("-i ${videoTempFile.absolutePath} " +
                     "-f 3gp -vcodec $VIDEO_3GP_CODEC -framerate $VIDEO_3GP_FRAMERATE -vf " +
                     "scale=${VIDEO_3GP_WIDTH}x$VIDEO_3GP_HEIGHT -acodec $VIDEO_3GP_AUDIO" +
                     " -b:v $VIDEO_3GP_BITRATE " + video3gpFile.absolutePath)
-            Log.w(TAG,FFmpegKit.getLastCommandOutput() ?: "No FFMPEG output")
+            // TM in 4.4 change FFMpeg to Config.
+            Log.w(TAG,Config.getLastCommandOutput() ?: "No FFMPEG output")
             copyToWorkspacePath(context,Uri.fromFile(video3gpFile),"$VIDEO_DIR/$video3gpPath")
             Workspace.activeStory.addVideo(video3gpPath)
         } catch(e:Exception) {
@@ -172,7 +162,7 @@ class AutoStoryMaker(private val context: Context) : Thread(), Closeable {
         slides.add(slide)
 
         while (iSlide < slides.size) {
-            val slide = slides[iSlide++]
+            slide = slides[iSlide++]
 
             //Check if the song slide should be included
             if(slide.slideType == SlideType.LOCALSONG && !mIncludeSong) continue

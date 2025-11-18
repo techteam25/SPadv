@@ -63,7 +63,12 @@ class TemplateActivity : MainBaseActivity()  {
                         .setCancelable(false)
                         .create()
 
-                msgDialog?.show()
+                if (msgDialog != null) {
+                    msgDialog.show()
+                }
+                msgDialog?.let {
+                    it.show()
+                }
             }
         }
         cancelBtn.setOnClickListener {

@@ -167,7 +167,7 @@ class ActivateTemplateActivity : MainBaseActivity() {
     private fun validateSave() {
         var mView = findViewById<TextView>(R.id.password_text_field)
 
-        val pass: String = mView.text.toString().toLowerCase()
+        val pass: String = mView.text.toString().lowercase()
         if (pass != "sp") {
             incorrectPassword()
             return
@@ -250,7 +250,7 @@ class ActivateTemplateActivity : MainBaseActivity() {
     }
 
     private fun getServerFolders() : Array<out String>? {
-        var con: FTPClient? = null
+        var con: FTPClient?
         var fList: Array<out String>? = arrayOf()
 
         val user: String = "ftpstory"
@@ -266,7 +266,8 @@ class ActivateTemplateActivity : MainBaseActivity() {
                 con.enterLocalPassiveMode() // important!
                 // starting folder should be folder that has all the folders of each language (plus "home" which we will ignore later, if present)
                 var result: Boolean = false
-                var fList = con.listNames()
+                // TM fList was also declared here ?!?
+                fList = con.listNames()
                 if (fList.isNotEmpty()) {
                     result = true
                 }
@@ -286,7 +287,13 @@ class ActivateTemplateActivity : MainBaseActivity() {
                             .setCancelable(false)
                             .create()
 
-                    msgDialog?.show()
+                    if (msgDialog != null) {
+                        msgDialog.show()
+                    }
+// Or using a scope function:
+                    msgDialog?.let {
+                        it.show()
+                    }
                 }
             }
         } catch (e: Exception) {
@@ -298,7 +305,13 @@ class ActivateTemplateActivity : MainBaseActivity() {
                     .setCancelable(false)
                     .create()
 
-            msgDialog?.show()
+            if (msgDialog != null) {
+                msgDialog.show()
+            }
+// Or using a scope function:
+            msgDialog?.let {
+                it.show()
+            }
         }
         return fList
     }

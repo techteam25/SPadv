@@ -5,6 +5,7 @@ import androidx.documentfile.provider.DocumentFile
 import org.jsoup.nodes.Element
 import kotlinx.serialization.*
 import kotlinx.serialization.json.*
+import org.jsoup.nodes.Node
 
 class NumberedPageSlideBuilder : SlideBuilder() {
 
@@ -17,7 +18,9 @@ class NumberedPageSlideBuilder : SlideBuilder() {
         }
 
         val bloomEditables = page.getElementsByAttributeValueContaining("class", BLOOM_TRANSLATION_GROUP)
-                .filter { !it.hasClass(BLOOM_IMAGE_DESCRIPTION) }
+            // TM used auto change by red lamp to refractor this  -  it used to be:
+            //     .filter { !it.hasClass(BLOOM_IMAGE_DESCRIPTION) }
+                .filter { myNode -> !myNode.hasClass(BLOOM_IMAGE_DESCRIPTION) }
                 .map { it.getElementsByAttributeValueContaining("class", BLOOM_EDITABLE) }
                 .flatten()
                 .filter { it.attr(LANG) == lang }

@@ -241,7 +241,9 @@ open class RecordingToolbar : Fragment(){
      * UI testing more difficult.
      */
     private fun isAnimationEnabled(): Boolean {
-        return !PreferenceManager.getDefaultSharedPreferences(activity).getBoolean(activity?.resources?.getString(org.tyndalebt.storyproduceradv.R.string.recording_toolbar_disable_animation), false)
+        // TM replaced line
+        //return !PreferenceManager.getDefaultSharedPreferences(activity).getBoolean(activity?.resources?.getString(org.tyndalebt.storyproduceradv.R.string.recording_toolbar_disable_animation), false)
+        return !PreferenceManager.getDefaultSharedPreferences(requireActivity()).getBoolean(requireActivity().resources?.getString(org.tyndalebt.storyproduceradv.R.string.recording_toolbar_disable_animation), false)
     }
 
     fun getRecorder() : AudioRecorder? {  // RK 09/29/23 for testing

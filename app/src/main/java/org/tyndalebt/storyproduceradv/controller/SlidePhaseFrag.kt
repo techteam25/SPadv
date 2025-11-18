@@ -59,7 +59,7 @@ abstract class SlidePhaseFrag : androidx.fragment.app.Fragment() {
         // properly.
         rootView = inflater.inflate(R.layout.fragment_slide, container, false)
 
-        setPic(rootView!!.findViewById<View>(R.id.fragment_image_view) as ImageView)
+        setPic(rootView.findViewById<View>(R.id.fragment_image_view) as ImageView)
 
         return rootView
     }
@@ -81,11 +81,11 @@ abstract class SlidePhaseFrag : androidx.fragment.app.Fragment() {
         referenceAudioPlayer.setStorySource(context!!,Workspace.activePhase.getReferenceAudioFile(slideNum))
 
         referenceAudioPlayer.onPlayBackStop(MediaPlayer.OnCompletionListener {
-            referencePlayButton!!.setBackgroundResource(R.drawable.ic_play_arrow_white_36dp)
+            referencePlayButton.setBackgroundResource(R.drawable.ic_play_arrow_white_36dp)
             referenceAudioPlayer.stopAudio()
         })
 
-        refPlaybackSeekBar = rootView!!.findViewById(R.id.videoSeekBar)
+        refPlaybackSeekBar = rootView.findViewById(R.id.videoSeekBar)
         mSeekBarTimer = Timer()
         mSeekBarTimer.schedule(object : TimerTask() {
             override fun run() {
@@ -227,10 +227,10 @@ abstract class SlidePhaseFrag : androidx.fragment.app.Fragment() {
     }
 
     private fun setReferenceAudioButton() {
-        referencePlayButton!!.setOnClickListener {
+        referencePlayButton.setOnClickListener {
             if (!storyRelPathExists(context!!,Workspace.activePhase.getReferenceAudioFile(slideNum))) {
                 //TODO make "no audio" string work for all phases
-                Snackbar.make(rootView!!, R.string.translate_revise_playback_no_lwc_audio, Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(rootView, R.string.translate_revise_playback_no_lwc_audio, Snackbar.LENGTH_SHORT).show()
             } else {
                 //stop other playback streams.
                 if (referenceAudioPlayer.isAudioPlaying) {

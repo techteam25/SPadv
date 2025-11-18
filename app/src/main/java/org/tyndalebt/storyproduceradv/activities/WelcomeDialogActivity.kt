@@ -15,6 +15,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.text.HtmlCompat
 import org.tyndalebt.storyproduceradv.R
 import org.tyndalebt.storyproduceradv.model.Workspace
 import java.io.File
@@ -122,7 +123,7 @@ class WelcomeDialogActivity : BaseActivity() {
         return if (Build.VERSION.SDK_INT >= 24) {
             Html.fromHtml(title,0)
         } else {
-            Html.fromHtml(title) }
+            Html.fromHtml(title, HtmlCompat.FROM_HTML_MODE_LEGACY) }
     }
 
     private fun buildMessage(): Spanned {
@@ -139,6 +140,6 @@ class WelcomeDialogActivity : BaseActivity() {
         return if (Build.VERSION.SDK_INT >= 24) {
             Html.fromHtml(message, 0)
         } else {
-            Html.fromHtml(message) }
+            Html.fromHtml(message, HtmlCompat.FROM_HTML_MODE_LEGACY) }
     }
 }

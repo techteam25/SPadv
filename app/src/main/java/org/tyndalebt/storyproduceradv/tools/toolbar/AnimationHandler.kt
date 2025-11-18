@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.TransitionDrawable
 import android.os.Handler
+import android.os.Looper
 
 private const val ANIMATION_DURATION = 1500
 
@@ -17,7 +18,8 @@ private const val ANIMATION_DURATION = 1500
 class AnimationHandler(initialColor: Int = Color.rgb(0, 0, 255),
                        targetColor: Int = Color.rgb(255, 0, 0)) {
     val transitionDrawable: TransitionDrawable = TransitionDrawable(arrayOf(ColorDrawable(initialColor), ColorDrawable(targetColor)))
-    private var colorHandler: Handler = Handler()
+    private var colorHandler: Handler = Handler(Looper.getMainLooper())
+    // TM private var colorHandler: Handler = Handler()
     private var colorHandlerRunnable: Runnable
     private var isTargetColor = false
 

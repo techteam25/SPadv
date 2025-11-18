@@ -169,7 +169,7 @@ class ChooseLangActivity : BaseActivity() {
                 )
             }
         } catch (exception: IOException) {
-            TmpStr = exception.localizedMessage
+            TmpStr = exception.localizedMessage.toString()
         }
         return listTypeJson
     }

@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.os.StrictMode
 import android.widget.LinearLayout
 import org.tyndalebt.storyproduceradv.activities.MainBaseActivity
@@ -28,11 +29,15 @@ class TemplateListActivity : MainBaseActivity() {
         mHelper.initView(this, null)
         runOnUiThread{
             //This allows the video file to write if it just did
-            val handler = Handler()
-            handler.postDelayed({
+            //val handler = Handler()
+            Handler(Looper.getMainLooper()).postDelayed({
                 mHelper!!.refreshViews()
-                //your code here
             }, 3000)
+
+//            handler.postDelayed({
+//                mHelper!!.refreshViews()
+//                //your code here
+//            }, 3000)
         }
         checkForUploads()
     }

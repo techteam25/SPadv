@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.text.HtmlCompat
 import org.tyndalebt.storyproduceradv.R
 import org.tyndalebt.storyproduceradv.activities.BaseActivity
 import org.tyndalebt.storyproduceradv.model.Story
@@ -27,7 +28,7 @@ class StoryListFrag : androidx.fragment.app.Fragment() {
 
             view!!.findViewById<TextView>(R.id.stories_not_found_text).text =
                     if (Build.VERSION.SDK_INT >= 24){Html.fromHtml(getString(R.string.stories_not_found_body), 0)}
-                            else{Html.fromHtml(getString(R.string.stories_not_found_body))}
+                            else{Html.fromHtml(getString(R.string.stories_not_found_body), HtmlCompat.FROM_HTML_MODE_LEGACY)}
 
             view.findViewById<Button>(R.id.update_workspace_button).setOnClickListener {
                 (activity as? BaseActivity)?.showSelectTemplatesFolderDialog()

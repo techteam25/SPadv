@@ -120,7 +120,7 @@ class Phase (val phaseType: PhaseType) {
             PhaseType.VOICE_STUDIO     -> mResources.getString(R.string.voice_studio_title)
             PhaseType.FINALIZE         -> mResources.getString(R.string.finalize_title)
             PhaseType.SHARE            -> mResources.getString(R.string.share_title)
-            else -> phaseType.toString().toLowerCase()
+            else -> phaseType.toString().lowercase()
         }
     }
      // TODO: refactor (see Issues #546 & #547)
@@ -143,7 +143,7 @@ class Phase (val phaseType: PhaseType) {
             PhaseType.VOICE_STUDIO     -> "Voice Studio"
             PhaseType.FINALIZE         -> "Finalize"
             PhaseType.SHARE            -> "Share"
-            else -> phaseType.toString().toLowerCase()
+            else -> phaseType.toString().lowercase()
         }
     }
 
@@ -163,7 +163,7 @@ class Phase (val phaseType: PhaseType) {
             PhaseType.ACCURACY_CHECK   -> mResources.getString(R.string.recordings_title)
             PhaseType.VOICE_STUDIO     -> mResources.getString(R.string.recordings_title)
             PhaseType.FINALIZE         -> mResources.getString(R.string.recordings_title)
-            else -> phaseType.toString().toLowerCase()
+            else -> phaseType.toString().lowercase()
         }
     }
 
@@ -182,7 +182,7 @@ class Phase (val phaseType: PhaseType) {
             PhaseType.ACCURACY_CHECK   -> "Accuracy"
             PhaseType.VOICE_STUDIO     -> "Studio Recording"
             PhaseType.FINALIZE         -> "Finalize"
-            else -> phaseType.toString().toLowerCase()
+            else -> phaseType.toString().lowercase()
         }
     }
 
@@ -211,7 +211,7 @@ class Phase (val phaseType: PhaseType) {
             PhaseType.ACCURACY_CHECK   -> "Accuracy"
             PhaseType.VOICE_STUDIO     -> "VStudio"
             PhaseType.FINALIZE         -> "Finalize"
-            else -> phaseType.toString().toLowerCase()
+            else -> phaseType.toString().lowercase()
         }
     }
 
@@ -343,7 +343,7 @@ class Phase (val phaseType: PhaseType) {
          * @return String
          */
         private fun getHelpDocFileLang(phase: PhaseType, Language: String) : String {
-            return "${Language}/${phase.name.toLowerCase()}.html"
+            return "${Language}/${phase.name.lowercase()}.html"
         }
 
         fun openHelpDocFile(phase: PhaseType, Language: String, context: Context) : InputStream {

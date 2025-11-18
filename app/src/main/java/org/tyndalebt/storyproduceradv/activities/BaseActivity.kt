@@ -12,6 +12,7 @@ import android.util.Log
 import android.view.View
 import android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
 import android.widget.TextView
+import androidx.core.text.HtmlCompat
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
@@ -249,7 +250,7 @@ open class BaseActivity : AppCompatActivityMTT(), BaseActivityView {
         return if (Build.VERSION.SDK_INT >= 24) {
             Html.fromHtml(title,0)
         } else {
-            Html.fromHtml(title) }
+            Html.fromHtml(title, HtmlCompat.FROM_HTML_MODE_LEGACY) }
     }
 
     private fun buildSelectTemplatesMessage(): Spanned {
@@ -257,7 +258,7 @@ open class BaseActivity : AppCompatActivityMTT(), BaseActivityView {
         return if (Build.VERSION.SDK_INT >= 24) {
             Html.fromHtml(message, 0)
         } else {
-            Html.fromHtml(message) }
+            Html.fromHtml(message, HtmlCompat.FROM_HTML_MODE_LEGACY) }
     }
 
     fun showAboutDialog() {

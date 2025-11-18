@@ -29,8 +29,8 @@ class WordLinkSearchTree {
         var currentNode = root
 
         for (w in words) {
-            val nextNode = currentNode.childWords[w.toLowerCase()] ?: WordNode()
-            currentNode.childWords[w.toLowerCase()] = nextNode
+            val nextNode = currentNode.childWords[w.lowercase()] ?: WordNode()
+            currentNode.childWords[w.lowercase()] = nextNode
             currentNode = nextNode
         }
         currentNode.isWordLink = true
@@ -84,7 +84,7 @@ class WordLinkSearchTree {
             if (wordLinkPhrase != "") {
                 // we have a wordlink, phrase could be derived from the actual wordlink
                 // term is for the actual wordlink
-                val term = Workspace.termFormToTermMap[wordLinkPhrase!!.toLowerCase(Locale.getDefault())]
+                val term = Workspace.termFormToTermMap[wordLinkPhrase!!.lowercase(Locale.getDefault())]
                 var wordLink = Workspace.termToWordLinkMap.get(term)
                 if ((wordLink != null) && wordLink!!.uploadState == WordLinkUploadState.UPLOAD_NEEDED) {
                     wordLinks.add(wordLink!!)
@@ -117,8 +117,8 @@ class WordLinkSearchTree {
         if(words.isNotEmpty()){
             val word = words.removeAt(0)
 
-            if(currentNode.childWords.containsKey(word.toLowerCase())){
-                val nextNode = currentNode.childWords[word.toLowerCase()]!!
+            if(currentNode.childWords.containsKey(word.lowercase())){
+                val nextNode = currentNode.childWords[word.lowercase()]!!
                 val wordLink = getIfWordLink(words, nextNode)
 
                 if(nextNode.isWordLink || wordLink != ""){

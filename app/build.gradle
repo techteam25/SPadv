@@ -2,16 +2,16 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'org.jetbrains.kotlin.kapt'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '1.9.25'
+    //id 'org.jetbrains.kotlin.jvm' version '1.9.23'
 
     // TM  needed for JsonAdapter error
-    id 'com.google.devtools.ksp' version '1.9.10-1.0.13' apply false
-    id("org.jetbrains.kotlin.plugin.serialization") version "1.6.0" // Or your specific Kotlin version
-
+    id("com.google.devtools.ksp") version "1.9.25-1.0.20"
+ 
     // Apply the Google services plugin
     id 'com.google.gms.google-services'
     // Apply the Firebase Crashlytics plugin
     id 'com.google.firebase.crashlytics'
-    // TM id 'kotlin-kapt'
 }
 
 def keystorePropertiesFile = new File(rootProject.projectDir, 'keystore.properties')
@@ -24,8 +24,8 @@ android {
         minSdk 24
         compileSdk 34
         targetSdk 34
-        versionCode 69
-        versionName '2.35'
+        versionCode 70
+        versionName '2.36'
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
@@ -67,6 +67,8 @@ android {
         release {
             if (keystorePropertiesFile.isFile()) {
                 signingConfig signingConfigs.release
+            } else {
+                signingConfig signingConfigs.debug
             }
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -88,8 +90,9 @@ android {
         // changing the package_name is that field names in the JSON registration parsing were
         // affected.  See Issue #559 for a more detailed explanation.
         debug {
+            debuggable true
             versionNameSuffix ".debug"
-            applicationIdSuffix ".debug"
+            applicationIdSuffix "-debug"
             // dkh 4/4/2022 - OR12 disable firebase analytics for SPadvance because the SPadvance
             // release number shows up in the firebase website (get mixed SPadvance and SP crashes
             // showing up
@@ -98,6 +101,7 @@ android {
             buildConfigField "String", "ROCC_WEBSOCKETS_PREFIX", ROCC_WEBSOCKETS_PREFIX
             buildConfigField "Boolean", "ENABLE_IN_APP_ROCC_URL_SETTING", "false"
             resValue "bool", "enable_in_app_rocc_url_setting", "false"
+            signingConfig signingConfigs.debug
         }
         continuous {
             initWith release
@@ -145,14 +149,14 @@ repositories {
 dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.9.10'
     // TM  needed for JsonAdapter error
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
     // the following line eliminates the dup class error somehow - Tim
     implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
     implementation 'org.java-websocket:Java-WebSocket:1.6.0'
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-//    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.10.0'
     implementation 'androidx.core:core-ktx:1.13.1'
     implementation 'androidx.recyclerview:recyclerview:1.3.2'
@@ -166,7 +170,7 @@ dependencies {
     implementation 'com.android.volley:volley:1.2.1'
 
 // needed for ffmpeg dependency is no longer available - should be in spadv/app/libs folder
-    implementation(files("Libs/ffmpeg-kit-full-6.0-2.LTS.aar"))
+    implementation(files("Libs/mobile-ffmpeg-full-gpl-4.4.LTS.aar"))
 //    implementation 'com.arthenica:mobile-ffmpeg-full:4.2.2.LTS'
 //    implementation 'com.arthenica:ffmpeg-kit-full:6.0-2'
     implementation 'com.arthenica:smart-exception-java:0.2.1'
@@ -175,12 +179,12 @@ dependencies {
     implementation 'com.google.firebase:firebase-crashlytics:17.2.2'
     implementation 'com.github.codekidX:storage-chooser:2.0.4.4'
 
-    implementation 'com.squareup.moshi:moshi:1.15.2'
-    implementation 'com.squareup.moshi:moshi-kotlin:1.15.2'
-//    ksp 'com.squareup.moshi:moshi-kotlin-codegen:1.15.2'
+    implementation 'com.squareup.moshi:moshi:1.15.0'
+    implementation 'com.squareup.moshi:moshi-kotlin:1.15.0'
+    ksp 'com.squareup.moshi:moshi-kotlin-codegen:1.15.0'
 
     implementation 'com.opencsv:opencsv:5.9'
-    implementation 'org.jsoup:jsoup:1.21.2'
+    implementation 'org.jsoup:jsoup:1.17.2'
     //implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     //implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'androidx.webkit:webkit:1.14.0'

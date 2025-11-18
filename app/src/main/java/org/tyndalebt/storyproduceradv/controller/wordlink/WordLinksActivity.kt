@@ -44,7 +44,7 @@ class WordLinksActivity : AppCompatActivityMTT(), PlayBackRecordingToolbar.Toolb
 
         Workspace.activePhase = Phase(PhaseType.WORD_LINKS)
         val clickedTerm = intent.getStringExtra(WORD_LINKS_CLICKED_TERM)
-        Workspace.activeWordLink = Workspace.termToWordLinkMap[Workspace.termFormToTermMap[clickedTerm!!.toLowerCase(Locale.getDefault())]]!!
+        Workspace.activeWordLink = Workspace.termToWordLinkMap[Workspace.termFormToTermMap[clickedTerm!!.lowercase(Locale.getDefault())]]!!
         wordLinkHistory.push(clickedTerm)
 
         setupStatusBar()
@@ -100,11 +100,11 @@ class WordLinksActivity : AppCompatActivityMTT(), PlayBackRecordingToolbar.Toolb
     private fun setupNoteView() {
         val actionBar = supportActionBar
 
-        actionBar?.title = wordLinkHistory.peek().toUpperCase();
+        actionBar?.title = wordLinkHistory.peek().uppercase();
 
         val wordLinkTitleView = findViewById<TextView>(R.id.wordlink_title)
         var titleText = ""
-        if(Workspace.activeWordLink.term.toLowerCase() != wordLinkHistory.peek().toLowerCase()) {
+        if(Workspace.activeWordLink.term.lowercase() != wordLinkHistory.peek().lowercase()) {
             titleText = Workspace.activeWordLink.term
         }
         // format
@@ -231,7 +231,7 @@ class WordLinksActivity : AppCompatActivityMTT(), PlayBackRecordingToolbar.Toolb
                 super.onBackPressed()
                 finish()
             } else {
-                Workspace.activeWordLink = Workspace.termToWordLinkMap[Workspace.termFormToTermMap[wordLinkHistory.peek().toLowerCase()]]!!
+                Workspace.activeWordLink = Workspace.termToWordLinkMap[Workspace.termFormToTermMap[wordLinkHistory.peek().lowercase()]]!!
                 setupNoteView()
                 setupRecordingList()
             }
@@ -241,7 +241,7 @@ class WordLinksActivity : AppCompatActivityMTT(), PlayBackRecordingToolbar.Toolb
     fun replaceActivityWordLink(term: String) {
         saveWordLink()
         // Set word link from link as active word link
-        Workspace.activeWordLink = Workspace.termToWordLinkMap[Workspace.termFormToTermMap[term.toLowerCase()]]!!
+        Workspace.activeWordLink = Workspace.termToWordLinkMap[Workspace.termFormToTermMap[term.lowercase()]]!!
         // Add new word link fragments to stack
         wordLinkHistory.push(term)
         setupNoteView()

@@ -32,8 +32,9 @@ open class MultiRecordRecordingToolbar: PlayBackRecordingToolbar() {
             true -> if (Workspace.activeStory.slides[MultiRecordFrag.slideNumHolder!!].communityWorkAudioFiles.isNotEmpty() &&
                 Workspace.activePhase.phaseType != PhaseType.COMMUNITY_WORK) {
                 rootView?.addView(commentIcon);
-// TM  needs stuff added here
             }
+            // TM  needed else - not sure if return is right but needs something
+            else -> return;
         }
     }
 

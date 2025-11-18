@@ -10,6 +10,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import org.tyndalebt.storyproduceradv.R
@@ -112,7 +113,7 @@ open class StoryPageFragment : Fragment() {
                         Html.fromHtml(getString(storyPageTab.emptyStoryStringId), 0)
                     }
                     else {
-                        Html.fromHtml(getString(storyPageTab.emptyStoryStringId))
+                        Html.fromHtml(getString(storyPageTab.emptyStoryStringId), HtmlCompat.FROM_HTML_MODE_LEGACY)
                     }
 
             val button: Button = view.findViewById(R.id.update_workspace_button)

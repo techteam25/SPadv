@@ -1,10 +1,13 @@
 package org.tyndalebt.storyproduceradv.model
 
-
 import android.content.Context
 import android.net.Uri
 import androidx.documentfile.provider.DocumentFile
+import com.google.gson.Gson
+import com.google.gson.TypeAdapter
 import com.squareup.moshi.JsonClass
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import org.tyndalebt.storyproduceradv.model.logging.LogEntry
 import org.tyndalebt.storyproduceradv.tools.file.getFileType
 import java.io.File
@@ -13,7 +16,6 @@ import java.util.*
 //import kotlinx.serialization.*
 //import kotlinx.serialization.json.*
 
-
 internal const val PROJECT_DIR = "project"
 internal const val VIDEO_DIR = "videos"
 internal const val PROJECT_FILE = "story.json"
@@ -21,7 +23,14 @@ internal val RE_TITLE_NUMBER = "([0-9]+[A-Za-z]?)?[_ -]*(.+)".toRegex()
 internal val RE_DISPLAY_NAME = "([^|]+)[|.]".toRegex()
 internal val RE_FILENAME = "([^|]+[|])?(.*)".toRegex()
 
-@JsonClass(generateAdapter = true)
+//val gson = Gson()
+
+//val moshi = Moshi
+//    .Builder()
+//    .add(KotlinJsonAdapterFactory()) // Essential for Kotlin data classes
+//    .build()
+
+//@JsonClass(generateAdapter = true)
 // TM the following needed?
 //data class Story(
 //    val id: String,
@@ -156,8 +165,8 @@ class Story(var title: String, var slides: List<Slide>){
             val match = RE_FILENAME.find(combName)
             return if(match != null){ match.groupValues[2] } else {""}
         }
-    }
 
+    }
 
 }
 

@@ -1,12 +1,18 @@
 package org.tyndalebt.storyproduceradv.model
 
+import com.squareup.moshi.JsonClass
+import com.google.gson.Gson
+import com.google.gson.TypeAdapter
 import android.content.Context
 import android.net.Uri
 import android.os.Environment
 import android.provider.DocumentsContract
 import androidx.documentfile.provider.DocumentFile
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.google.gson.GsonBuilder
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import com.squareup.moshi.adapter
 import net.lingala.zip4j.ZipFile
 import org.tyndalebt.storyproduceradv.BuildConfig
 import org.tyndalebt.storyproduceradv.R
@@ -17,8 +23,9 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
-//import kotlinx.serialization.*
-//import kotlinx.serialization.json.*
+import kotlin.jvm.Volatile
+import kotlinx.serialization.*
+import kotlinx.serialization.json.*
 
 fun Story.toJson(context: Context){
     // DKH - Updated 06/02/2021  for Issue 555: Report Story Parse Exceptions and Handle them appropriately
@@ -28,23 +35,24 @@ fun Story.toJson(context: Context){
     storyToJasonTimeStamp = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Date()) // eg: 2021-06-04 15:07:03
 
     val filePath = "$PROJECT_DIR/$PROJECT_FILE" // location of file
-    val moshi = Moshi
-            .Builder()
-            .add(RectAdapter())
-            .add(UriAdapter())
-            .build()
-    val adapter = Story.jsonAdapter(moshi)
-//    data class Story(
-//        val id: String,
-//        val title: String
-//        // ... other properties
-//    )
+//    val moshi = Moshi.Builder()
+////        .add(KotlinJsonAdapterFactory()) // Essential for Kotlin data classes
+//        .add(RectAdapter())
+//        .add(UriAdapter())
+//        .build()
+
+    val gson = Gson()
+    val adapter: TypeAdapter<Story> = gson.getAdapter(Story::class.java)
+
     val oStream = getStoryChildOutputStream(context,
             filePath,"",this.title)
     if(oStream != null) {
         try {
 //            oStream.write(adapter.toJson(this).toByteArray(Charsets.UTF_8))
+//            val tmpStr = adapter.toJson(this)
+//            val gson = Gson()
             val tmpStr = adapter.toJson(this)
+
             if (tmpStr.length > 1) {
                 val storyJson = tmpStr.toByteArray(Charsets.UTF_8)
                 if (storyJson.size > 50) {
@@ -88,12 +96,19 @@ fun storyFromJson(context: Context, storyTitle: DocumentFile): Story?{
 
     try {
         // use Moshi to restore all information associated with this story
-        val moshi = Moshi
-                .Builder()
-                .add(RectAdapter())
-                .add(UriAdapter())
-                .build()
-        val adapter = Story.jsonAdapter(moshi)
+//        val moshi = Moshi
+//                .Builder()
+//                .add(RectAdapter())
+//                .add(UriAdapter())
+//                .add(KotlinJsonAdapterFactory()) // Essential for Kotlin data classes
+//                .build()
+
+        val adapter: TypeAdapter<Story> = gson.getAdapter(Story::class.java)
+        val gson = GsonBuilder()
+            .registerTypeAdapter(Story::class.java, adapter)
+            .create()
+
+        //val adapter = Story.TypeAdapter(gson)
         // get "name" of story.  Could be off main spadv folder or could be a subfolder off newtemplates.  Look for this in the path
         var name = storyTitle.name
         if (storyTitle.uri.path!!.contains(NEW_TEMPLATES_DIR)) {
