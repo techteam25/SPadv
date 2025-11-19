@@ -129,7 +129,7 @@ Translate and produce stories (starting with templates in a major language made 
    Publisher, using Build->Make Project.  My build initially failed and needed the
    following change to successfully complete, in the following element, make sure that 
    the package name ends with ".debug" (line 12):
-      SPadf/app/google-services.json
+      SPadv/app/google-services.json
         "android_client_info": {
           "package_name": "org.tyndalebt.storyproduceradv"
         }

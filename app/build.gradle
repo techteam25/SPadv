@@ -7,7 +7,7 @@ plugins {
 
     // TM  needed for JsonAdapter error
     id("com.google.devtools.ksp") version "1.9.25-1.0.20"
- 
+
     // Apply the Google services plugin
     id 'com.google.gms.google-services'
     // Apply the Firebase Crashlytics plugin
@@ -65,6 +65,7 @@ android {
     }
     buildTypes {
         release {
+            debuggable false
             if (keystorePropertiesFile.isFile()) {
                 signingConfig signingConfigs.release
             } else {
@@ -89,10 +90,11 @@ android {
         //"package_name" in debug\google-services.json was also changed.  Side effect of
         // changing the package_name is that field names in the JSON registration parsing were
         // affected.  See Issue #559 for a more detailed explanation.
+        //
         debug {
             debuggable true
             versionNameSuffix ".debug"
-            applicationIdSuffix "-debug"
+            //applicationIdSuffix "debug"
             // dkh 4/4/2022 - OR12 disable firebase analytics for SPadvance because the SPadvance
             // release number shows up in the firebase website (get mixed SPadvance and SP crashes
             // showing up
@@ -140,19 +142,13 @@ android {
     }
 }
 
-repositories {
-    mavenCentral()
-    maven { url 'https://jitpack.io' }
-    google()
-}
-
 dependencies {
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.9.10'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.9.25'
     // TM  needed for JsonAdapter error
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
     // the following line eliminates the dup class error somehow - Tim
     implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0'
     implementation 'org.java-websocket:Java-WebSocket:1.6.0'
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
@@ -165,7 +161,7 @@ dependencies {
 //    implementation 'com.github.futuresimple:android-floating-action-button:1.10.1'
     implementation 'androidx.legacy:legacy-support-v13:1.0.0'   // TIM
     implementation 'com.googlecode.mp4parser:isoparser:1.1.22'
-    implementation "commons-io:commons-io:2.11.0"
+    implementation "commons-io:commons-io:2.15.0"
 //    implementation 'org.apache.commons:commons-io:2.15.1'
     implementation 'com.android.volley:volley:1.2.1'
 
@@ -179,20 +175,25 @@ dependencies {
     implementation 'com.google.firebase:firebase-crashlytics:17.2.2'
     implementation 'com.github.codekidX:storage-chooser:2.0.4.4'
 
-    implementation 'com.squareup.moshi:moshi:1.15.0'
-    implementation 'com.squareup.moshi:moshi-kotlin:1.15.0'
-    ksp 'com.squareup.moshi:moshi-kotlin-codegen:1.15.0'
+    implementation 'com.squareup.moshi:moshi:1.15.2'
+    implementation 'com.squareup.moshi:moshi-kotlin:1.15.2'
+    ksp 'com.squareup.moshi:moshi-kotlin-codegen:1.15.2'
 
-    implementation 'com.opencsv:opencsv:5.9'
-    implementation 'org.jsoup:jsoup:1.17.2'
+    implementation 'com.opencsv:opencsv:5.12.0'
+    implementation 'org.jsoup:jsoup:1.21.2'
     //implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     //implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'androidx.webkit:webkit:1.14.0'
     implementation 'com.google.firebase:firebase-core:17.2.2'
     implementation 'com.google.firebase:firebase-messaging:23.0.8'
     implementation 'net.lingala.zip4j:zip4j:2.11.5'
-    implementation 'io.reactivex.rxjava2:rxkotlin:2.2.0'
+
+    implementation 'io.reactivex.rxjava2:rxkotlin:2.4.0'
+    // It is recommended to explicitly add the RxJava2 dependency as well
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.10'
+    // If you need Android-specific bindings (e.g., mainThread scheduler)
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+
     // DKH - 08/26/2021 Added by Cedarville for Wordlinks
     // implementation 'androidx.coordinatorlayout:coordinatorlayout:1.1.0'
     // Issue 166, Cedarville pull #519
@@ -202,30 +203,34 @@ dependencies {
     //   https://stackoverflow.com/questions/57655435/what-replaced-appcompat-v7-in-androidx
     //implementation 'com.android.support:appcompat-v7:28.0.0'
     //implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    //implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2' // Or the latest 6.x.x version
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.2' // Or the latest 6.x.x version
 //    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:6.0.1' // Or the latest 6.x.x version
     testImplementation 'androidx.test:core:1.5.0'   // TM
-    testImplementation 'org.robolectric:robolectric:4.9'
+    //testImplementation 'org.robolectric:robolectric:4.9'
+    testImplementation 'org.robolectric:robolectric:4.16'
     testImplementation 'org.mockito:mockito-core:5.20.0'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-    androidTestImplementation 'androidx.test:runner:1.7.0'
+
+    //androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
+    androidTestImplementation 'androidx.test:runner:1.5.0'
     //androidTestImplementation 'androidx.annotation:annotation:1.1.0'
-    androidTestImplementation 'androidx.test:rules:1.5.0'   // TM
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-intents:3.2.0'
-    androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.4.0-alpha05'
+    androidTestImplementation 'androidx.test:rules:1.6.1'   // TM
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-intents:3.6.1'
+    androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.3.0'
     implementation 'com.jakewharton.timber:timber:5.0.1'
 
     // Replace bundled strings dynamically
-    implementation 'dev.b3nedikt.restring:restring:5.1.2'    // TM
+    implementation 'dev.b3nedikt.restring:restring:6.0.0'    // TM
 
     // Intercept view inflation
     implementation 'dev.b3nedikt.viewpump:viewpump:4.0.14'
 
     // Allows to update the text of views at runtime without recreating the activity
-    implementation 'dev.b3nedikt.reword:reword:4.0.1'
+    implementation 'dev.b3nedikt.reword:reword:4.0.4'
 
     // Jackson
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.1'
@@ -233,6 +238,6 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-annotations:2.17.1'
 
     // ftp
-    implementation 'commons-net:commons-net:3.10.0'
+    implementation 'commons-net:commons-net:3.11.1'
 }
 
