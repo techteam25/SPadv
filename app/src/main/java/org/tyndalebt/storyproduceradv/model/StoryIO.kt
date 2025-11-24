@@ -1,18 +1,18 @@
 package org.tyndalebt.storyproduceradv.model
 
-import com.squareup.moshi.JsonClass
-import com.google.gson.Gson
-import com.google.gson.TypeAdapter
 import android.content.Context
 import android.net.Uri
 import android.os.Environment
 import android.provider.DocumentsContract
 import androidx.documentfile.provider.DocumentFile
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.google.gson.Gson
+import com.google.gson.TypeAdapter
 import com.google.gson.GsonBuilder
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import com.squareup.moshi.adapter
+//import com.squareup.moshi.JsonClass
+// import com.squareup.moshi.Moshi
+//import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+//import com.squareup.moshi.adapter
 import net.lingala.zip4j.ZipFile
 import org.tyndalebt.storyproduceradv.BuildConfig
 import org.tyndalebt.storyproduceradv.R
@@ -48,9 +48,7 @@ fun Story.toJson(context: Context){
             filePath,"",this.title)
     if(oStream != null) {
         try {
-//            oStream.write(adapter.toJson(this).toByteArray(Charsets.UTF_8))
-//            val tmpStr = adapter.toJson(this)
-//            val gson = Gson()
+            oStream.write(adapter.toJson(this).toByteArray(Charsets.UTF_8))
             val tmpStr = adapter.toJson(this)
 
             if (tmpStr.length > 1) {
@@ -329,7 +327,7 @@ fun unzipIfZipped(context: Context, file: DocumentFile, existingFolders: Array<a
     val name = file.name!!.substringBeforeLast(".","")
     val sourceFile = File("${context.filesDir}/${file.name!!}")
     val zipFile = ZipFile(sourceFile.absolutePath)
-    var workspaceBloomExists:Boolean = false
+    var workspaceBloomExists = false
 
     try
     {
@@ -342,7 +340,7 @@ fun unzipIfZipped(context: Context, file: DocumentFile, existingFolders: Array<a
                 inputStream!!.close()
                 workspaceBloomExists = true
                 if (Workspace.isUnitTest) {
-                    workspaceBloomExists = false;  // copyToFilesDir will fail
+                    workspaceBloomExists = false  // copyToFilesDir will fail
                 }
             } catch (e: java.lang.Exception) {
                 workspaceBloomExists = false

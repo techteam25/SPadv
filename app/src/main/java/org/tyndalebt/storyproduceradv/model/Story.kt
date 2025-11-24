@@ -24,6 +24,7 @@ internal val RE_DISPLAY_NAME = "([^|]+)[|.]".toRegex()
 internal val RE_FILENAME = "([^|]+[|])?(.*)".toRegex()
 
 //val gson = Gson()
+//val adapter: TypeAdapter<Story> = gson.getAdapter(Story::class.java)
 
 //val moshi = Moshi
 //    .Builder()
