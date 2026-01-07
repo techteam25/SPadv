@@ -284,7 +284,7 @@ class LearnActivity : PhaseBaseActivity(), PlayBackRecordingToolbar.ToolbarMedia
                     R.string.learn_phase_practice, Snackbar.LENGTH_LONG)
             val snackBarView = snackbar.view
             snackBarView.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.lightWhite, null))
-            val textView = snackBarView.findViewById<TextView>(R.id.snackbar_text)
+            val textView = snackBarView.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
             textView.setTextColor(ResourcesCompat.getColor(resources, R.color.darkGray, null))
             snackbar.show()
         }

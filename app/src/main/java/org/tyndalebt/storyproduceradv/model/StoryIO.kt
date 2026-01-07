@@ -7,6 +7,7 @@ import android.provider.DocumentsContract
 import androidx.documentfile.provider.DocumentFile
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import net.lingala.zip4j.ZipFile
 import org.tyndalebt.storyproduceradv.BuildConfig
 import org.tyndalebt.storyproduceradv.R
@@ -30,8 +31,9 @@ fun Story.toJson(context: Context){
             .Builder()
             .add(RectAdapter())
             .add(UriAdapter())
+            .add(KotlinJsonAdapterFactory())
             .build()
-    val adapter = Story.jsonAdapter(moshi)
+    val adapter = moshi.adapter(Story::class.java)
     val oStream = getStoryChildOutputStream(context,
             filePath,"",this.title)
     if(oStream != null) {
@@ -85,8 +87,9 @@ fun storyFromJson(context: Context, storyTitle: DocumentFile): Story?{
                 .Builder()
                 .add(RectAdapter())
                 .add(UriAdapter())
+                .add(KotlinJsonAdapterFactory())
                 .build()
-        val adapter = Story.jsonAdapter(moshi)
+        val adapter = moshi.adapter(Story::class.java)
         // get "name" of story.  Could be off main spadv folder or could be a subfolder off newtemplates.  Look for this in the path
         var name = storyTitle.name
         if (storyTitle.uri.path!!.contains(NEW_TEMPLATES_DIR)) {

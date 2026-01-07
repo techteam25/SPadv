@@ -8,8 +8,9 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import com.arthenica.mobileffmpeg.Config
-import com.arthenica.mobileffmpeg.FFmpeg
+// Temporarily commented out - mobile-ffmpeg dependency not available
+// import com.arthenica.mobileffmpeg.Config
+// import com.arthenica.mobileffmpeg.FFmpeg
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import org.tyndalebt.storyproduceradv.R
 import org.tyndalebt.storyproduceradv.model.*
@@ -123,6 +124,10 @@ class AutoStoryMaker(private val context: Context) : Thread(), Closeable {
 
     private fun make3GPVideo() {
         Log.v(TAG, "Creating 3gp video" + video3gpPath)
+        // Temporarily disabled - mobile-ffmpeg dependency not available
+        // 3GP video conversion feature will not work until mobile-ffmpeg is properly configured
+        Log.w(TAG, "3GP video conversion disabled - mobile-ffmpeg not available")
+        /*
         video3gpFile.delete()  //just in case it's still there.
 
         try{
@@ -141,6 +146,7 @@ class AutoStoryMaker(private val context: Context) : Thread(), Closeable {
         }
 
         video3gpFile.delete()
+        */
     }
 
     private fun generatePages(): Array<StoryPage>? {

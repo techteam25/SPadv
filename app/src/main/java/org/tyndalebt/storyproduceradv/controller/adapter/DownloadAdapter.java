@@ -45,12 +45,11 @@ public class DownloadAdapter extends ArrayAdapter<DownloadDS> implements View.On
             dla.setChosenLanguage(dataModel.fileName);
             dla.copyFile(DownloadActivity.BLOOM_LIST_FILE);
         } else {  // List of stories, toggle checkmark
-            switch (v.getId()) {
-                case R.id.checkedTextView:
-                    CheckedTextView ctv = (CheckedTextView) v;
-                    dataModel.setChecked(!ctv.isChecked());   // toggle check
-                    setCheckmark(ctv, dataModel.getChecked());
-                    break;
+            int id = v.getId();
+            if (id == R.id.checkedTextView) {
+                CheckedTextView ctv = (CheckedTextView) v;
+                dataModel.setChecked(!ctv.isChecked());   // toggle check
+                setCheckmark(ctv, dataModel.getChecked());
             }
         }
     }
