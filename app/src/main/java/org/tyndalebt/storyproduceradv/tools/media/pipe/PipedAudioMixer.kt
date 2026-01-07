@@ -135,7 +135,7 @@ class PipedAudioMixer : PipedAudioShortManipulator(), PipedMediaByteBufferDest {
             val mb = mixBuffers[iSource].sliceArray(pos..pos+allLength)
 
             //setup the data as a source.  Copy the buffer
-            srcBuffer.forEachIndexed { index, sh ->  srcBuffer[index] = (sh + mb[index]).toShort()}
+            srcBuffer.forEachIndexed { index, sh ->  srcBuffer[index] = (sh + mb[index]).toInt().toShort()}
 
             mixPoss[iSource] += allLength
             iSource++

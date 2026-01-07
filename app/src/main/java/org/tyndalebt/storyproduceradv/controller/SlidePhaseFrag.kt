@@ -218,7 +218,7 @@ abstract class SlidePhaseFrag : androidx.fragment.app.Fragment() {
 
         (activity as PhaseBaseActivity).setPic(slideImage, slideNum)
         //Set up the reference audio and slide number overlays
-        referencePlayButton = rootView?.findViewById(R.id.fragment_reference_audio_button)
+        referencePlayButton = rootView?.findViewById(R.id.fragment_reference_audio_button)!!
         setReferenceAudioButton()
 
         val slideNumberText = rootView?.findViewById<TextView>(R.id.slide_number_text)

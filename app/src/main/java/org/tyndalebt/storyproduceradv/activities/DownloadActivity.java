@@ -565,54 +565,41 @@ public class DownloadActivity extends BaseActivity {
     private Boolean NavItemSelected(MenuItem menuItem) {
         mDrawerLayout.closeDrawers();
 
-        switch (menuItem.getItemId()) {
-            case R.id.nav_workspace:
-                showSelectTemplatesFolderDialog();
-                break;
-            case R.id.nav_word_link_list:
-                showWordLinksList();
-                break;
-            case R.id.nav_more_templates:
-                // current fragment
-                break;
-            case R.id.nav_stories:
-                showMain();
-                break;
-            case R.id.nav_registration:
-                showRegistration(false);
-                break;
-            case R.id.change_language:
-                showChooseLanguage();
-                break;
-            case R.id.video_share:
-                showVideos();
-                break;
-            case R.id.help_me:
-                helpMe();
-                break;
-            case R.id.create_template_mode:
-                createTemplateMode();
-                break;
-            case R.id.templates_created:
-                templatesCreated();
-                break;
-            case R.id.nav_spadv_website:
-                org.tyndalebt.storyproduceradv.tools.file.FileIO.goToURL(this, Workspace.URL_FOR_WEBSITE);
-                break;
-            case R.id.nav_about:
-                showAboutDialog();
-                break;
+        int id = menuItem.getItemId();
+        if (id == R.id.nav_workspace) {
+            showSelectTemplatesFolderDialog();
+        } else if (id == R.id.nav_word_link_list) {
+            showWordLinksList();
+        } else if (id == R.id.nav_more_templates) {
+            // current fragment
+        } else if (id == R.id.nav_stories) {
+            showMain();
+        } else if (id == R.id.nav_registration) {
+            showRegistration(false);
+        } else if (id == R.id.change_language) {
+            showChooseLanguage();
+        } else if (id == R.id.video_share) {
+            showVideos();
+        } else if (id == R.id.help_me) {
+            helpMe();
+        } else if (id == R.id.create_template_mode) {
+            createTemplateMode();
+        } else if (id == R.id.templates_created) {
+            templatesCreated();
+        } else if (id == R.id.nav_spadv_website) {
+            org.tyndalebt.storyproduceradv.tools.file.FileIO.goToURL(this, Workspace.URL_FOR_WEBSITE);
+        } else if (id == R.id.nav_about) {
+            showAboutDialog();
         }
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                mDrawerLayout.openDrawer(GravityCompat.START);
-                break;
-            case R.id.helpButton:
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            mDrawerLayout.openDrawer(GravityCompat.START);
+        } else if (id == R.id.helpButton) {
 /*
                 WebView wv = WebView(this);
                 val iStream = assets.open(Phase.getHelpDocFile(PhaseType.STORY_LIST))
@@ -628,10 +615,8 @@ public class DownloadActivity extends BaseActivity {
             }
             dialog.show()
  */
-                break;
-            default:
-                super.onOptionsItemSelected(item);
-                break;
+        } else {
+            return super.onOptionsItemSelected(item);
         }
         return true;
 

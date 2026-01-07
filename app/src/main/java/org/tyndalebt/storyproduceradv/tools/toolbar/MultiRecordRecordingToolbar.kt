@@ -29,9 +29,15 @@ open class MultiRecordRecordingToolbar: PlayBackRecordingToolbar() {
         commentIcon.visibility = View.VISIBLE;
 //        checks the presence/absence of recorded comments on the community work phase and adds an icon if present
         when (MultiRecordFrag.slideNumHolder != null) {
-            true -> if (Workspace.activeStory.slides[MultiRecordFrag.slideNumHolder!!].communityWorkAudioFiles.isNotEmpty() &&
-                Workspace.activePhase.phaseType != PhaseType.COMMUNITY_WORK) {
-                rootView?.addView(commentIcon);
+            true -> {
+                if (Workspace.activeStory.slides[MultiRecordFrag.slideNumHolder!!].communityWorkAudioFiles.isNotEmpty() &&
+                        Workspace.activeStory.slides[MultiRecordFrag.slideNumHolder!!].communityWorkAudioFiles[0].isNotEmpty() &&
+                        Workspace.activePhase.phaseType != PhaseType.COMMUNITY_WORK) {
+                    rootView?.addView(commentIcon)
+                }
+            }
+            false -> {
+                // slideNumHolder is null
             }
         }
 
