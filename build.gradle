@@ -8,7 +8,7 @@ buildscript {
     }
     dependencies {
         classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.24'
-        classpath 'com.android.tools.build:gradle:8.7.2'
+        classpath 'com.android.tools.build:gradle:8.13.2'
         classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.1'
         classpath 'com.google.gms:google-services:4.3.13'
         // NOTE: Do not place your application dependencies here; they belong
@@ -16,7 +16,7 @@ buildscript {
     }
 }
 
-apply plugin: "kotlin"
+// Removed: apply plugin: "kotlin" - conflicts with kotlin-android plugin in AGP 9.0
 
 allprojects {
     repositories {
@@ -27,15 +27,4 @@ allprojects {
 }
 repositories {
     mavenCentral()
-}
-
-compileKotlin {
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
-}
-compileTestKotlin {
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
 }
