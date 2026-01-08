@@ -7,7 +7,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import androidx.core.content.ContextCompat
-import com.getbase.floatingactionbutton.FloatingActionButton
+import net.i2p.android.ext.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.CoroutineScope
 import org.junit.Assert
 import org.junit.Test

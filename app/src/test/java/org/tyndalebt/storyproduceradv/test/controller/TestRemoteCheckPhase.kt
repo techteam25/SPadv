@@ -10,7 +10,7 @@ import android.widget.ImageButton
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import com.getbase.floatingactionbutton.FloatingActionButton
+import net.i2p.android.ext.floatingactionbutton.FloatingActionButton
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.viewpager.widget.ViewPager

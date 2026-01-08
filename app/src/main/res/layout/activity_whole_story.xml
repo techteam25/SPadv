@@ -64,7 +64,7 @@
         app:layout_constraintTop_toBottomOf="@id/videoSeekBar"
         app:srcCompat="@drawable/ic_volume_off_white_36dp" />
 
-    <com.getbase.floatingactionbutton.FloatingActionButton
+    <net.i2p.android.ext.floatingactionbutton.FloatingActionButton
         android:id="@+id/upload_audio_botton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
