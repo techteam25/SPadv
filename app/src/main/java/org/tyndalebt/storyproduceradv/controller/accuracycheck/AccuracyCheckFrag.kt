@@ -74,17 +74,60 @@ class AccuracyCheckFrag : SlidePhaseFrag() {
         }
     }
 
+    /**
+     * Refreshes the checkmark button state when the fragment becomes visible.
+     * This is necessary because FragmentStatePagerAdapter reuses fragments, and
+     * onCreateView() may not be called again when scrolling back to a previously
+     * viewed slide. This ensures the checkmark reflects the correct state for
+     * the current slide.
+     */
+    override fun onResume() {
+        super.onResume()
+        
+        // Refresh the checkmark button state to reflect the current slide's checked status
+        // This fixes an issue where fragments reused by FragmentStatePagerAdapter would
+        // show the checkmark state from the first slide they displayed
+        try {
+            val checkButton = rootView.findViewById<ImageButton>(R.id.concheck_checkmark_button)
+            if (checkButton != null) {
+                updateCheckmarkButtonState(checkButton)
+            }
+            
+            // Also refresh the comment indicator
+            val commentIcon = rootView.findViewById<ImageView>(R.id.comment_present_accuracy_check_indicator)
+            if (commentIcon != null) {
+                setCommentIndicatorOnRender(commentIcon)
+            }
+        } catch (e: UninitializedPropertyAccessException) {
+            // rootView not yet initialized, skip update
+        }
+    }
+
+    /**
+     * Updates the checkmark button visual state based on the current slide's isChecked status
+     * @param button the check button to update
+     */
+    private fun updateCheckmarkButtonState(button: ImageButton) {
+        if (greenCheckmark == null) {
+            greenCheckmark = VectorDrawableCompat.create(resources, R.drawable.ic_checkmark_green, null)
+        }
+        if (grayCheckmark == null) {
+            grayCheckmark = VectorDrawableCompat.create(resources, R.drawable.ic_checkmark_gray, null)
+        }
+        
+        if (Workspace.activeStory.slides[slideNum].isChecked) {
+            button.background = greenCheckmark
+        } else {
+            button.background = grayCheckmark
+        }
+    }
 
     /**
      * Sets on click listener for consultant to check off the slide and approve
      * @param button the check button
      */
     private fun setCheckmarkButton(button: ImageButton) {
-        if (Workspace.activeStory.slides[slideNum].isChecked) {
-            button.background = greenCheckmark
-        } else {
-            button.background = grayCheckmark
-        }
+        updateCheckmarkButtonState(button)
         button.setOnClickListener(View.OnClickListener {
             checkButtonClicked(button)
         })
