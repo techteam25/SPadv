@@ -23,13 +23,13 @@
             android:contentDescription="@string/story_picture"
             android:scaleType="centerCrop" />
 
-        <com.getbase.floatingactionbutton.FloatingActionButton
+        <net.i2p.android.ext.floatingactionbutton.FloatingActionButton
             android:id="@+id/upload_audio_botton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true" />
 
-        <com.getbase.floatingactionbutton.FloatingActionButton
+        <net.i2p.android.ext.floatingactionbutton.FloatingActionButton
             android:id="@+id/slide_approved_indicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
