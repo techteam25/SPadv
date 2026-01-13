@@ -258,7 +258,7 @@ class ActivateTemplateActivity : MainBaseActivity() {
         val basePath: String = "/var/www/html/Files/newtemplates"
         val host: String = "rocc.ttapps.org"
         try {
-            con = FTPClient()
+            con = FTPClient();
             con.autodetectUTF8 = true
             con.controlEncoding = "UTF-8"
             con.connect(host)

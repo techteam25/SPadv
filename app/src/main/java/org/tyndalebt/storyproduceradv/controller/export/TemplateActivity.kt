@@ -45,6 +45,7 @@ class TemplateActivity : MainBaseActivity()  {
         createBtn.setOnClickListener {
             if (txtTitle.text.toString() != destStoryName) {
                 destStoryName = lblNumber.text.toString() + " " + txtTitle.text.toString()
+                destStoryName = destStoryName.trim()
                 msgDialog = AlertDialog.Builder(this)
                         .setTitle("")
                         .setMessage(R.string.new_template_wait)
