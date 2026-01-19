@@ -183,7 +183,26 @@ public class DownloadActivity extends BaseActivity {
             byte[] buffer = new byte[size];
             is.read(buffer);
             is.close();
-            json = new String(buffer, "UTF-16");
+            // Check for BOM and use appropriate encoding (bytes are signed, so use & 0xFF to get unsigned)
+            int firstByte = buffer[0] & 0xFF;
+            int secondByte = buffer.length > 1 ? buffer[1] & 0xFF : 0;
+            
+            if (buffer.length >= 2 && firstByte == 0xFF && secondByte == 0xFE) {
+                // UTF-16 LE BOM detected, skip BOM and decode
+                json = new String(buffer, 2, buffer.length - 2, StandardCharsets.UTF_16LE);
+            } else if (buffer.length >= 2 && firstByte == 0xFE && secondByte == 0xFF) {
+                // UTF-16 BE BOM detected, skip BOM and decode
+                json = new String(buffer, 2, buffer.length - 2, StandardCharsets.UTF_16BE);
+            } else {
+                // No BOM, try UTF-16LE (default for Windows)
+                json = new String(buffer, StandardCharsets.UTF_16LE);
+            }
+            // Remove BOM character (U+FEFF) if present at the start of the string
+            if (json != null && json.length() > 0 && json.charAt(0) == '\uFEFF') {
+                json = json.substring(1);
+            }
+            // Trim whitespace
+            json = json.trim();
         } catch (IOException ex) {
             // ex.printStackTrace();
             return null;
@@ -473,17 +492,59 @@ public class DownloadActivity extends BaseActivity {
 
         if (outFile.compareTo(BLOOM_LIST_FILE) == 0) {
             if (firstPass == true) {
-                InputStream fis = null;
+                FileInputStream fis = null;
                 try {
                     File sourceFile = new File(this.getFilesDir() + "/" + outFile);
                     fis = new FileInputStream(sourceFile);
-                    char current;
-                    while (fis.available() > 0) {
-                        current = (char) fis.read();
-                        result = result + String.valueOf(current);
+                    // Read entire file into byte array to handle UTF-16 BOM properly
+                    byte[] buffer = new byte[(int) sourceFile.length()];
+                    fis.read(buffer);
+                    fis.close();
+                    
+                    // Check for BOM and use appropriate encoding
+                    if (buffer.length >= 2) {
+                        int firstByte = buffer[0] & 0xFF;
+                        int secondByte = buffer[1] & 0xFF;
+                        
+                        if (firstByte == 0xFF && secondByte == 0xFE) {
+                            // UTF-16 LE BOM detected, skip BOM and decode
+                            result = new String(buffer, 2, buffer.length - 2, StandardCharsets.UTF_16LE);
+                        } else if (firstByte == 0xFE && secondByte == 0xFF) {
+                            // UTF-16 BE BOM detected, skip BOM and decode
+                            result = new String(buffer, 2, buffer.length - 2, StandardCharsets.UTF_16BE);
+                        } else {
+                            // No BOM detected, try UTF-8 first (most common for text files)
+                            // If UTF-8 fails or produces invalid characters, try UTF-16LE
+                            result = new String(buffer, StandardCharsets.UTF_8);
+                            // Check if UTF-8 decoding produced valid text (no null bytes in middle, reasonable character range)
+                            // If it looks like binary/UTF-16, try UTF-16LE
+                            boolean looksLikeUTF16 = false;
+                            if (buffer.length > 0 && buffer.length % 2 == 0) {
+                            // Check for alternating null bytes pattern (common in UTF-16LE)
+                            int nullCount = 0;
+                            for (int j = 1; j < Math.min(buffer.length, 100); j += 2) {
+                                if ((buffer[j] & 0xFF) == 0) nullCount++;
+                            }
+                                if (nullCount > buffer.length / 4) {
+                                    looksLikeUTF16 = true;
+                                }
+                            }
+                            if (looksLikeUTF16) {
+                                result = new String(buffer, StandardCharsets.UTF_16LE);
+                            }
+                        }
+                    } else if (buffer.length == 1) {
+                        // Single byte, use UTF-8
+                        result = new String(buffer, StandardCharsets.UTF_8);
+                    } else {
+                        // Empty file
+                        result = "";
+                    }
+                    // Remove BOM character (U+FEFF) if present at the start of the string
+                    if (result.length() > 0 && result.charAt(0) == '\uFEFF') {
+                        result = result.substring(1);
                     }
                 } catch (Exception e) {
-
                     Log.d("DownloadActivity:copyFile", e.toString());
                     Intent mDisplayAlert = new Intent(this, DisplayAlert.class);
                     mDisplayAlert.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -521,9 +582,8 @@ public class DownloadActivity extends BaseActivity {
                             tagString = tagString + "|";
                         }
                         if (lang.length > 1) {
-                            ByteBuffer buffer = StandardCharsets.ISO_8859_1.encode(lang[1]);
-                            String encodedString = StandardCharsets.UTF_16.decode(buffer).toString();
-                            itemString = itemString + encodedString;
+                            // Language names are already in UTF-16 from the CSV, use them directly
+                            itemString = itemString + lang[1];
                         }
                         tagString = tagString + file_url + URLEncodeUTF8(lines[idx]);
                     }

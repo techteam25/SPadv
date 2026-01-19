@@ -92,8 +92,24 @@ class ChooseLangActivity : BaseActivity() {
                 val size: Int = inputStream.available()
                 val buffer = ByteArray(size)
                 inputStream.read(buffer)
-                // CSV file is now UTF-16, read it as such
-                result = String(buffer, StandardCharsets.UTF_16)
+                // CSV file is now UTF-16, handle BOM properly
+                val firstByte = buffer[0].toInt() and 0xFF
+                val secondByte = if (buffer.size > 1) buffer[1].toInt() and 0xFF else 0
+                
+                result = if (buffer.size >= 2 && firstByte == 0xFF && secondByte == 0xFE) {
+                    // UTF-16 LE BOM detected, skip BOM and decode
+                    String(buffer, 2, buffer.size - 2, StandardCharsets.UTF_16LE)
+                } else if (buffer.size >= 2 && firstByte == 0xFE && secondByte == 0xFF) {
+                    // UTF-16 BE BOM detected, skip BOM and decode
+                    String(buffer, 2, buffer.size - 2, StandardCharsets.UTF_16BE)
+                } else {
+                    // No BOM, try UTF-16LE (default for Windows)
+                    String(buffer, StandardCharsets.UTF_16LE)
+                }
+                // Remove BOM character (U+FEFF) if present at the start of the string
+                if (result.isNotEmpty() && result[0] == '\uFEFF') {
+                    result = result.substring(1)
+                }
             }
         } catch (e: Exception) {
             Log.d("ChooseLangActivity:parseLangFile", e.toString())

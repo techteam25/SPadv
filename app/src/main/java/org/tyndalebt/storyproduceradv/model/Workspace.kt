@@ -489,17 +489,59 @@ object Workspace {
                     inputStream.close()
                     
                     // Try UTF-16 first (for Nepali support), then fall back to UTF-8
-                    try {
-                        val streamReader = InputStreamReader(ByteArrayInputStream(buffer), StandardCharsets.UTF_16)
-                        WordLinksCSVReader(streamReader).use { wordLinkCSVReader ->
-                            val wordLinks = wordLinkCSVReader.readAll()
-                            wordLinks.forEach { wl ->
-                                termToWordLinkMap[wl.term] = wl
+                    // Handle BOM properly
+                    val firstByte = buffer[0].toInt() and 0xFF
+                    val secondByte = if (buffer.size > 1) buffer[1].toInt() and 0xFF else 0
+                    
+                    var success = false
+                    if (buffer.size >= 2 && firstByte == 0xFF && secondByte == 0xFE) {
+                        // UTF-16 LE BOM detected, skip BOM bytes
+                        val bomSkippedBuffer = buffer.sliceArray(2 until buffer.size)
+                        try {
+                            val streamReader = InputStreamReader(ByteArrayInputStream(bomSkippedBuffer), StandardCharsets.UTF_16LE)
+                            WordLinksCSVReader(streamReader).use { wordLinkCSVReader ->
+                                val wordLinks = wordLinkCSVReader.readAll()
+                                wordLinks.forEach { wl ->
+                                    termToWordLinkMap[wl.term] = wl
+                                }
                             }
+                            success = true
+                        } catch (e: Exception) {
+                            Log.d("Workspace", "UTF-16LE read failed, trying UTF-8: ${e.message}")
                         }
-                    } catch (e: Exception) {
-                        // If UTF-16 fails, try UTF-8 (standard CSV encoding)
-                        Log.d("Workspace", "UTF-16 read failed, trying UTF-8: ${e.message}")
+                    } else if (buffer.size >= 2 && firstByte == 0xFE && secondByte == 0xFF) {
+                        // UTF-16 BE BOM detected, skip BOM bytes
+                        val bomSkippedBuffer = buffer.sliceArray(2 until buffer.size)
+                        try {
+                            val streamReader = InputStreamReader(ByteArrayInputStream(bomSkippedBuffer), StandardCharsets.UTF_16BE)
+                            WordLinksCSVReader(streamReader).use { wordLinkCSVReader ->
+                                val wordLinks = wordLinkCSVReader.readAll()
+                                wordLinks.forEach { wl ->
+                                    termToWordLinkMap[wl.term] = wl
+                                }
+                            }
+                            success = true
+                        } catch (e: Exception) {
+                            Log.d("Workspace", "UTF-16BE read failed, trying UTF-8: ${e.message}")
+                        }
+                    } else {
+                        // No BOM, try UTF-16LE first
+                        try {
+                            val streamReader = InputStreamReader(ByteArrayInputStream(buffer), StandardCharsets.UTF_16LE)
+                            WordLinksCSVReader(streamReader).use { wordLinkCSVReader ->
+                                val wordLinks = wordLinkCSVReader.readAll()
+                                wordLinks.forEach { wl ->
+                                    termToWordLinkMap[wl.term] = wl
+                                }
+                            }
+                            success = true
+                        } catch (e: Exception) {
+                            Log.d("Workspace", "UTF-16LE read failed, trying UTF-8: ${e.message}")
+                        }
+                    }
+                    
+                    // If UTF-16 failed, try UTF-8 (standard CSV encoding)
+                    if (!success) {
                         val streamReader = InputStreamReader(ByteArrayInputStream(buffer), StandardCharsets.UTF_8)
                         WordLinksCSVReader(streamReader).use { wordLinkCSVReader ->
                             val wordLinks = wordLinkCSVReader.readAll()
