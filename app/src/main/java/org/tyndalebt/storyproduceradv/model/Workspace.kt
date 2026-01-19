@@ -31,6 +31,7 @@ import org.tyndalebt.storyproduceradv.model.messaging.MessageROCC
 import org.tyndalebt.storyproduceradv.tools.file.*
 import java.io.*
 import java.net.URI
+import java.nio.charset.StandardCharsets
 import java.sql.Timestamp
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -482,19 +483,35 @@ object Workspace {
             try {
                 // open a raw file descriptor to access data under the URI
                 context.contentResolver.openFileDescriptor(wordLinksFile.uri, "r").use { pfd ->
-                    ParcelFileDescriptor.AutoCloseInputStream(pfd).use { inputStream ->
-                        InputStreamReader(inputStream).use { streamReader ->
-                            WordLinksCSVReader(streamReader).use { wordLinkCSVReader ->
-                                val wordLinks = wordLinkCSVReader.readAll()
-                                wordLinks.forEach { wl ->
-                                    termToWordLinkMap[wl.term] = wl
-                                }
+                    // Read the file once to try different encodings
+                    val inputStream = ParcelFileDescriptor.AutoCloseInputStream(pfd)
+                    val buffer = inputStream.readBytes()
+                    inputStream.close()
+                    
+                    // Try UTF-16 first (for Nepali support), then fall back to UTF-8
+                    try {
+                        val streamReader = InputStreamReader(ByteArrayInputStream(buffer), StandardCharsets.UTF_16)
+                        WordLinksCSVReader(streamReader).use { wordLinkCSVReader ->
+                            val wordLinks = wordLinkCSVReader.readAll()
+                            wordLinks.forEach { wl ->
+                                termToWordLinkMap[wl.term] = wl
+                            }
+                        }
+                    } catch (e: Exception) {
+                        // If UTF-16 fails, try UTF-8 (standard CSV encoding)
+                        Log.d("Workspace", "UTF-16 read failed, trying UTF-8: ${e.message}")
+                        val streamReader = InputStreamReader(ByteArrayInputStream(buffer), StandardCharsets.UTF_8)
+                        WordLinksCSVReader(streamReader).use { wordLinkCSVReader ->
+                            val wordLinks = wordLinkCSVReader.readAll()
+                            wordLinks.forEach { wl ->
+                                termToWordLinkMap[wl.term] = wl
                             }
                         }
                     }
                 }
             }
             catch (exception: Exception) {
+                Log.e("Workspace", "Error reading word links CSV file", exception)
                 Toast.makeText(context, R.string.wordlinks_csv_read_error, Toast.LENGTH_SHORT).show()
             }
         }else{

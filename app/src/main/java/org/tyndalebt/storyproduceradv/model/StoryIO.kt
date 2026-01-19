@@ -41,7 +41,7 @@ fun Story.toJson(context: Context){
 //            oStream.write(adapter.toJson(this).toByteArray(Charsets.UTF_8))
             val tmpStr = adapter.toJson(this)
             if (tmpStr.length > 1) {
-                val storyJson = tmpStr.toByteArray(Charsets.UTF_8)
+                val storyJson = tmpStr.toByteArray(Charsets.UTF_16)
                 if (storyJson.size > 50) {
                     oStream.write(storyJson)    // Force close was getting here with empty Json file to write
                 }

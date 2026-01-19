@@ -85,18 +85,15 @@ class ChooseLangActivity : BaseActivity() {
     }
 
     fun parseLangFile(): Boolean {
-        var i: Int
         var result = ""
 
-        var fis: InputStream? = null
         try {
-            val sourceFile = CHOOSE_LANGUAGE_FILE
-            //fis = FileInputStream(sourceFile)
-            fis = assets.open(CHOOSE_LANGUAGE_FILE)
-            var current: Char
-            while (fis.available() > 0) {
-                current = fis.read().toChar()
-                result = result + current.toString()
+            assets.open(CHOOSE_LANGUAGE_FILE).use { inputStream ->
+                val size: Int = inputStream.available()
+                val buffer = ByteArray(size)
+                inputStream.read(buffer)
+                // CSV file is now UTF-16, read it as such
+                result = String(buffer, StandardCharsets.UTF_16)
             }
         } catch (e: Exception) {
             Log.d("ChooseLangActivity:parseLangFile", e.toString())
@@ -119,15 +116,24 @@ class ChooseLangActivity : BaseActivity() {
         var idx: Int
         idx = 0
         while (idx < lines.size) {
-            val lang = lines[idx].split(",").toTypedArray()
+            val line = lines[idx].trim()
+            if (line.isEmpty()) {
+                idx++
+                continue
+            }
+            val lang = line.split(",").toTypedArray()
+            if (lang.size < 2) {
+                idx++
+                continue
+            }
             if (itemString != "") {
                 itemString = "$itemString|"
                 tagString = "$tagString|"
             }
-            val buffer = StandardCharsets.ISO_8859_1.encode(lang[1])
-            val encodedString = StandardCharsets.UTF_8.decode(buffer).toString()
-
-            itemString = itemString + encodedString
+            // Language names are already in UTF-8 from the CSV, use them directly
+            // Convert to UTF-16 for internal use if needed
+            val languageName = lang[1]
+            itemString = itemString + languageName
             tagString = tagString + lang[0]
             idx++
         }
@@ -155,21 +161,99 @@ class ChooseLangActivity : BaseActivity() {
     @RequiresApi(Build.VERSION_CODES.KITKAT)
     fun getLocalStringJsonHashmap(language: String): HashMap<String, String> {
         val listTypeJson: HashMap<String, String> = HashMap()
-        var TmpStr: String = ""
         try {
             applicationContext.assets.open("$language/strings.json").use { inputStream ->
                 val size: Int = inputStream.available()
                 val buffer = ByteArray(size)
                 inputStream.read(buffer)
-                val jsonString = String(buffer, StandardCharsets.UTF_8)
-                JsonHelper().getFlattenedHashmapFromJsonForLocalization(
-                    "",
-                    ObjectMapper().readTree(jsonString),
-                    listTypeJson
-                )
+                // Try UTF-16LE first (for Nepali support - file has BOM ff fe), then UTF-16BE, then UTF-8
+                var jsonString: String? = null
+                try {
+                    // Check for BOM and use appropriate encoding (bytes are signed, so use and 0xFF to get unsigned)
+                    val firstByte = buffer[0].toInt() and 0xFF
+                    val secondByte = if (buffer.size > 1) buffer[1].toInt() and 0xFF else 0
+                    
+                    if (buffer.size >= 2 && firstByte == 0xFF && secondByte == 0xFE) {
+                        // UTF-16 LE BOM detected, skip BOM and decode
+                        jsonString = String(buffer, 2, buffer.size - 2, StandardCharsets.UTF_16LE)
+                    } else if (buffer.size >= 2 && firstByte == 0xFE && secondByte == 0xFF) {
+                        // UTF-16 BE BOM detected, skip BOM and decode
+                        jsonString = String(buffer, 2, buffer.size - 2, StandardCharsets.UTF_16BE)
+                    } else {
+                        // No BOM, try UTF-16LE (default for Windows)
+                        jsonString = String(buffer, StandardCharsets.UTF_16LE)
+                    }
+                    // Remove BOM character (U+FEFF) if present at the start of the string
+                    if (jsonString.isNotEmpty() && jsonString[0] == '\uFEFF') {
+                        jsonString = jsonString.substring(1)
+                    }
+                    // Trim whitespace and remove any leading/trailing BOM characters
+                    jsonString = jsonString.trim()
+                    // Remove BOM character from start again after trim
+                    if (jsonString.isNotEmpty() && jsonString[0] == '\uFEFF') {
+                        jsonString = jsonString.substring(1)
+                    }
+                    // Log first few characters to debug
+                    Log.d("ChooseLangActivity", "UTF-16 decoded string length: ${jsonString.length}, first 50 chars: ${jsonString.take(50)}")
+                    // Check for any BOM or invalid characters at the start
+                    if (jsonString.isNotEmpty()) {
+                        val firstChar = jsonString[0]
+                        val firstCharCode = firstChar.code
+                        Log.d("ChooseLangActivity", "First character: '$firstChar' (code: $firstCharCode, 0x${firstCharCode.toString(16)})")
+                        if (firstCharCode == 0xFEFF) {
+                            Log.d("ChooseLangActivity", "BOM character still present, removing...")
+                            jsonString = jsonString.substring(1)
+                        }
+                    }
+                    // Ensure string starts with { and doesn't have BOM
+                    var cleanJsonString = jsonString.trim()
+                    while (cleanJsonString.isNotEmpty() && (cleanJsonString[0] == '\uFEFF' || cleanJsonString[0].isWhitespace())) {
+                        cleanJsonString = cleanJsonString.substring(1).trimStart()
+                    }
+                    if (!cleanJsonString.startsWith("{")) {
+                        Log.e("ChooseLangActivity", "JSON doesn't start with {, first char: '${cleanJsonString.take(10)}'")
+                        throw Exception("Invalid JSON format")
+                    }
+                    // Try to parse to verify it's valid JSON - parse once and reuse
+                    val jsonNode = ObjectMapper().readTree(cleanJsonString)
+                    // Use the already parsed JSON node
+                    JsonHelper().getFlattenedHashmapFromJsonForLocalization(
+                        "",
+                        jsonNode,
+                        listTypeJson
+                    )
+                    // Success - return early
+                    return listTypeJson
+                } catch (e: Exception) {
+                    // If UTF-16 fails, try UTF-8 (standard JSON encoding)
+                    Log.d("ChooseLangActivity", "UTF-16 read failed for $language/strings.json, trying UTF-8: ${e.message}")
+                    Log.d("ChooseLangActivity", "UTF-16 exception type: ${e.javaClass.simpleName}, at line: ${e.stackTrace.firstOrNull()?.lineNumber}")
+                    try {
+                        jsonString = String(buffer, StandardCharsets.UTF_8)
+                        // Trim and remove BOM from UTF-8 version too
+                        jsonString = jsonString.trim()
+                        if (jsonString.isNotEmpty() && jsonString[0] == '\uFEFF') {
+                            jsonString = jsonString.substring(1)
+                        }
+                        // Try to parse UTF-8 version - parse once and reuse
+                        val jsonNode = ObjectMapper().readTree(jsonString)
+                        // Use the already parsed JSON node
+                        JsonHelper().getFlattenedHashmapFromJsonForLocalization(
+                            "",
+                            jsonNode,
+                            listTypeJson
+                        )
+                        // Success - return early
+                        return listTypeJson
+                    } catch (e2: Exception) {
+                        Log.e("ChooseLangActivity", "Both UTF-16 and UTF-8 failed for $language/strings.json", e2)
+                        Log.e("ChooseLangActivity", "First 200 chars of decoded string: ${jsonString?.take(200)}")
+                        throw e2
+                    }
+                }
             }
         } catch (exception: IOException) {
-            TmpStr = exception.localizedMessage
+            Log.e("ChooseLangActivity", "Error reading strings.json for language: $language", exception)
         }
         return listTypeJson
     }

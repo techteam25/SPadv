@@ -16,7 +16,7 @@ fun WordLinkList.toJson(context: Context){
     val oStream = getWordLinksChildOutputStream(context,
             WORD_LINKS_JSON_FILE,"")
     if(oStream != null) {
-        oStream.write(adapter.toJson(this).toByteArray(Charsets.UTF_8))
+        oStream.write(adapter.toJson(this).toByteArray(Charsets.UTF_16))
         oStream.close()
     }
 }

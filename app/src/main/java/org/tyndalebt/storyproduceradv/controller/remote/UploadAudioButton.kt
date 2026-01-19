@@ -153,7 +153,7 @@ class UploadAudioButtonManager(
                                 val nr = it.networkResponse
                                 if (nr != null) {
                                     // error message details are available
-                                    Toast.makeText(context, "${nr.statusCode}: ${String(nr.data, Charsets.UTF_8)}", Toast.LENGTH_LONG).show()
+                                    Toast.makeText(context, "${nr.statusCode}: ${String(nr.data, Charsets.UTF_16)}", Toast.LENGTH_LONG).show()
                                 }
 
                                 Toast.makeText(

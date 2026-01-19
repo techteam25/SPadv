@@ -36,7 +36,7 @@ class Registration{
         val oStream = getChildOutputStream(context,REGISTRATION_FILENAME,"","wt")
         if(oStream != null) {
             try {
-                oStream.write(jsonData.toString(1).toByteArray(Charsets.UTF_8))
+                oStream.write(jsonData.toString(1).toByteArray(Charsets.UTF_16))
             } catch(e:Exception){
                 FirebaseCrashlytics.getInstance().recordException(e)
             } finally {

@@ -48,7 +48,7 @@ public class DownloadFileFromURL extends AsyncTask<String, String, String> {
         for (arrayIndex = 0; arrayIndex < f_url.length; arrayIndex++) {
             String fName = f_url[arrayIndex].substring(f_url[arrayIndex].lastIndexOf("/") + 1);
             try {
-                fileName = java.net.URLDecoder.decode(fName, StandardCharsets.UTF_8.name());
+                fileName = java.net.URLDecoder.decode(fName, StandardCharsets.UTF_16.name());
                 String folderName = removeExtension(fileName);
                 // If bloom file has not already been parsed, download it and parse it
                 if (!org.tyndalebt.storyproduceradv.tools.file.FileIO.workspaceRelPathExists(con, folderName)) {

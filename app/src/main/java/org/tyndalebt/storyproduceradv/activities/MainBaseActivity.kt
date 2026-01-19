@@ -288,7 +288,7 @@ open class MainBaseActivity : BaseActivity() {
         try {
             con = FTPClient()
             con.autodetectUTF8 = true
-            con.controlEncoding = "UTF-8"
+            con.controlEncoding = "UTF-16"
             con.connect(host)
             if (con.login(user, pwd)) {
                 con.enterLocalPassiveMode() // important!

@@ -183,7 +183,7 @@ public class DownloadActivity extends BaseActivity {
             byte[] buffer = new byte[size];
             is.read(buffer);
             is.close();
-            json = new String(buffer, "UTF-8");
+            json = new String(buffer, "UTF-16");
         } catch (IOException ex) {
             // ex.printStackTrace();
             return null;
@@ -412,7 +412,7 @@ public class DownloadActivity extends BaseActivity {
         String fName = pURL.substring(pURL.lastIndexOf("/") + 1);
         String fileName;
         try {
-            fileName = java.net.URLDecoder.decode(fName, StandardCharsets.UTF_8.name());
+            fileName = java.net.URLDecoder.decode(fName, StandardCharsets.UTF_16.name());
             String folderName = at.removeExtension(fileName);
             // If bloom file has not already been parsed, download it and parse it
             return org.tyndalebt.storyproduceradv.tools.file.FileIO.workspaceRelPathExists(con, folderName);
@@ -522,7 +522,7 @@ public class DownloadActivity extends BaseActivity {
                         }
                         if (lang.length > 1) {
                             ByteBuffer buffer = StandardCharsets.ISO_8859_1.encode(lang[1]);
-                            String encodedString = StandardCharsets.UTF_8.decode(buffer).toString();
+                            String encodedString = StandardCharsets.UTF_16.decode(buffer).toString();
                             itemString = itemString + encodedString;
                         }
                         tagString = tagString + file_url + URLEncodeUTF8(lines[idx]);
