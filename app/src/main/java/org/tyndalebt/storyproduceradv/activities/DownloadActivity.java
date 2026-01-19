@@ -52,7 +52,7 @@ import org.tyndalebt.storyproduceradv.tools.file.*;
 // This needs to correspond to name on server
 
 public class DownloadActivity extends BaseActivity {
-    public static final String BLOOM_LIST_FILE = "BloomfileLang";
+    public static final String BLOOM_LIST_FILE = "BloomfileLang16";
 
     private static String file_url;
     public ProgressBar pBar;
