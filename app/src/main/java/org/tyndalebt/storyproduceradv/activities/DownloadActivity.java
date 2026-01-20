@@ -32,7 +32,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -473,15 +472,14 @@ public class DownloadActivity extends BaseActivity {
 
         if (outFile.compareTo(BLOOM_LIST_FILE) == 0) {
             if (firstPass == true) {
-                InputStream fis = null;
                 try {
                     File sourceFile = new File(this.getFilesDir() + "/" + outFile);
-                    fis = new FileInputStream(sourceFile);
-                    char current;
-                    while (fis.available() > 0) {
-                        current = (char) fis.read();
-                        result = result + String.valueOf(current);
-                    }
+                    FileInputStream fis = new FileInputStream(sourceFile);
+                    int size = fis.available();
+                    byte[] buffer = new byte[size];
+                    fis.read(buffer);
+                    fis.close();
+                    result = new String(buffer, StandardCharsets.UTF_8);
                 } catch (Exception e) {
 
                     Log.d("DownloadActivity:copyFile", e.toString());
@@ -521,9 +519,8 @@ public class DownloadActivity extends BaseActivity {
                             tagString = tagString + "|";
                         }
                         if (lang.length > 1) {
-                            ByteBuffer buffer = StandardCharsets.ISO_8859_1.encode(lang[1]);
-                            String encodedString = StandardCharsets.UTF_8.decode(buffer).toString();
-                            itemString = itemString + encodedString;
+                            // File is now UTF-8, so no encoding conversion needed
+                            itemString = itemString + lang[1];
                         }
                         tagString = tagString + file_url + URLEncodeUTF8(lines[idx]);
                     }
