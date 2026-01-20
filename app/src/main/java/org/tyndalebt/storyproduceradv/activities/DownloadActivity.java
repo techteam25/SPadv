@@ -737,7 +737,11 @@ public class DownloadActivity extends BaseActivity {
                                 itemString = itemString + templateName; // Use original on error
                             }
                         }
-                        tagString = tagString + file_url + URLEncodeUTF8(lines[idx]);
+                        // Build URL: encode language and template name separately, keep forward slash unencoded
+                        String urlPath = this.chosenLanguage + "/" + (lang.length > 1 ? lang[1].trim() : "");
+                        // Only encode the filename part, not the forward slash
+                        String encodedPath = this.chosenLanguage + "/" + URLEncodeUTF8(lang.length > 1 ? lang[1].trim() : "");
+                        tagString = tagString + file_url + encodedPath;
                     }
                 }
             }
