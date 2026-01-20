@@ -8,6 +8,7 @@ import java.util.List;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.StatFs;
 import android.util.Log;
@@ -23,6 +24,8 @@ import android.content.Intent;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.documentfile.provider.DocumentFile;
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -102,6 +105,37 @@ public class DownloadActivity extends BaseActivity {
         supportActionBar.setTitle(R.string.more_templates);
         supportActionBar.setDisplayHomeAsUpEnabled(true);
         supportActionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
+
+        // Handle display cutout/notch area for camera - apply window insets to toolbar
+        ViewCompat.setOnApplyWindowInsetsListener(mActionBarToolbar, new androidx.core.view.OnApplyWindowInsetsListener() {
+            @Override
+            public WindowInsetsCompat onApplyWindowInsets(View v, WindowInsetsCompat insets) {
+                int topInset = insets.getSystemWindowInsetTop();
+                int leftInset = 0;
+                int rightInset = 0;
+                
+                // Handle display cutout for Android P and above
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    android.view.WindowInsets windowInsets = insets.toWindowInsets();
+                    if (windowInsets != null) {
+                        android.view.DisplayCutout displayCutout = windowInsets.getDisplayCutout();
+                        if (displayCutout != null) {
+                            leftInset = displayCutout.getSafeInsetLeft();
+                            rightInset = displayCutout.getSafeInsetRight();
+                            topInset = Math.max(topInset, displayCutout.getSafeInsetTop());
+                        }
+                    }
+                }
+                
+                v.setPadding(
+                    Math.max(v.getPaddingLeft(), leftInset),
+                    Math.max(v.getPaddingTop(), topInset),
+                    Math.max(v.getPaddingRight(), rightInset),
+                    v.getPaddingBottom()
+                );
+                return insets;
+            }
+        });
 
         mDrawerLayout = findViewById(R.id.drawer_layout_bloom);
         //Lock from opening with left swipe
