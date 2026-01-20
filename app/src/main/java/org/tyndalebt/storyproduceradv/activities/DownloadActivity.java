@@ -697,8 +697,37 @@ public class DownloadActivity extends BaseActivity {
                             tagString = tagString + "|";
                         }
                         if (lang.length > 1) {
-                            // File is now UTF-8, so no encoding conversion needed
-                            itemString = itemString + lang[1];
+                            // File is now UTF-8, ensure proper handling of template name
+                            String templateName = lang[1].trim();
+                            Log.d("DownloadActivity:copyFile", "Raw template name from line: " + templateName);
+                            
+                            // Check if the name contains URL-encoded characters and decode if needed
+                            if (templateName.contains("%")) {
+                                try {
+                                    String decoded = java.net.URLDecoder.decode(templateName, StandardCharsets.UTF_8.name());
+                                    Log.d("DownloadActivity:copyFile", "URL-decoded template name: " + decoded);
+                                    templateName = decoded;
+                                } catch (Exception e) {
+                                    Log.d("DownloadActivity:copyFile", "URL decode failed, using original: " + e.getMessage());
+                                }
+                            }
+                            
+                            // Ensure the string is properly formed UTF-8
+                            try {
+                                // Re-encode to validate UTF-8
+                                byte[] utf8Bytes = templateName.getBytes(StandardCharsets.UTF_8);
+                                String validated = new String(utf8Bytes, StandardCharsets.UTF_8);
+                                if (!validated.contains("\uFFFD")) { // No replacement characters
+                                    itemString = itemString + validated;
+                                    Log.d("DownloadActivity:copyFile", "Validated template name: " + validated);
+                                } else {
+                                    Log.e("DownloadActivity:copyFile", "Template name contains replacement characters: " + templateName);
+                                    itemString = itemString + templateName; // Use original despite issues
+                                }
+                            } catch (Exception e) {
+                                Log.e("DownloadActivity:copyFile", "Error validating template name: " + e.getMessage());
+                                itemString = itemString + templateName; // Use original on error
+                            }
                         }
                         tagString = tagString + file_url + URLEncodeUTF8(lines[idx]);
                     }
