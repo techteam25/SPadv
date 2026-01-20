@@ -240,10 +240,16 @@ public class DownloadActivity extends BaseActivity {
 
     public void BuildNativeLanguageArray() {
         try {
-            JSONObject obj = new JSONObject(loadJSONFromAsset("TemplateLanguages.json"));
+            String jsonString = loadJSONFromAsset("TemplateLanguages.json");
+            if (jsonString == null || jsonString.isEmpty()) {
+                Log.e("DownloadActivity:BuildNativeLanguageArray", "TemplateLanguages.json is null or empty");
+                return;
+            }
+            JSONObject obj = new JSONObject(jsonString);
             JSONArray m_jArry = obj.getJSONArray("language");
             HashMap<String, String> m_li;
 
+            Log.d("DownloadActivity:BuildNativeLanguageArray", "Found " + m_jArry.length() + " languages in JSON");
             for (int i = 0; i < m_jArry.length(); i++) {
                 JSONObject jo_inside = m_jArry.getJSONObject(i);
                 String formula_value = jo_inside.getString("filename");
@@ -258,8 +264,11 @@ public class DownloadActivity extends BaseActivity {
 
                 formList.add(m_li);
             }
+            Log.d("DownloadActivity:BuildNativeLanguageArray", "formList size after loading: " + formList.size());
         } catch (JSONException e) {
-            // e.printStackTrace();
+            Log.e("DownloadActivity:BuildNativeLanguageArray", "JSONException: " + e.getMessage(), e);
+        } catch (Exception e) {
+            Log.e("DownloadActivity:BuildNativeLanguageArray", "Exception: " + e.getMessage(), e);
         }
     }
 
