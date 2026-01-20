@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -73,6 +74,13 @@ public class DownloadActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        // Configure window to respect display cutout safe areas
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            android.view.WindowManager.LayoutParams params = getWindow().getAttributes();
+            params.layoutInDisplayCutoutMode = android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+            getWindow().setAttributes(params);
+        }
 
         setContentView(R.layout.activity_download);
 
@@ -106,7 +114,9 @@ public class DownloadActivity extends BaseActivity {
         supportActionBar.setDisplayHomeAsUpEnabled(true);
         supportActionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
 
-        // Handle display cutout/notch area for camera - apply window insets to toolbar
+        mDrawerLayout = findViewById(R.id.drawer_layout_bloom);
+        
+        // Handle display cutout/notch area for camera - apply window insets to toolbar and content
         ViewCompat.setOnApplyWindowInsetsListener(mActionBarToolbar, new androidx.core.view.OnApplyWindowInsetsListener() {
             @Override
             public WindowInsetsCompat onApplyWindowInsets(View v, WindowInsetsCompat insets) {
@@ -136,8 +146,42 @@ public class DownloadActivity extends BaseActivity {
                 return insets;
             }
         });
-
-        mDrawerLayout = findViewById(R.id.drawer_layout_bloom);
+        
+        // Apply window insets to the main content LinearLayout
+        android.widget.LinearLayout mainContent = findViewById(R.id.main_content_layout);
+        if (mainContent != null) {
+            ViewCompat.setOnApplyWindowInsetsListener(mainContent, new androidx.core.view.OnApplyWindowInsetsListener() {
+                @Override
+                public WindowInsetsCompat onApplyWindowInsets(View v, WindowInsetsCompat insets) {
+                    int topInset = insets.getSystemWindowInsetTop();
+                    int leftInset = 0;
+                    int rightInset = 0;
+                    int bottomInset = insets.getSystemWindowInsetBottom();
+                    
+                    // Handle display cutout for Android P and above
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                        android.view.WindowInsets windowInsets = insets.toWindowInsets();
+                        if (windowInsets != null) {
+                            android.view.DisplayCutout displayCutout = windowInsets.getDisplayCutout();
+                            if (displayCutout != null) {
+                                leftInset = displayCutout.getSafeInsetLeft();
+                                rightInset = displayCutout.getSafeInsetRight();
+                                topInset = Math.max(topInset, displayCutout.getSafeInsetTop());
+                                bottomInset = Math.max(bottomInset, displayCutout.getSafeInsetBottom());
+                            }
+                        }
+                    }
+                    
+                    v.setPadding(
+                        Math.max(v.getPaddingLeft(), leftInset),
+                        Math.max(v.getPaddingTop(), topInset),
+                        Math.max(v.getPaddingRight(), rightInset),
+                        Math.max(v.getPaddingBottom(), bottomInset)
+                    );
+                    return insets;
+                }
+            });
+        }
         //Lock from opening with left swipe
         mDrawerLayout.setDrawerLockMode(androidx.drawerlayout.widget.DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
