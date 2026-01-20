@@ -104,6 +104,13 @@ public class DownloadActivity extends BaseActivity {
     // First build a list of distinct languages - use json file to show native versions of language
     // Second pass, build list of story names that have the chosen language as the prefix
     public void buildBloomList(String pList[], String pURL[]) {
+        // Ensure window configuration is set before setting content view
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            android.view.WindowManager.LayoutParams params = getWindow().getAttributes();
+            params.layoutInDisplayCutoutMode = android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+            getWindow().setAttributes(params);
+        }
+        
         setContentView(R.layout.bloom_list_container);
 
         Toolbar mActionBarToolbar = findViewById(R.id.toolbarMoreTemplates);
@@ -117,71 +124,9 @@ public class DownloadActivity extends BaseActivity {
         mDrawerLayout = findViewById(R.id.drawer_layout_bloom);
         
         // Handle display cutout/notch area for camera - apply window insets to toolbar and content
-        ViewCompat.setOnApplyWindowInsetsListener(mActionBarToolbar, new androidx.core.view.OnApplyWindowInsetsListener() {
-            @Override
-            public WindowInsetsCompat onApplyWindowInsets(View v, WindowInsetsCompat insets) {
-                int topInset = insets.getSystemWindowInsetTop();
-                int leftInset = 0;
-                int rightInset = 0;
-                
-                // Handle display cutout for Android P and above
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    android.view.WindowInsets windowInsets = insets.toWindowInsets();
-                    if (windowInsets != null) {
-                        android.view.DisplayCutout displayCutout = windowInsets.getDisplayCutout();
-                        if (displayCutout != null) {
-                            leftInset = displayCutout.getSafeInsetLeft();
-                            rightInset = displayCutout.getSafeInsetRight();
-                            topInset = Math.max(topInset, displayCutout.getSafeInsetTop());
-                        }
-                    }
-                }
-                
-                v.setPadding(
-                    Math.max(v.getPaddingLeft(), leftInset),
-                    Math.max(v.getPaddingTop(), topInset),
-                    Math.max(v.getPaddingRight(), rightInset),
-                    v.getPaddingBottom()
-                );
-                return insets;
-            }
-        });
+        // Use a helper method to set up insets
+        setupWindowInsets(mActionBarToolbar, mDrawerLayout);
         
-        // Apply window insets to the main content LinearLayout
-        android.widget.LinearLayout mainContent = findViewById(R.id.main_content_layout);
-        if (mainContent != null) {
-            ViewCompat.setOnApplyWindowInsetsListener(mainContent, new androidx.core.view.OnApplyWindowInsetsListener() {
-                @Override
-                public WindowInsetsCompat onApplyWindowInsets(View v, WindowInsetsCompat insets) {
-                    int topInset = insets.getSystemWindowInsetTop();
-                    int leftInset = 0;
-                    int rightInset = 0;
-                    int bottomInset = insets.getSystemWindowInsetBottom();
-                    
-                    // Handle display cutout for Android P and above
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                        android.view.WindowInsets windowInsets = insets.toWindowInsets();
-                        if (windowInsets != null) {
-                            android.view.DisplayCutout displayCutout = windowInsets.getDisplayCutout();
-                            if (displayCutout != null) {
-                                leftInset = displayCutout.getSafeInsetLeft();
-                                rightInset = displayCutout.getSafeInsetRight();
-                                topInset = Math.max(topInset, displayCutout.getSafeInsetTop());
-                                bottomInset = Math.max(bottomInset, displayCutout.getSafeInsetBottom());
-                            }
-                        }
-                    }
-                    
-                    v.setPadding(
-                        Math.max(v.getPaddingLeft(), leftInset),
-                        Math.max(v.getPaddingTop(), topInset),
-                        Math.max(v.getPaddingRight(), rightInset),
-                        Math.max(v.getPaddingBottom(), bottomInset)
-                    );
-                    return insets;
-                }
-            });
-        }
         //Lock from opening with left swipe
         mDrawerLayout.setDrawerLockMode(androidx.drawerlayout.widget.DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
@@ -314,6 +259,116 @@ public class DownloadActivity extends BaseActivity {
             }
         }
         return true;
+    }
+
+    private void setupWindowInsets(Toolbar toolbar, DrawerLayout drawerLayout) {
+        // Handle display cutout/notch area for camera - apply window insets to toolbar
+        ViewCompat.setOnApplyWindowInsetsListener(toolbar, new androidx.core.view.OnApplyWindowInsetsListener() {
+            @Override
+            public WindowInsetsCompat onApplyWindowInsets(View v, WindowInsetsCompat insets) {
+                int topInset = insets.getSystemWindowInsetTop();
+                int leftInset = 0;
+                int rightInset = 0;
+                
+                // Handle display cutout for Android P and above
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    android.view.WindowInsets windowInsets = insets.toWindowInsets();
+                    if (windowInsets != null) {
+                        android.view.DisplayCutout displayCutout = windowInsets.getDisplayCutout();
+                        if (displayCutout != null) {
+                            leftInset = displayCutout.getSafeInsetLeft();
+                            rightInset = displayCutout.getSafeInsetRight();
+                            topInset = Math.max(topInset, displayCutout.getSafeInsetTop());
+                        }
+                    }
+                }
+                
+                v.setPadding(
+                    Math.max(v.getPaddingLeft(), leftInset),
+                    Math.max(v.getPaddingTop(), topInset),
+                    Math.max(v.getPaddingRight(), rightInset),
+                    v.getPaddingBottom()
+                );
+                return insets;
+            }
+        });
+        
+        // Apply window insets to the main content LinearLayout
+        android.widget.LinearLayout mainContent = findViewById(R.id.main_content_layout);
+        if (mainContent != null) {
+            ViewCompat.setOnApplyWindowInsetsListener(mainContent, new androidx.core.view.OnApplyWindowInsetsListener() {
+                @Override
+                public WindowInsetsCompat onApplyWindowInsets(View v, WindowInsetsCompat insets) {
+                    int topInset = insets.getSystemWindowInsetTop();
+                    int leftInset = 0;
+                    int rightInset = 0;
+                    int bottomInset = insets.getSystemWindowInsetBottom();
+                    
+                    // Handle display cutout for Android P and above
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                        android.view.WindowInsets windowInsets = insets.toWindowInsets();
+                        if (windowInsets != null) {
+                            android.view.DisplayCutout displayCutout = windowInsets.getDisplayCutout();
+                            if (displayCutout != null) {
+                                leftInset = displayCutout.getSafeInsetLeft();
+                                rightInset = displayCutout.getSafeInsetRight();
+                                topInset = Math.max(topInset, displayCutout.getSafeInsetTop());
+                                bottomInset = Math.max(bottomInset, displayCutout.getSafeInsetBottom());
+                            }
+                        }
+                    }
+                    
+                    v.setPadding(
+                        Math.max(v.getPaddingLeft(), leftInset),
+                        Math.max(v.getPaddingTop(), topInset),
+                        Math.max(v.getPaddingRight(), rightInset),
+                        Math.max(v.getPaddingBottom(), bottomInset)
+                    );
+                    return insets;
+                }
+            });
+        }
+        
+        // Also apply insets to the DrawerLayout itself to ensure menu respects safe area
+        if (drawerLayout != null) {
+            ViewCompat.setOnApplyWindowInsetsListener(drawerLayout, new androidx.core.view.OnApplyWindowInsetsListener() {
+                @Override
+                public WindowInsetsCompat onApplyWindowInsets(View v, WindowInsetsCompat insets) {
+                    int topInset = insets.getSystemWindowInsetTop();
+                    int leftInset = 0;
+                    int rightInset = 0;
+                    int bottomInset = insets.getSystemWindowInsetBottom();
+                    
+                    // Handle display cutout for Android P and above
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                        android.view.WindowInsets windowInsets = insets.toWindowInsets();
+                        if (windowInsets != null) {
+                            android.view.DisplayCutout displayCutout = windowInsets.getDisplayCutout();
+                            if (displayCutout != null) {
+                                leftInset = displayCutout.getSafeInsetLeft();
+                                rightInset = displayCutout.getSafeInsetRight();
+                                topInset = Math.max(topInset, displayCutout.getSafeInsetTop());
+                                bottomInset = Math.max(bottomInset, displayCutout.getSafeInsetBottom());
+                            }
+                        }
+                    }
+                    
+                    v.setPadding(
+                        Math.max(v.getPaddingLeft(), leftInset),
+                        Math.max(v.getPaddingTop(), topInset),
+                        Math.max(v.getPaddingRight(), rightInset),
+                        Math.max(v.getPaddingBottom(), bottomInset)
+                    );
+                    return insets;
+                }
+            });
+        }
+        
+        // Request insets to be applied immediately
+        View rootView = getWindow().getDecorView();
+        if (rootView != null) {
+            ViewCompat.requestApplyInsets(rootView);
+        }
     }
 
     public void BuildNativeLanguageArray() {
