@@ -49,13 +49,36 @@ public class DownloadFileFromURL extends AsyncTask<String, String, String> {
             String fName = f_url[arrayIndex].substring(f_url[arrayIndex].lastIndexOf("/") + 1);
             try {
                 fileName = java.net.URLDecoder.decode(fName, StandardCharsets.UTF_8.name());
+                Log.d("DownloadFileFromURL", "Decoded fileName: " + fileName);
                 String folderName = removeExtension(fileName);
+                Log.d("DownloadFileFromURL", "folderName after removeExtension: " + folderName);
+                
+                // Validate and fix UTF-8 encoding for display
+                String displayName = folderName;
+                try {
+                    // Ensure the string is valid UTF-8
+                    byte[] utf8Bytes = folderName.getBytes(StandardCharsets.UTF_8);
+                    String validated = new String(utf8Bytes, StandardCharsets.UTF_8);
+                    if (!validated.contains("\uFFFD")) { // No replacement characters
+                        displayName = validated;
+                    } else {
+                        Log.e("DownloadFileFromURL", "folderName contains replacement characters, trying to fix");
+                        // Try to fix by treating as ISO-8859-1 and converting to UTF-8
+                        byte[] isoBytes = folderName.getBytes(StandardCharsets.ISO_8859_1);
+                        displayName = new String(isoBytes, StandardCharsets.UTF_8);
+                        Log.d("DownloadFileFromURL", "Fixed displayName: " + displayName);
+                    }
+                } catch (Exception e) {
+                    Log.e("DownloadFileFromURL", "Error validating UTF-8: " + e.getMessage());
+                }
+                
                 // If bloom file has not already been parsed, download it and parse it
                 if (!org.tyndalebt.storyproduceradv.tools.file.FileIO.workspaceRelPathExists(con, folderName)) {
                     try {
+                        final String finalDisplayName = displayName;
                         da.runOnUiThread(new Runnable() {
                             public void run() {
-                                da.pText.setText(folderName);
+                                da.pText.setText(finalDisplayName);
                             }
                         });
                         URL url = new URL(f_url[arrayIndex]);
