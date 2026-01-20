@@ -85,18 +85,14 @@ class ChooseLangActivity : BaseActivity() {
     }
 
     fun parseLangFile(): Boolean {
-        var i: Int
         var result = ""
 
-        var fis: InputStream? = null
         try {
-            val sourceFile = CHOOSE_LANGUAGE_FILE
-            //fis = FileInputStream(sourceFile)
-            fis = assets.open(CHOOSE_LANGUAGE_FILE)
-            var current: Char
-            while (fis.available() > 0) {
-                current = fis.read().toChar()
-                result = result + current.toString()
+            assets.open(CHOOSE_LANGUAGE_FILE).use { inputStream ->
+                val size: Int = inputStream.available()
+                val buffer = ByteArray(size)
+                inputStream.read(buffer)
+                result = String(buffer, StandardCharsets.UTF_8)
             }
         } catch (e: Exception) {
             Log.d("ChooseLangActivity:parseLangFile", e.toString())
@@ -120,15 +116,15 @@ class ChooseLangActivity : BaseActivity() {
         idx = 0
         while (idx < lines.size) {
             val lang = lines[idx].split(",").toTypedArray()
-            if (itemString != "") {
-                itemString = "$itemString|"
-                tagString = "$tagString|"
+            if (lang.size >= 2) {
+                if (itemString != "") {
+                    itemString = "$itemString|"
+                    tagString = "$tagString|"
+                }
+                // File is now UTF-8, so no encoding conversion needed
+                itemString = itemString + lang[1]
+                tagString = tagString + lang[0]
             }
-            val buffer = StandardCharsets.ISO_8859_1.encode(lang[1])
-            val encodedString = StandardCharsets.UTF_8.decode(buffer).toString()
-
-            itemString = itemString + encodedString
-            tagString = tagString + lang[0]
             idx++
         }
 
