@@ -9,6 +9,8 @@ import android.net.ConnectivityManager
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import android.os.Handler
+import android.os.Looper
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -54,7 +56,7 @@ class MainActivity : MainBaseActivity(), Serializable {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         
-        // Load saved language and initialize translations if not already loaded
+        // Load saved language and initialize translations
         val savedLanguage = Workspace.readFromFile(this)
         if (savedLanguage != null && savedLanguage.isNotEmpty()) {
             val langCode = Workspace.getLanguageCode(savedLanguage)
@@ -66,6 +68,13 @@ class MainActivity : MainBaseActivity(), Serializable {
 
         setContentView(R.layout.activity_main)
         setupDrawer()
+        // Update menu after view is fully laid out to ensure translations are available
+        findViewById<androidx.drawerlayout.widget.DrawerLayout>(R.id.drawer_layout)?.post {
+            val navigationView: com.google.android.material.navigation.NavigationView? = findViewById(R.id.nav_view)
+            navigationView?.let {
+                updateMenuItems(it)
+            }
+        }
         setupStoryListTabPages()
 
 // Only do this in one place.  SplashScreenActivity
@@ -110,6 +119,56 @@ class MainActivity : MainBaseActivity(), Serializable {
         supportActionBar?.setTitle(R.string.title_activity_story_templates)
     }
     
+    override fun onResume() {
+        super.onResume()
+        // Refresh menu translations when activity resumes
+        // Use post to ensure view is ready
+        Handler(Looper.getMainLooper()).post {
+            val navigationView: com.google.android.material.navigation.NavigationView? = findViewById(R.id.nav_view)
+            navigationView?.let {
+                updateMenuItems(it)
+            }
+        }
+    }
+    
+    private fun updateMenuItems(navigationView: com.google.android.material.navigation.NavigationView) {
+        val menu = navigationView.menu
+        
+        // Log to debug translation loading
+        Log.d("MainActivity:updateMenuItems", "languageStringsMap size: ${org.tyndalebt.storyproduceradv.model.languageStringsMap.size}")
+        Log.d("MainActivity:updateMenuItems", "video_share in map: ${org.tyndalebt.storyproduceradv.model.languageStringsMap.containsKey("video_share")}")
+        Log.d("MainActivity:updateMenuItems", "video_share value: ${org.tyndalebt.storyproduceradv.model.languageStringsMap["video_share"]}")
+        
+        // Get translated strings directly from Restring/languageStringsMap
+        val videoShare = org.tyndalebt.storyproduceradv.model.languageStringsMap["video_share"] ?: getString(R.string.video_share)
+        val backupRestore = org.tyndalebt.storyproduceradv.model.languageStringsMap["backup_restore"] ?: getString(R.string.backup_restore)
+        val helpMe = org.tyndalebt.storyproduceradv.model.languageStringsMap["help_me"] ?: getString(R.string.help_me)
+        val createTemplateMode = org.tyndalebt.storyproduceradv.model.languageStringsMap["create_template_mode"] ?: getString(R.string.create_template_mode)
+        val templatesCreated = org.tyndalebt.storyproduceradv.model.languageStringsMap["templates_created"] ?: getString(R.string.templates_created)
+        
+        Log.d("MainActivity:updateMenuItems", "Setting video_share to: $videoShare")
+        Log.d("MainActivity:updateMenuItems", "Setting backup_restore to: $backupRestore")
+        Log.d("MainActivity:updateMenuItems", "Setting help_me to: $helpMe")
+        
+        // Update each menu item with translated string
+        menu.findItem(R.id.nav_stories)?.title = getString(R.string.title_activity_story_templates)
+        menu.findItem(R.id.nav_registration)?.title = getString(R.string.update_registration)
+        menu.findItem(R.id.nav_more_templates)?.title = getString(R.string.more_templates)
+        menu.findItem(R.id.nav_word_link_list)?.title = getString(R.string.title_activity_wordlink_list)
+        menu.findItem(R.id.nav_workspace)?.title = getString(R.string.update_workspace)
+        menu.findItem(R.id.change_language)?.title = getString(R.string.change_language)
+        menu.findItem(R.id.video_share)?.title = videoShare
+        menu.findItem(R.id.backup_restore)?.title = backupRestore
+        menu.findItem(R.id.help_me)?.title = helpMe
+        menu.findItem(R.id.create_template_mode)?.title = createTemplateMode
+        menu.findItem(R.id.templates_created)?.title = templatesCreated
+        menu.findItem(R.id.nav_spadv_website)?.title = getString(R.string.spadv_website)
+        menu.findItem(R.id.nav_about)?.title = getString(R.string.about)
+        
+        // Also try Reword as a fallback
+        dev.b3nedikt.reword.Reword.reword(navigationView)
+    }
+    
     private fun loadLanguageTranslations(language: String) {
         try {
             applicationContext.assets.open("$language/strings.json").use { inputStream ->
@@ -128,6 +187,10 @@ class MainActivity : MainBaseActivity(), Serializable {
                 }
                 Restring.locale = Locale(language)
                 Restring.putStrings(Restring.locale, org.tyndalebt.storyproduceradv.model.languageStringsMap)
+                Log.d("MainActivity", "Loaded ${listTypeJson.size} translations for language: $language")
+                Log.d("MainActivity", "video_share: ${org.tyndalebt.storyproduceradv.model.languageStringsMap["video_share"]}")
+                Log.d("MainActivity", "backup_restore: ${org.tyndalebt.storyproduceradv.model.languageStringsMap["backup_restore"]}")
+                Log.d("MainActivity", "help_me: ${org.tyndalebt.storyproduceradv.model.languageStringsMap["help_me"]}")
             }
         } catch (exception: IOException) {
             Log.e("MainActivity", "Error loading language translations: ${exception.message}")

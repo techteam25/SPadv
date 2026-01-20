@@ -16,6 +16,8 @@ import android.webkit.WebView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior.*
 import org.tyndalebt.storyproduceradv.activities.AppCompatActivityMTT
@@ -40,6 +42,14 @@ class WordLinksActivity : AppCompatActivityMTT(), PlayBackRecordingToolbar.Toolb
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
+        // Configure window to respect display cutout safe areas
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            val params = window.attributes
+            params.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+            window.attributes = params
+        }
+        
         setContentView(R.layout.activity_wordlink)
 
         Workspace.activePhase = Phase(PhaseType.WORD_LINKS)
@@ -52,6 +62,7 @@ class WordLinksActivity : AppCompatActivityMTT(), PlayBackRecordingToolbar.Toolb
         setupBottomSheet()
         setupNoteView()
         setupRecordingList()
+        setupWindowInsets()
 
         // Keeps keyboard from automatically popping up on opening activity
         this.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
@@ -71,6 +82,82 @@ class WordLinksActivity : AppCompatActivityMTT(), PlayBackRecordingToolbar.Toolb
         setSupportActionBar(toolbar)
         supportActionBar?.setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(context,
                 Workspace.activePhase.getColor())))
+    }
+    
+    private fun setupWindowInsets() {
+        val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.wordlink_toolbar)
+        val coordinatorLayout = findViewById<androidx.coordinatorlayout.widget.CoordinatorLayout>(R.id.wordlink_layout)
+        val bottomSheet = findViewById<ConstraintLayout>(R.id.bottom_sheet)
+        
+        // Handle top insets for toolbar (status bar and display cutout)
+        ViewCompat.setOnApplyWindowInsetsListener(toolbar) { view, insets ->
+            var topInset = insets.systemWindowInsetTop
+            var leftInset = 0
+            var rightInset = 0
+            
+            // Handle display cutout for Android P and above
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                val windowInsets = insets.toWindowInsets()
+                if (windowInsets != null) {
+                    val displayCutout = windowInsets.displayCutout
+                    if (displayCutout != null) {
+                        leftInset = displayCutout.safeInsetLeft
+                        rightInset = displayCutout.safeInsetRight
+                        topInset = maxOf(topInset, displayCutout.safeInsetTop)
+                    }
+                }
+            }
+            
+            view.setPadding(
+                maxOf(view.paddingLeft, leftInset),
+                maxOf(view.paddingTop, topInset),
+                maxOf(view.paddingRight, rightInset),
+                view.paddingBottom
+            )
+            insets
+        }
+        
+        // Handle bottom insets for bottom sheet (navigation bar)
+        ViewCompat.setOnApplyWindowInsetsListener(bottomSheet) { view, insets ->
+            var bottomInset = insets.systemWindowInsetBottom
+            
+            // Handle display cutout for Android P and above
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                val windowInsets = insets.toWindowInsets()
+                if (windowInsets != null) {
+                    val displayCutout = windowInsets.displayCutout
+                    if (displayCutout != null) {
+                        bottomInset = maxOf(bottomInset, displayCutout.safeInsetBottom)
+                    }
+                }
+            }
+            
+            // Apply bottom padding to the bottom sheet
+            view.setPadding(
+                view.paddingLeft,
+                view.paddingTop,
+                view.paddingRight,
+                maxOf(view.paddingBottom, bottomInset)
+            )
+            insets
+        }
+        
+        // Handle insets for coordinator layout
+        ViewCompat.setOnApplyWindowInsetsListener(coordinatorLayout) { view, insets ->
+            val bottomInset = insets.systemWindowInsetBottom
+            
+            // Apply bottom padding for navigation bar
+            view.setPadding(
+                view.paddingLeft,
+                view.paddingTop,
+                view.paddingRight,
+                maxOf(view.paddingBottom, bottomInset)
+            )
+            insets
+        }
+        
+        // Request insets to be applied
+        ViewCompat.requestApplyInsets(findViewById(android.R.id.content))
     }
 
     private fun setupBottomSheet() {
