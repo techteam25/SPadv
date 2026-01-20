@@ -590,26 +590,34 @@ public class DownloadActivity extends BaseActivity {
     }
 
     public String URLEncodeUTF8(String pSource) {
-        String tmpNew = "";
-        Integer tmpInt = 0;
-        char tmpByte = 0;
-        Integer idx;
+        try {
+            // Use Java's built-in URLEncoder which properly handles UTF-8 multi-byte characters
+            return java.net.URLEncoder.encode(pSource, StandardCharsets.UTF_8.name())
+                    .replace("+", "%20"); // Replace + with %20 for spaces (URLEncoder uses + for spaces)
+        } catch (Exception e) {
+            Log.e("DownloadActivity:URLEncodeUTF8", "Error encoding URL: " + e.getMessage());
+            // Fallback to old method if encoding fails
+            String tmpNew = "";
+            Integer tmpInt = 0;
+            char tmpByte = 0;
+            Integer idx;
 
-        for (idx = 0; idx < pSource.length(); idx++) {
-            if (pSource.charAt(idx) >= 128) {
-                tmpByte = pSource.charAt(idx);
-                tmpNew = tmpNew + "%";
-                tmpInt = (int)tmpByte;
-                tmpNew = tmpNew + String.format("%02X", tmpInt);
-            } else if (pSource.charAt(idx) == ' ') {
-                tmpNew = tmpNew + "%20";
-            } else if (pSource.charAt(idx) == '#') {
-                    tmpNew = tmpNew + "%23";
-            } else {
-                tmpNew = tmpNew + pSource.charAt(idx);
+            for (idx = 0; idx < pSource.length(); idx++) {
+                if (pSource.charAt(idx) >= 128) {
+                    tmpByte = pSource.charAt(idx);
+                    tmpNew = tmpNew + "%";
+                    tmpInt = (int)tmpByte;
+                    tmpNew = tmpNew + String.format("%02X", tmpInt);
+                } else if (pSource.charAt(idx) == ' ') {
+                    tmpNew = tmpNew + "%20";
+                } else if (pSource.charAt(idx) == '#') {
+                        tmpNew = tmpNew + "%23";
+                } else {
+                    tmpNew = tmpNew + pSource.charAt(idx);
+                }
             }
+            return tmpNew;
         }
-        return tmpNew;
     }
 
     public void setChosenLanguage(String pNativeLanguage) {
