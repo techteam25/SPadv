@@ -129,8 +129,11 @@ public class DownloadActivity extends BaseActivity {
             }
         }
 
+        Log.d("DownloadActivity:buildBloomList", "Processing " + pList.length + " items, firstPass=" + firstPass);
         for (idx = 0; idx < pList.length; idx++) {
-            if (!folderExists(this, pURL[idx])) {
+            boolean exists = folderExists(this, pURL[idx]);
+            Log.d("DownloadActivity:buildBloomList", "Item " + idx + ": " + pList[idx] + ", URL: " + pURL[idx] + ", folderExists: " + exists);
+            if (!exists) {
                 if (pURL[idx].equals("Language")) {
                     tmp = getNativeLangName(pList[idx]);
                     if (!isLanguageRoman(pList[idx])) {
@@ -143,13 +146,18 @@ public class DownloadActivity extends BaseActivity {
                     // Find the right place to put it in the array
                     Integer idx1;
                     DownloadDS ds;
+                    String nativeLangName = getNativeLangName(pList[idx]);
+                    Log.d("DownloadActivity:buildBloomList", "Looking for language: " + nativeLangName + " in arrayList of size " + arrayList.size());
                     for (idx1 = 0; idx1 < arrayList.size(); idx1++) {
                         ds = arrayList.get(idx1);
-                        if (ds.getName() == getNativeLangName(pList[idx])) {
+                        Log.d("DownloadActivity:buildBloomList", "Comparing: '" + ds.getName() + "' with '" + nativeLangName + "'");
+                        if (ds.getName().equals(nativeLangName)) {
                             // Found at least one file that can be downloaded in this language
                             // Replace it with an entry that has a URL string
+                            Log.d("DownloadActivity:buildBloomList", "Match found at index " + idx1 + ", replacing with: " + tmp);
                             arrayList.remove(ds);
                             arrayList.add(idx1, new DownloadDS(tmp, pURL[idx], false));
+                            break;
                         }
                     }
                 } else {
@@ -157,11 +165,12 @@ public class DownloadActivity extends BaseActivity {
                 }
             }
         }
+        Log.d("DownloadActivity:buildBloomList", "Final arrayList size: " + arrayList.size());
 
         if (firstPass) {
             //  Go through array and remove any that have an empty string for URL, indicating that language does not any files to download
             for (idx = 0; idx < arrayList.size(); idx++) {
-                while (idx < arrayList.size() && arrayList.get(idx).getURL() == "") {
+                while (idx < arrayList.size() && arrayList.get(idx).getURL().equals("")) {
                     arrayList.remove(arrayList.get(idx));
                     arrayList.trimToSize();
                 }
