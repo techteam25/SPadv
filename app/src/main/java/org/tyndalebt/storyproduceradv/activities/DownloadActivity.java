@@ -474,12 +474,30 @@ public class DownloadActivity extends BaseActivity {
             if (firstPass == true) {
                 try {
                     File sourceFile = new File(this.getFilesDir() + "/" + outFile);
+                    if (!sourceFile.exists() || sourceFile.length() == 0) {
+                        Log.d("DownloadActivity:copyFile", "File does not exist or is empty: " + outFile);
+                        Intent mDisplayAlert = new Intent(this, DisplayAlert.class);
+                        mDisplayAlert.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        mDisplayAlert.putExtra("title", getString(R.string.more_templates));
+                        mDisplayAlert.putExtra("body", getString(R.string.remote_check_msg_no_connection));
+                        startActivity(mDisplayAlert);
+                        return false;
+                    }
                     FileInputStream fis = new FileInputStream(sourceFile);
                     int size = fis.available();
                     byte[] buffer = new byte[size];
                     fis.read(buffer);
                     fis.close();
                     result = new String(buffer, StandardCharsets.UTF_8);
+                    if (result == null || result.trim().isEmpty()) {
+                        Log.d("DownloadActivity:copyFile", "File content is empty");
+                        Intent mDisplayAlert = new Intent(this, DisplayAlert.class);
+                        mDisplayAlert.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        mDisplayAlert.putExtra("title", getString(R.string.more_templates));
+                        mDisplayAlert.putExtra("body", getString(R.string.remote_check_msg_no_connection));
+                        startActivity(mDisplayAlert);
+                        return false;
+                    }
                 } catch (Exception e) {
 
                     Log.d("DownloadActivity:copyFile", e.toString());
@@ -488,6 +506,7 @@ public class DownloadActivity extends BaseActivity {
                     mDisplayAlert.putExtra("title", getString(R.string.more_templates));
                     mDisplayAlert.putExtra("body", getString(R.string.remote_check_msg_no_connection));
                     startActivity(mDisplayAlert);
+                    return false;
                 }
                 bloomFileContents = result;
             } else {
@@ -501,9 +520,17 @@ public class DownloadActivity extends BaseActivity {
             String lastLang = "";
 
             for (idx = 0; idx < lines.length; idx++) {
-                String lang[] = lines[idx].split("/");
+                String line = lines[idx].trim();
+                // Skip empty lines
+                if (line.isEmpty()) {
+                    continue;
+                }
+                String lang[] = line.split("/");
+                if (lang.length == 0) {
+                    continue;
+                }
                 if (firstPass == true) {
-                    if (!lastLang.equals(lang[0])) {
+                    if (lang.length > 0 && !lastLang.equals(lang[0])) {
                         if (!itemString.equals("")) {
                             itemString = itemString + "|";
                             tagString = tagString + "|";
@@ -513,7 +540,7 @@ public class DownloadActivity extends BaseActivity {
                         tagString = tagString + "Language";
                     }
                 } else {
-                    if (lang[0].equals(this.chosenLanguage)) {
+                    if (lang.length > 0 && lang[0].equals(this.chosenLanguage)) {
                         if (!itemString.equals("")) {
                             itemString = itemString + "|";
                             tagString = tagString + "|";
