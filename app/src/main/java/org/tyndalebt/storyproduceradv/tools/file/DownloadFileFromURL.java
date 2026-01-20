@@ -95,14 +95,19 @@ public class DownloadFileFromURL extends AsyncTask<String, String, String> {
                         input.close();
 
                     } catch (Exception e) {
-                        Log.e("Error: ", e.getMessage());
+                        Log.e("DownloadFileFromURL", "Error downloading file: " + f_url[arrayIndex], e);
+                        fileName = null; // Mark download as failed
                     }
+                } else {
+                    Log.d("DownloadFileFromURL", "File already exists, skipping download: " + folderName);
                 }
             } catch (Exception e) {
-                Log.e("Error: ", e.getMessage());
+                Log.e("DownloadFileFromURL", "Error processing URL: " + f_url[arrayIndex], e);
+                fileName = null; // Mark download as failed
             }
         }
-        return "";
+        Log.d("DownloadFileFromURL", "Download completed. fileName: " + fileName);
+        return fileName != null ? fileName : "";
     }
     /**
      * Updating progress bar
@@ -132,9 +137,15 @@ public class DownloadFileFromURL extends AsyncTask<String, String, String> {
     @Override
     protected void onPostExecute(String file_url) {
         DownloadActivity da = (DownloadActivity) con;
-        if (da.copyFile(fileName))
-        {
-            
+        Log.d("DownloadFileFromURL", "onPostExecute called with fileName: " + fileName);
+        if (fileName != null && !fileName.isEmpty()) {
+            if (da.copyFile(fileName)) {
+                Log.d("DownloadFileFromURL", "copyFile succeeded");
+            } else {
+                Log.e("DownloadFileFromURL", "copyFile failed");
+            }
+        } else {
+            Log.e("DownloadFileFromURL", "Download failed or fileName is null/empty");
         }
     }
 

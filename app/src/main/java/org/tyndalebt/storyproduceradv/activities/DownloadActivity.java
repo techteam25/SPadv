@@ -555,9 +555,23 @@ public class DownloadActivity extends BaseActivity {
             }
             String itemArray[] = itemString.split("\\|");
             String tagArray[] = tagString.split("\\|");
-            at = new DownloadFileFromURL(this);
-            buildBloomList(itemArray, tagArray);
-            firstPass = false;
+            
+            // Only build list if we have items
+            if (itemArray.length > 0 && !itemArray[0].isEmpty()) {
+                Log.d("DownloadActivity:copyFile", "Building list with " + itemArray.length + " items");
+                at = new DownloadFileFromURL(this);
+                buildBloomList(itemArray, tagArray);
+                firstPass = false;
+                return true;
+            } else {
+                Log.e("DownloadActivity:copyFile", "No items found in file. itemArray length: " + itemArray.length);
+                Intent mDisplayAlert = new Intent(this, DisplayAlert.class);
+                mDisplayAlert.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                mDisplayAlert.putExtra("title", getString(R.string.more_templates));
+                mDisplayAlert.putExtra("body", getString(R.string.remote_check_msg_no_connection));
+                startActivity(mDisplayAlert);
+                return false;
+            }
         } else {
             BaseController upstor = new BaseController(this, this);
             pBar.setVisibility(View.INVISIBLE);
