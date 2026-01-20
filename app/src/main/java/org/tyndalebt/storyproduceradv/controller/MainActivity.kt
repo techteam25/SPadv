@@ -22,6 +22,12 @@ import org.tyndalebt.storyproduceradv.model.Story
 import org.tyndalebt.storyproduceradv.model.Workspace
 import org.tyndalebt.storyproduceradv.tools.Network.ConnectivityStatus
 import org.tyndalebt.storyproduceradv.tools.Network.VolleySingleton
+import org.tyndalebt.storyproduceradv.controller.JsonHelper
+import com.fasterxml.jackson.databind.ObjectMapper
+import dev.b3nedikt.restring.Restring
+import java.io.IOException
+import java.nio.charset.StandardCharsets
+import java.util.Locale
 import java.io.Serializable
 
 
@@ -47,6 +53,16 @@ class MainActivity : MainBaseActivity(), Serializable {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
+        // Load saved language and initialize translations if not already loaded
+        val savedLanguage = Workspace.readFromFile(this)
+        if (savedLanguage != null && savedLanguage.isNotEmpty()) {
+            val langCode = Workspace.getLanguageCode(savedLanguage)
+            if (langCode.isNotEmpty()) {
+                // Load translations from JSON file
+                loadLanguageTranslations(langCode)
+            }
+        }
 
         setContentView(R.layout.activity_main)
         setupDrawer()
@@ -92,6 +108,30 @@ class MainActivity : MainBaseActivity(), Serializable {
                 Toast.LENGTH_LONG).show()
         }
         supportActionBar?.setTitle(R.string.title_activity_story_templates)
+    }
+    
+    private fun loadLanguageTranslations(language: String) {
+        try {
+            applicationContext.assets.open("$language/strings.json").use { inputStream ->
+                val size: Int = inputStream.available()
+                val buffer = ByteArray(size)
+                inputStream.read(buffer)
+                val jsonString = String(buffer, StandardCharsets.UTF_8)
+                val listTypeJson: HashMap<String, String> = HashMap()
+                JsonHelper().getFlattenedHashmapFromJsonForLocalization(
+                    "",
+                    ObjectMapper().readTree(jsonString),
+                    listTypeJson
+                )
+                listTypeJson.forEach {
+                    org.tyndalebt.storyproduceradv.model.languageStringsMap[it.key] = it.value
+                }
+                Restring.locale = Locale(language)
+                Restring.putStrings(Restring.locale, org.tyndalebt.storyproduceradv.model.languageStringsMap)
+            }
+        } catch (exception: IOException) {
+            Log.e("MainActivity", "Error loading language translations: ${exception.message}")
+        }
     }
 
     /**

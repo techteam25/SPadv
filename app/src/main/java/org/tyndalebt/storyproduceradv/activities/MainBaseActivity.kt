@@ -17,6 +17,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
+import dev.b3nedikt.reword.Reword
 import org.apache.commons.net.ftp.FTP
 import org.apache.commons.net.ftp.FTPClient
 import org.tyndalebt.storyproduceradv.R
@@ -113,6 +114,9 @@ open class MainBaseActivity : BaseActivity() {
         mDrawerLayout!!.setDrawerLockMode(androidx.drawerlayout.widget.DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
         val navigationView: NavigationView = findViewById(R.id.nav_view)
         navigationView.setNavigationItemSelectedListener(::onNavigationItemSelected)
+        
+        // Update menu items with translations using Reword
+        Reword.reword(navigationView)
     }
 
     // If this menu item is selected, do nothing
