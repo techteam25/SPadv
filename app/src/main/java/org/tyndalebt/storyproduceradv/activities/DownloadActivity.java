@@ -293,13 +293,12 @@ public class DownloadActivity extends BaseActivity {
             }
         });
         
-        // Apply window insets to the main content LinearLayout
+        // Apply window insets to the main content LinearLayout (but NOT top padding since toolbar handles it)
         android.widget.LinearLayout mainContent = findViewById(R.id.main_content_layout);
         if (mainContent != null) {
             ViewCompat.setOnApplyWindowInsetsListener(mainContent, new androidx.core.view.OnApplyWindowInsetsListener() {
                 @Override
                 public WindowInsetsCompat onApplyWindowInsets(View v, WindowInsetsCompat insets) {
-                    int topInset = insets.getSystemWindowInsetTop();
                     int leftInset = 0;
                     int rightInset = 0;
                     int bottomInset = insets.getSystemWindowInsetBottom();
@@ -312,15 +311,15 @@ public class DownloadActivity extends BaseActivity {
                             if (displayCutout != null) {
                                 leftInset = displayCutout.getSafeInsetLeft();
                                 rightInset = displayCutout.getSafeInsetRight();
-                                topInset = Math.max(topInset, displayCutout.getSafeInsetTop());
                                 bottomInset = Math.max(bottomInset, displayCutout.getSafeInsetBottom());
                             }
                         }
                     }
                     
+                    // Only apply left, right, and bottom padding - NOT top (toolbar handles top)
                     v.setPadding(
                         Math.max(v.getPaddingLeft(), leftInset),
-                        Math.max(v.getPaddingTop(), topInset),
+                        v.getPaddingTop(), // Don't add top padding here
                         Math.max(v.getPaddingRight(), rightInset),
                         Math.max(v.getPaddingBottom(), bottomInset)
                     );

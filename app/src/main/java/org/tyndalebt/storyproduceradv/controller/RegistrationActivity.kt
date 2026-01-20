@@ -13,7 +13,10 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import android.webkit.WebView
 import android.widget.*
 import androidx.appcompat.widget.Toolbar
@@ -90,6 +93,13 @@ open class RegistrationActivity : AppCompatActivityMTT() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Configure window to respect display cutout safe areas
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            val params = window.attributes
+            params.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+            window.attributes = params
+        }
+
         if (Workspace.checkForInternet(this) == false) {
             val dialogBuilder = AlertDialog.Builder(this)
             dialogBuilder.setTitle(R.string.registration_title)
@@ -111,6 +121,9 @@ open class RegistrationActivity : AppCompatActivityMTT() {
 
         setContentView(R.layout.activity_registration)
         val mActionBarToolbar = findViewById<Toolbar>(R.id.toolbar)
+        
+        // Setup window insets for safe area handling
+        setupWindowInsets(mActionBarToolbar)
 
         buildSpinner(R.id.input_orthography)
         buildSpinner(R.id.input_translator_communication_preference)
@@ -783,5 +796,37 @@ open class RegistrationActivity : AppCompatActivityMTT() {
             }
             return message.toString()
         }
+    }
+    
+    private fun setupWindowInsets(toolbar: Toolbar) {
+        // Handle display cutout/notch area for camera - apply window insets to toolbar
+        ViewCompat.setOnApplyWindowInsetsListener(toolbar) { view, insets ->
+            var topInset = insets.systemWindowInsetTop
+            var leftInset = 0
+            var rightInset = 0
+            
+            // Handle display cutout for Android P and above
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                val windowInsets = insets.toWindowInsets()
+                if (windowInsets != null) {
+                    val displayCutout = windowInsets.displayCutout
+                    if (displayCutout != null) {
+                        leftInset = displayCutout.safeInsetLeft
+                        rightInset = displayCutout.safeInsetRight
+                        topInset = Math.max(topInset, displayCutout.safeInsetTop)
+                    }
+                }
+            }
+            
+            view.setPadding(
+                Math.max(view.paddingLeft, leftInset),
+                Math.max(view.paddingTop, topInset),
+                Math.max(view.paddingRight, rightInset),
+                view.paddingBottom
+            )
+            insets
+        }
+        
+        ViewCompat.requestApplyInsets(findViewById(android.R.id.content))
     }
 }
