@@ -115,15 +115,19 @@ class ChooseLangActivity : BaseActivity() {
         var idx: Int
         idx = 0
         while (idx < lines.size) {
-            val lang = lines[idx].split(",").toTypedArray()
-            if (lang.size >= 2) {
-                if (itemString != "") {
-                    itemString = "$itemString|"
-                    tagString = "$tagString|"
+            val line = lines[idx].trim()
+            // Skip empty lines
+            if (line.isNotEmpty()) {
+                val lang = line.split(",").toTypedArray()
+                if (lang.size >= 2) {
+                    if (itemString != "") {
+                        itemString = "$itemString|"
+                        tagString = "$tagString|"
+                    }
+                    // File is now UTF-8, so no encoding conversion needed
+                    itemString = itemString + lang[1].trim()
+                    tagString = tagString + lang[0].trim()
                 }
-                // File is now UTF-8, so no encoding conversion needed
-                itemString = itemString + lang[1]
-                tagString = tagString + lang[0]
             }
             idx++
         }
