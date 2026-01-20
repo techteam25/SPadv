@@ -31,6 +31,7 @@ import org.tyndalebt.storyproduceradv.model.messaging.MessageROCC
 import org.tyndalebt.storyproduceradv.tools.file.*
 import java.io.*
 import java.net.URI
+import java.nio.charset.StandardCharsets
 import java.sql.Timestamp
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -483,7 +484,7 @@ object Workspace {
                 // open a raw file descriptor to access data under the URI
                 context.contentResolver.openFileDescriptor(wordLinksFile.uri, "r").use { pfd ->
                     ParcelFileDescriptor.AutoCloseInputStream(pfd).use { inputStream ->
-                        InputStreamReader(inputStream).use { streamReader ->
+                        InputStreamReader(inputStream, StandardCharsets.UTF_8).use { streamReader ->
                             WordLinksCSVReader(streamReader).use { wordLinkCSVReader ->
                                 val wordLinks = wordLinkCSVReader.readAll()
                                 wordLinks.forEach { wl ->
