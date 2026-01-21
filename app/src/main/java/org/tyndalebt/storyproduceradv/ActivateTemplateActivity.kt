@@ -30,6 +30,7 @@ import org.tyndalebt.storyproduceradv.activities.MainBaseActivity
 import org.tyndalebt.storyproduceradv.controller.MainActivity
 import org.tyndalebt.storyproduceradv.model.Workspace
 import org.tyndalebt.storyproduceradv.tools.file.goToURL
+import java.io.File
 
 class ActivateTemplateActivity : MainBaseActivity() {
 
@@ -223,7 +224,10 @@ class ActivateTemplateActivity : MainBaseActivity() {
         spinnerAdapter.add(selectOne)
         for (i in choiceStrings!!.indices) {
             if (choiceStrings[i] != "home") {
-                spinnerAdapter.add(choiceStrings[i])
+                val extension1 = File(choiceStrings[i]).extension
+                if (extension1 != "txt") {
+                    spinnerAdapter.add(choiceStrings[i])
+                }
             }
         }
         spinnerAdapter.notifyDataSetChanged()

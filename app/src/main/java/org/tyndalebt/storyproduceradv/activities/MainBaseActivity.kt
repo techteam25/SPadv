@@ -304,7 +304,7 @@ open class MainBaseActivity : BaseActivity() {
                 e.printStackTrace()
                 return false
             }
-            return goForItInternal(".", tempFileName, "", "$lang - $pFileName")
+            return goForItInternal(".", tempFileName, "", "$lang - $pFileName.txt")
         } else {
             return false
         }
