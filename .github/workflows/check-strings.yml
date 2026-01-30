@@ -4,9 +4,9 @@ name: Check strings.json keys
 
 on:
   push:
-    branches: [main, develop]
+    branches: [develop]
   pull_request:
-    branches: [main, develop]
+    branches: [develop]
 
 permissions:
   contents: write

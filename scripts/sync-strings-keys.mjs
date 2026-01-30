@@ -32,15 +32,15 @@ function sleep(ms) {
 
 /**
  * Translate text from English to targetLang using Google Cloud Translation API.
- * Returns null on failure or if API key is not set (fallback to English).
+ * Returns { translated, error } — error is set when API key missing or request failed (for logging).
  */
 async function translate(text, targetLang) {
   const apiKey = process.env.GOOGLE_TRANSLATE_API_KEY;
-  if (!apiKey) return null;
+  if (!apiKey) return { translated: null, error: 'GOOGLE_TRANSLATE_API_KEY not set' };
 
-  if (!text || typeof text !== 'string') return text;
+  if (!text || typeof text !== 'string') return { translated: text, error: null };
   const trimmed = text.trim();
-  if (!trimmed) return text;
+  if (!trimmed) return { translated: text, error: null };
 
   const params = new URLSearchParams({
     key: apiKey,
@@ -53,13 +53,13 @@ async function translate(text, targetLang) {
 
   try {
     const res = await fetch(url, { method: 'POST' });
-    if (!res.ok) return null;
-    const data = await res.json();
+    const data = await res.json().catch(() => ({}));
     const translated = data?.data?.translations?.[0]?.translatedText;
-    if (translated) return translated;
-    return null;
-  } catch {
-    return null;
+    if (translated) return { translated, error: null };
+    const msg = data?.error?.message || (res.ok ? 'No translatedText in response' : `HTTP ${res.status}`);
+    return { translated: null, error: msg };
+  } catch (err) {
+    return { translated: null, error: err?.message || String(err) };
   }
 }
 
@@ -72,12 +72,18 @@ async function main() {
     (d) => d.isDirectory() && d.name !== EN && existsSync(join(ASSETS, d.name, STRINGS_FILE))
   );
 
+  const hasKey = Boolean(process.env.GOOGLE_TRANSLATE_API_KEY);
+  console.error('[sync-strings] GOOGLE_TRANSLATE_API_KEY:', hasKey ? 'set' : 'NOT SET (using English fallback)');
+
   let changed = false;
   for (const { name } of locales) {
     const localePath = join(ASSETS, name, STRINGS_FILE);
     const obj = loadJson(localePath);
     const langCode = LOCALE_TO_LANG[name] || name;
     let updated = false;
+    let translatedCount = 0;
+    let fallbackCount = 0;
+    let firstError = null;
 
     for (const key of enKeys) {
       if (obj[key] !== undefined) continue;
@@ -85,8 +91,14 @@ async function main() {
       const enValue = enObj[key];
       let value = enValue;
 
-      const translated = await translate(enValue, langCode);
-      if (translated != null) value = translated;
+      const result = await translate(enValue, langCode);
+      if (result.translated != null) {
+        value = result.translated;
+        translatedCount++;
+      } else {
+        fallbackCount++;
+        if (result.error && !firstError) firstError = result.error;
+      }
 
       obj[key] = value;
       updated = true;
@@ -96,6 +108,7 @@ async function main() {
     if (updated) {
       writeFileSync(localePath, JSON.stringify(obj, null, 2) + '\n', 'utf8');
       changed = true;
+      console.error(`[sync-strings] ${name}: ${translatedCount} translated, ${fallbackCount} fallback to English${firstError ? `; first error: ${firstError}` : ''}`);
     }
   }
 
