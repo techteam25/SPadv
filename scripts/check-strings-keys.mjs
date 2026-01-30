@@ -33,4 +33,9 @@ for (const { name } of locales) {
     }
 }
 
-process.exit(failed? 1 : 0);
+if (failed) {
+    console.error('Check result: FAIL - missing or extra keys (see above)');
+} else {
+    console.log('Check result: PASS - all locale keys match en/strings.json');
+}
+process.exit(failed ? 1 : 0);

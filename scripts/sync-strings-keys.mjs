@@ -57,8 +57,16 @@ async function translate(text, targetLang) {
     const translated = data?.data?.translations?.[0]?.translatedText;
     if (translated) return { translated, error: null };
     const msg = data?.error?.message || (res.ok ? 'No translatedText in response' : `HTTP ${res.status}`);
+    if (!translate.firstErrorLogged) {
+      translate.firstErrorLogged = true;
+      console.error('[sync-strings] Google Translate API error (first occurrence):', res.status, JSON.stringify(data?.error || data));
+    }
     return { translated: null, error: msg };
   } catch (err) {
+    if (!translate.firstErrorLogged) {
+      translate.firstErrorLogged = true;
+      console.error('[sync-strings] Google Translate request failed (first occurrence):', err?.message || String(err));
+    }
     return { translated: null, error: err?.message || String(err) };
   }
 }
@@ -77,9 +85,14 @@ async function main() {
 
   let changed = false;
   for (const { name } of locales) {
+    translate.firstErrorLogged = false;
     const localePath = join(ASSETS, name, STRINGS_FILE);
     const obj = loadJson(localePath);
     const langCode = LOCALE_TO_LANG[name] || name;
+    const missingCount = [...enKeys].filter((k) => obj[k] === undefined).length;
+    if (missingCount > 0) {
+      console.error(`[sync-strings] ${name}: syncing ${missingCount} missing keys (target lang: ${langCode})`);
+    }
     let updated = false;
     let translatedCount = 0;
     let fallbackCount = 0;
