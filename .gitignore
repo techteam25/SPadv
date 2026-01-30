@@ -13,3 +13,6 @@
 /keystore.properties
 /*.jks
 app/local.properties
+
+# Local temp / scratch (e.g. tutorials, drafts)
+/temp
