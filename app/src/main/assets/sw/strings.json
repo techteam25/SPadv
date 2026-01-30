@@ -1,6 +1,5 @@
 {
-"app_name": "Story Publisher Advantage (SPadv) au Mchapishaji wa Hadithi.",
-
+  "app_name": "Story Publisher Advantage (SPadv) au Mchapishaji wa Hadithi.",
   "no": "Hapana",
   "yes": "ndio",
   "ok": "sawa",
@@ -8,31 +7,24 @@
   "cancel": "kata",
   "help": "saidia",
   "search": "tafuta",
-
   "submit": "wasilisha",
   "submit_via": "wasilisha kupitia...",
   "save": "hifadhi",
   "delete": "ondoa",
   "enter_text": "eka maandishi",
-
   "play": "cheza",
   "share": "gawanya",
   "sound_off": "kuzima sauti",
   "sound_on": "kueka sauti",
-
   "question_mark": "Hii ni nini?",
-
   "SECONDS_ABBREVIATION": "sekunde",
   "MINUTES_ABBREVIATION": "dakika",
-
   "story_picture": "picha ya hadithi",
   "stage_locked": "hatua imefungwa",
   "edit_image": "rekebisha picha",
   "edit_text": "rekebisha maandishi",
-  
   "exit_application": "Ungependa Kufunga Programu?",
-  "quit_question": "Una uhakika unataka kuacha?",  
-
+  "quit_question": "Una uhakika unataka kuacha?",
   "registration_title": "Registration",
   "learn_title": "Soma",
   "translate_revise_title": "Tafsiri + Rudia",
@@ -45,7 +37,6 @@
   "back_translation_title": "Utafsiri Rejeshi",
   "title_activity_story_templates": "muongozo wa hadithi",
   "title_activity_wordlink_list": "Orodha ya Kiungo cha Maneno",
-
   "registration_language_header": "habari wa lugha",
   "registration_translator_header": "habari wa mtafsiri",
   "registration_consultant_header": "habari wa mshauri",
@@ -67,11 +58,9 @@
   "communication_preference_hint": "upendeleo wa mawasiliano:",
   "location_type_hint": "Aina ya eneo",
   "bypass_button_text": "ruka usajili",
-
   "camera_select_from": "Chagua Kutoka:",
   "camera_revert_title": "Je, ungependa Kurejesha Picha Halisi?",
   "camera_revert_message": "Je, ungependa kurejesha picha asili?",
-
   "welcome_to_story_producer": "karibu kwa Story Publisher (Mchapishaji wa hadithi)",
   "use_internal_demo": "tumia onyesho la ndani",
   "please_create_and_then_select_folder": "tafadhali unda na uchague folda, ihitjikayo kwa maonyesho.",
@@ -89,7 +78,6 @@
   "registration_SPadv_email": "",
   "registration_robin_rempel_email": "SPapp.training@gmail.com",
   "rename_title": "chagua jina jipwa",
-
   "rename_title_wordlinks": "Andika tafsiri ya kinyume au andika jina katika lugha yako.",
   "recordings_title": "kurekodi",
   "backTranslation_recordings_title": "urekodi wa habari rejeshi",
@@ -104,23 +92,18 @@
   "workspace_selection_help": "<font color=\"gray\"> mwambie mutayarishaji wa hdhithi akuonyeshe kwenye templates.</font><br><br>skrini ifwatayo itakuwa ya 'folda'.<br> tembea <font color=\"green\"> SP Templates</font> folder (on the <font color=\"green\"> SD Card</font>), then tap <b>SELECT</b> at the bottom. ",
   "only_demo_present": "Ili kupakua violezo zaidi vya hadithi au kufikia chaguo zingine, fungua menyu kuu (gonga aikoni ya mistari-3 kwenye kona ya juu kushoto). Tafadhali kamilisha kwanza na uwasilishe Usajili. Asante.",
   "welcome_screen_demo_error": "Demo functionality coming soon!",
-
   "orthography_list_none": "hakuna",
   "orthography_list_trial": "jaribu",
   "orthography_list_stable": "imara",
-
   "communication_list_phone": "simu",
   "communication_list_email": "barua pepe",
   "communication_list_whatsapp": "WhatsApp",
   "communication_list_facebook": "Facebook",
-
   "location_type_list_local": "vitu vya kawaida",
   "location_type_list_remote": "Remote",
-
   "nav_open": "chaguo",
   "nav_close": "funga",
   "PhoneId": "simu id",
-
   "send_message_down": "ujumbe uliotuma haupatikani kwa sasa. tafadhali jaribu ten baadaye.",
   "audio_pre_send": "kutuma sauti",
   "audio_Sent": "faili ya audio/sauti imetumika sawasawa",
@@ -137,22 +120,17 @@
   "url_register_phone": "/API/RegisterPhone.php",
   "url_update_fb_token": "/API/UpdateFBToken.php",
   "api_token": "XUKYjBHCsD6OVla8dYAt298D9zkaKSqd",
-
   "fill_with_audio_comment": "jaza faili hii kwakutumia maoni katika nia ya audio",
-
   "template_space_title": "Tahadhari: Nafasi inapatikana",
   "template_space_message": "Ni bora kuwa na nafasi ya 1GB kwa kila kiolezo cha hadithi ambacho utakuwa unashughulikia. Ikiwa una nafasi ndogo kuliko hiyo, huenda programu isiweze kuchakata kazi yako na kuhamisha video zako.\n\nNafasi inayopatikana: ",
   "space_less_than_one_meg": "Chini ya MB 1",
   "space_mb": "MB",
   "space_gb": "GB",
-       
   "learn_phase_practice": "iongee hadhithi yote katika ligha yenu!",
   "learn_phase_overwrite": "unahakika unataka kuandika rekodingi za sasa",
-
   "translate_revise_playback_no_lwc_audio": "sikupata sauti ya utunzi",
   "translate_revise_playback_lwc_audio": "cheza sauti ya utunzi",
   "translate_revise_play_narration_audio": "cheza sauti ya utunzi",
-
   "wordlink_submit_backtranslation_hint": "neno kwa neno katika lugha rejeshi/ transliteration",
   "wordlink_close": "funga",
   "wordlink_notes": "maelezo ya maana. UFAFANUZI:",
@@ -166,14 +144,11 @@
   "wordlinks_json_read_error": "kusoma kosa kupitia kiungo cha neno JSON faili",
   "wordlinks_no_csv_file": "No Valid CSV WordLinks File Specified",
   "wordlinks_multiple_csv_files": "Detected multiple Word Links CSV Files.\nUsing:\t",
-
   "voice_studio_edit_text_hint": "andika hadhithi ukitumia maneno katika video.",
   "voice_studio_edit_title_text_hint": "Andika anwani katika video.",
-
   "draft_playback_no_lwc_audio": "Haikuweza kupata sauti ya simulizi.",
   "draft_playback_lwc_audio": "Playing narration audio",
   "draft_play_narration_audio": "Play narration audio",
-
   "delete_video_title": "futa faili ya video",
   "delete_video_message": " je wataka kufuta video hii",
   "video_copy": "Nenda kwenye folda ya video",
@@ -181,42 +156,37 @@
   "overwrite_video_title": "Je, ungependa kufuta faili?",
   "overwrite_video_message": "Faili moja au zaidi za video zilizochaguliwa tayari zipo kwenye folda ya kunakili. Je, ungependa kubatilisha faili?",
   "use_copy_folder_message": "Nakili faili kwenye folda:\n\n",
-  "change_copy_folder": "Badilisha folda",    
-  "copy_folder_not_found_message": "Folda ya kunakili haikupatikana. Je, ungependa kubainisha mpya?\n\n",   
+  "change_copy_folder": "Badilisha folda",
+  "copy_folder_not_found_message": "Folda ya kunakili haikupatikana. Je, ungependa kubainisha mpya?\n\n",
   "export_dumbphone_cb": "3gp",
   "export_smartphone_cb": "mp4",
   "select_all_text": "Chagua zote:",
-  
   "sdcard": "kadi ya sd",
   "internal": "ndani",
-  "external": "ya nje",  
-
-   "backup_menu_item": "Hifadhi nakala",
-   "restore_menu_item": "Rejesha",    
-   "delete_menu_item": "Futa",  
-
-   "delete_stories_title": "Ungependa kufuta Hadithi?",
-   "delete_stories_message": "Je, ungependa kufuta hadithi zilizochaguliwa?",
-   "backup_warning": "ONYO: Hadithi moja au zaidi zilizochaguliwa za kufuta hazijachelezwa katika folda ya chelezo.",
-   "use_backup_folder_message": "Hifadhi nakala za hadithi zilizochaguliwa kwenye folda:\n\n",
-   "restore_story_message": "Chagua hadithi unayotaka kurejesha",
-   "change_backup_folder": "Badilisha folda",    
-   "backup_folder_not_found_message": "Folda mbadala haikupatikana. Je, ungependa kupata au kuunda mpya? Kumbuka: Inapendekezwa kuhifadhi faili zako kwenye hifadhi ya nje ikiwezekana.\n\n",   
-   "overwrite_backup_title": "OJe, ungependa kufuta faili za Hifadhi Nakala?",
-   "overwrite_backup_message": "Hadithi moja au zaidi zilizochaguliwa tayari zipo kwenye folda ya nakala. Je, ungependa kubatilisha faili za hadithi?",
-   "overwrite_backup_message_single_file": "Hadithi ya chelezo iliyochaguliwa tayari ipo kwenye folda ya nakala. Je, ungependa kubatilisha faili za hadithi?",
-   "overwrite_story_title": "Je, ungependa kufuta Hadithi?",
-   "overwrite_story_message": "Hadithi iliyochaguliwa ya kurejesha tayari ipo kwenye folda ya nafasi ya kazi. Je, ungependa kubatilisha faili za hadithi?",
-   "original_story_time_label": "Faili asili: ",
-   "replace_story_time_label": "Badilisha na: ",
-   "invalid_story_title": "Hadithi Batili",
-   "invalid_story_message": "The selected story is not a valid story.  Please select another one.",
-   "read_only_title" : "Kusoma Pekee",
-   "read_only_message" : "Imeshindwa kufungua hadithi kwa sababu ni ya kusomwa tu. Je, kuna tatizo na hifadhi ya nje (kadi ya SD) kwenye kifaa chako? Jaribu kuwasha upya kifaa chako.",
-
+  "external": "ya nje",
+  "backup_menu_item": "Hifadhi nakala",
+  "restore_menu_item": "Rejesha",
+  "delete_menu_item": "Futa",
+  "delete_stories_title": "Ungependa kufuta Hadithi?",
+  "delete_stories_message": "Je, ungependa kufuta hadithi zilizochaguliwa?",
+  "backup_warning": "ONYO: Hadithi moja au zaidi zilizochaguliwa za kufuta hazijachelezwa katika folda ya chelezo.",
+  "use_backup_folder_message": "Hifadhi nakala za hadithi zilizochaguliwa kwenye folda:\n\n",
+  "restore_story_message": "Chagua hadithi unayotaka kurejesha",
+  "change_backup_folder": "Badilisha folda",
+  "backup_folder_not_found_message": "Folda mbadala haikupatikana. Je, ungependa kupata au kuunda mpya? Kumbuka: Inapendekezwa kuhifadhi faili zako kwenye hifadhi ya nje ikiwezekana.\n\n",
+  "overwrite_backup_title": "OJe, ungependa kufuta faili za Hifadhi Nakala?",
+  "overwrite_backup_message": "Hadithi moja au zaidi zilizochaguliwa tayari zipo kwenye folda ya nakala. Je, ungependa kubatilisha faili za hadithi?",
+  "overwrite_backup_message_single_file": "Hadithi ya chelezo iliyochaguliwa tayari ipo kwenye folda ya nakala. Je, ungependa kubatilisha faili za hadithi?",
+  "overwrite_story_title": "Je, ungependa kufuta Hadithi?",
+  "overwrite_story_message": "Hadithi iliyochaguliwa ya kurejesha tayari ipo kwenye folda ya nafasi ya kazi. Je, ungependa kubatilisha faili za hadithi?",
+  "original_story_time_label": "Faili asili: ",
+  "replace_story_time_label": "Badilisha na: ",
+  "invalid_story_title": "Hadithi Batili",
+  "invalid_story_message": "The selected story is not a valid story.  Please select another one.",
+  "read_only_title": "Kusoma Pekee",
+  "read_only_message": "Imeshindwa kufungua hadithi kwa sababu ni ya kusomwa tu. Je, kuna tatizo na hifadhi ya nje (kadi ya SD) kwenye kifaa chako? Jaribu kuwasha upya kifaa chako.",
   "wsbt_alert_title": "maliza rasimu ya awamu",
   "wsbt_alert_text": "tafadhali rekodi utafsiri wa kila slaidi",
-
   "backTranslation_draft_no_picture": "sikupata picha",
   "backTranslation_no_draft_recording_available": "majaribio ya kurekodi hayapatikani!",
   "backTranslation_playback_draft_recording": "cheza majaribio ya kurekodi",
@@ -227,7 +197,6 @@
   "backTranslation_record_file_backT_name": "utafsiri rejeshi %1$d",
   "backTranslation_hint": "ujumbe kwa mshauri ...",
   "transcript_hint": "Ukiombwa, chapa tafsiri ya nyuma hapa.",
-
   "remote_check_title": "kuangalia",
   "messaging_bar_title": "ujumbe kwa slaidi",
   "message_hint": "ingiza ujumbe",
@@ -235,14 +204,11 @@
   "remote_check_msg_sent": "ujumbe umetumwa!",
   "remote_check_msg_no_connection": "anagalia internet yako na utume tena.",
   "remote_check_msg_failed": "huduma z ujumbe ziko chini jaribu baadaye",
-
   "recording_toolbar_no_recording": "hakuna rekodingi yeyote",
   "recording_toolbar_error_recording": "kuna makosa katika kurekodi. rekodi tena!",
   "recording_toolbar_disable_animation": "lemaza michoro kwa upimaji",
-
   "delete_audio_title": "futa sauti?",
   "delete_audio_message": "je wataka kufuta sauti hii?",
-
   "export_title_header": "andika jina la faili",
   "Text_In_Filename_Placeholder": "andika kichwa cha hadhithi ya kikwenu hapa",
   "export_options_header": "chaguo",
@@ -253,21 +219,16 @@
   "export_include_KBFX": "washa mwendo wa pictue (Mv)",
   "export_dumbphone": "(3gp) ni ya  ",
   "export_smartphone": "(mp4) ni ya ",
-
   "export_local_credits_unchanged": "hariri mikopo ya ndani",
   "local_credits_check_mark_description": "nagalia ishara kama mikopo ya ndani imehaririwa",
   "export_no_filename": "andika anwani fupi ya hadithi , juu",
   "export_local_song_unrecorded": "rekodi wimbo wa kikwenu.",
-
   "export_location_exists_title": "Rb dilisha faili?",
   "export_location_exists_message": "faili uliyobadilisha tayari iko. je wataka kubadilisha?",
-
   "export_start": "uunda video",
   "export_cancel": "kata",
   "export_cancel_comment": "usitoke katika kioo hiki mpaka video ikamilike.",
-
   "title_activity_splash_screen": "mutayarishaji wa hadithi",
-
   "LC_obsolete_starting_text": "lugha:\nilitafsiriwa na:\npicha ni  by:\nriwayan / aliyecheza sauti by:\nwimbo wakienyeji niby:",
   "LC_starting_text": "mawasiliano  (simu/barua pepe):\nlugha:\nimetafsriwa na by:\nmiga picha by:\nliyecheza sauti / aliyetenda by:\nwimbo wa kienyeji by:",
   "LC_prompt": "sifa za wenyeji zitawakwa wakati wa kuingiza sauti.",
@@ -275,19 +236,15 @@
   "license_attribution": "video hii imeidhinishwa chini ya Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License ©",
   "local_credits_changed": "kubadilika kwa mikpo ya ndani!",
   "local_credits_unchanged": "kutobadilika kwa mikopo ya ndani",
-
   "LS_prompt": "Katika ukurasa huu, tunga na urekodi wimbo kwa ajili ya hadithi ya Biblia! Au, uliza maswali ya majadiliano kuhusu hadithi. Unaweza kuchagua kujumuisha au kutenga ukurasa huu unapokamilisha video.",
-
   "LWC_PLAYBACK": "LWC kucheza rejeshi",
   "DRAFT_RECORDING": "majaribio ya kurekodi",
   "DRAFT_PLAYBACK": "chezesha majaribio",
   "COMMENT_PLAYBACK": "toa maoni katika kuchezesha",
   "COMMENT_RECORDING": "toa maoni katika kurekodi",
-
   "no_videos": "hakuna kugawanya video",
   "send_video": "tuma video:",
   "file_view": "muonekano wa faili:",
-
   "menu_search": "tafuta",
   "update_registration": "sasisha usajili",
   "scanning_sp_templates": "tafadhali subiri SP to ianagalie mpangilio",
@@ -298,11 +255,9 @@
   "spadv_website": "SPadv - website",
   "video_share": "Nakili/Shiriki Faili za Video",
   "backup_restore": "Hifadhi Nakala ya Data ya Tafsiri",
-  
   "all_stories_tab": "hadithi zote",
   "in_progress_tab": "inaendelea",
   "completed_tab": "kumalizika",
-
   "already_uploaded": "Rekodi iliyochaguliwa tayari imepakiwa",
   "uploading_audio": "Inapakia sauti",
   "uploading_wordlink": "Inapakia kiungo cha neno: ",
@@ -317,27 +272,27 @@
   "no_uploads_done": "Bado hakuna upakiaji",
   "invalid_response": "Jibu lisilo sahihi. Imeshindwa kupakia sauti",
   "connect_failed": "Imeshindwa kuunganisha kwenye seva",
-
   "film_toolbar": "ukanda",
   "nt_toolbar": "agano jipya",
   "ot_toolbar": "agano la kale",
   "other_toolbar": "nyingine",
-
   "about": "kuhusu",
   "license": "kibali",
   "about_title": "kuhusu mtayarishaji wa hadithi",
   "app_version": "app toleo: %1$s",
   "prefer_bloom_templates": "prefer .bloom templates",
   "license_body": "The Story Publisher Adv (SPadv) software is jointly copyrighted © 2022, Tyndale Bible Translators and Robin Rempel. Adapted from and built upon original, Story Producer (version 3.0.6) jointly copyrighted © 2020, SIL International and Cedarville University. \n\n It is released under the following license: Permission is hereby granted, free of charge, to any person lawfully obtaining a copy of this software and associated documentation files (the \"Software\"), to use and redistribute the software, to build and distribute videos from text and audio-visual data, provided that they are the owner of the data or have permission to distribute it. \n\n The Software is protected by international copyright treaty provisions. No person may remove any copyright or other proprietary notice from the software nor reverse engineer, decompile, or disassemble the software. \n\n The software is provided \"as is\", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement. In no event shall the authors or copyright holders be liable for any claim, damages or other liability, whether in an action or contract, tort or otherwise, arising from, out of or in connection with the software or the use or other dealings in the software. \n\n Data is collected whenever the user submits registration info. All the information that the user types into the registration fields, plus phone type, is collected and used by the remote consultant in assisting and communicating with the user. ",
-
   "logging_slide_log_view_title": "kuingia katika slide #%1$d",
   "logging_item_date": "tarehe",
   "logging_item_type": "aina",
-
   "logging_numSlides": [
     "Slidi",
     "Slidi"
   ],
-
-  "overwrite": "Overwrite"
+  "overwrite": "Overwrite",
+  "registration_accuracy_check_header": "Accuracy Checker Info",
+  "help_me": "Help me",
+  "create_template_mode": "Create Template mode",
+  "templates_created": "Templates I have created",
+  "no_templates": "You have not created any templates"
 }

@@ -1,6 +1,5 @@
 {
   "app_name": "Story Publisher Adv",
-
   "no": "Non",
   "yes": "Oui",
   "ok": "Valider",
@@ -8,31 +7,24 @@
   "cancel": "Annuler",
   "help": "Aide",
   "search": "Chercher",
-
   "submit": "Soumettre",
   "submit_via": "Soumettre par...",
   "save": "Engegistrer",
   "delete": "Supprimer",
   "enter_text": "Saisir du texte",
-
   "play": "Jouer",
   "share": "Pargager",
   "sound_off": "Son arrêt",
   "sound_on": "Son marche",
-
   "question_mark": "C'est quoi??",
-
   "SECONDS_ABBREVIATION": "sec",
   "MINUTES_ABBREVIATION": "min",
-
   "story_picture": "Image d'histoire",
   "stage_locked": "stage locked",
   "edit_image": "éditer l'image",
   "edit_text": "èditer le texte",
-
   "exit_application": "Quitter l'application ?",
   "quit_question": "Êtes-vous sûr de vouloir quitter?",
-  
   "registration_title": "Inscription",
   "learn_title": "Apprendre",
   "translate_revise_title": "Traduire + réviser",
@@ -45,7 +37,6 @@
   "back_translation_title": "Raconter la diapo",
   "title_activity_story_templates": "Modèles de récit",
   "title_activity_wordlink_list": "Liste Word Links",
-
   "registration_language_header": "Info sur la langue",
   "registration_translator_header": "Info sur le traducuteur",
   "registration_accuracy_check_header": "Infor sur le vérificateur",
@@ -67,11 +58,9 @@
   "communication_preference_hint": "Moyen préféré de communication:",
   "location_type_hint": "Type d'endroit: ",
   "bypass_button_text": "Sauter l'enregistrement",
-
   "camera_select_from": "Choisir de:",
   "camera_revert_title": "Revenir sur l'image d'origine?",
   "camera_revert_message": "Désirez-vous revenir sur l'image d'origine?",
-
   "welcome_to_story_producer": "Bienvenue dans Story Publisher Adv",
   "use_internal_demo": "Utiliser la démo interne",
   "please_create_and_then_select_folder": "Veuillez créer puis sélectionner un nouveau dossier, nécessaire pour exécuter la démo.",
@@ -89,7 +78,6 @@
   "registration_SPadv_email": "",
   "registration_robin_rempel_email": "SPapp.training@gmail.com",
   "rename_title": "Fournir un nom différent",
-
   "rename_title_wordlinks": "Saisir une contre-traduction, ou orthographier le nom.",
   "recordings_title": "Enregistrements",
   "backTranslation_recordings_title": "Enregistrements des contre-traductions ",
@@ -104,23 +92,18 @@
   "workspace_selection_help": "<font color=\"gray\"> Indiquez à l'application Story Publisher Adv où se trouvent les modèles de récit.</font><br><br> L'écran suivant sera un \"sélecteur de dossier\".<br> Accédez au <font color=\"green\"> dossier d'espace de travail SP</font> (sur la <font color=\"green\">carte SD ou dans la mémoire interne</font>), puis appuyez sur <b>SELECT</b> en bas.",
   "only_demo_present": "Pour télécharger plus de modèles de récit, ou pour accéder à d'autres options, ouvrez le menu principal (appuyez sur l'icône à 3 lignes dans le coin supérieur gauche). Veuillez compléter et soumettre l'inscription pour la rendre \"masquée\".",
   "welcome_screen_demo_error": "Une fonctionnalité de démo viendra bientôt!",
-
   "orthography_list_none": "Aucune",
   "orthography_list_trial": "D'essai",
   "orthography_list_stable": "Stables",
-
   "communication_list_phone": "Téléphone",
   "communication_list_email": "Courriel",
   "communication_list_whatsapp": "WhatsApp",
   "communication_list_facebook": "Facebook",
-
   "location_type_list_local": "Local",
   "location_type_list_remote": "À distance",
-
   "nav_open": "Options",
   "nav_close": "Fermé",
   "PhoneId": "Identité de téléphone",
-
   "send_message_down": "L'envoi de message n'est pas disponible à ce moment. Veuillez réessayer plus tard.",
   "audio_pre_send": "Envoyant le son",
   "audio_Sent": "L'envoi du fichier audio a réussi",
@@ -137,22 +120,17 @@
   "url_register_phone": "/API/RegisterPhone.php",
   "url_update_fb_token": "/API/UpdateFBToken.php",
   "api_token": "XUKYjBHCsD6OVla8dYAt298D9zkaKSqd",
-
   "fill_with_audio_comment": "Saisir un commentaire sur l'enregistrement audio",
-
   "template_space_title": "Attention : Espace disponible",
   "template_space_message": "Il est préférable d'avoir 1 Go d'espace disponible pour chaque modèle d'histoire sur lequel vous allez travailler. Si vous disposez de moins d'espace que cela, l'application peut ne pas être en mesure de traiter votre travail et d'exporter vos vidéos.\n\nEspace disponible : ",
   "space_less_than_one_meg": "Moins de 1 Mo",
   "space_mb": " Mo",
   "space_gb": " Go",
-       
   "learn_phase_practice": "Racontez le récit entier dans votre langue!",
   "learn_phase_overwrite": "Voulez-vous vraiment écraser votre enregistrement actuel?",
-
   "translate_revise_playback_no_lwc_audio": "Une narration audio N'a été trouvée",
   "translate_revise_playback_lwc_audio": "Jouant la narration audio",
   "translate_revise_play_narration_audio": "Écouter la narration audio",
-
   "wordlink_submit_backtranslation_hint": "Contre-traducion / translittération mot-par-mot",
   "wordlink_close": "Fermer",
   "wordlink_notes": "NOTES SUR LE SENS. DéFINITIONS:",
@@ -166,14 +144,11 @@
   "wordlinks_json_read_error": "Erreur de lecture du fichier JSON Word Links",
   "wordlinks_no_csv_file": "Aucun fichier valide CSV Word Links indiquè",
   "wordlinks_multiple_csv_files": "Plusieurs fichiers CSV Word Links détectés.\nUtilisant:\t",
-
   "voice_studio_edit_text_hint": "Rédigez des histoires pour les vidéos en utilisant le texte inclus.",
   "voice_studio_edit_title_text_hint": "Rédigez des titres d'histoire à afficher pour toutes les vidéos réalisées.",
-
   "draft_playback_no_lwc_audio": "Une narration audio n'a été retrouvée",
   "draft_playback_lwc_audio": "Jouant la narration audio",
   "draft_play_narration_audio": "Faire jouer la narration audio",
-
   "delete_video_title": "Supprimer le fichier vidèo?",
   "delete_video_message": "Désirez-vous supprimer cette video?",
   "video_copy": "Aller au dossier des vidéos",
@@ -181,42 +156,37 @@
   "overwrite_video_title": "Ecraser les fichiers ?",
   "overwrite_video_message": "Un ou plusieurs des fichiers vidéo sélectionnés existent déjà dans le dossier de copie. Voulez-vous écraser les fichiers ?",
   "use_copy_folder_message": "Copiez les fichiers dans le dossier :\n\n",
-  "change_copy_folder": "Changer de dossier",    
-  "copy_folder_not_found_message": "The copy folder was not found.  Would you like to specify a new one?\n\n",   
+  "change_copy_folder": "Changer de dossier",
+  "copy_folder_not_found_message": "The copy folder was not found.  Would you like to specify a new one?\n\n",
   "export_dumbphone_cb": "3gp",
   "export_smartphone_cb": "mp4",
   "select_all_text": "Tout sélectionner:",
-
   "sdcard": "carte SD",
   "internal": "interne",
   "external": "externe",
-
-   "backup_menu_item": "Sauvegarde",
-   "restore_menu_item": "Restaurer",    
-   "delete_menu_item": "Supprimer",  
-
-   "delete_stories_title": "Supprimer les histoires ?",
-   "delete_stories_message": "Voulez-vous supprimer les histoires sélectionnées ?",
-   "backup_warning": "AVERTISSEMENT : Un ou plusieurs des récits sélectionnés à supprimer ne sont pas sauvegardés dans le dossier de sauvegarde.",
-   "use_backup_folder_message": "Sauvegardez les histoires sélectionnées dans le dossier :\n\n",
-   "restore_story_message": "Sélectionnez l'histoire que vous souhaitez restaurer",
-   "change_backup_folder": "Changer de dossier",    
-   "backup_folder_not_found_message": "Le dossier de sauvegarde est introuvable. Vous souhaitez en trouver ou en créer un nouveau ? Remarque : Il est recommandé de sauvegarder vos fichiers sur un disque externe si possible.\n\n",   
-   "overwrite_backup_title": "Ecraser les fichiers de sauvegarde ?",
-   "overwrite_backup_message": "Un ou plusieurs des récits de sauvegarde sélectionnés existent déjà dans le dossier de copie. Voulez-vous écraser les fichiers de l'histoire ?",
-   "overwrite_backup_message_single_file": "L'histoire de sauvegarde sélectionnée existe déjà dans le dossier de copie. Voulez-vous écraser les fichiers de l'histoire ?",
-   "overwrite_story_title": "Remplacer l'histoire ?",
-   "overwrite_story_message": "L'histoire sélectionnée à restaurer existe déjà dans le dossier de l'espace de travail. Voulez-vous écraser les fichiers de l'histoire ?",
-   "original_story_time_label": "Fichier d'origine : ",
-   "replace_story_time_label": "Remplacer par: ",
-   "invalid_story_title": "Histoire invalide",
-   "invalid_story_message": "TL'histoire sélectionnée n'est pas une histoire valide. Veuillez en sélectionner un autre.",
-   "read_only_title" : "Lecture seulement",
-   "read_only_message" : "Impossible d'ouvrir l'histoire car elle est en lecture seule. Y a-t-il un problème avec le stockage externe (carte SD) de votre appareil ? Essayez de redémarrer votre appareil.",
-   
+  "backup_menu_item": "Sauvegarde",
+  "restore_menu_item": "Restaurer",
+  "delete_menu_item": "Supprimer",
+  "delete_stories_title": "Supprimer les histoires ?",
+  "delete_stories_message": "Voulez-vous supprimer les histoires sélectionnées ?",
+  "backup_warning": "AVERTISSEMENT : Un ou plusieurs des récits sélectionnés à supprimer ne sont pas sauvegardés dans le dossier de sauvegarde.",
+  "use_backup_folder_message": "Sauvegardez les histoires sélectionnées dans le dossier :\n\n",
+  "restore_story_message": "Sélectionnez l'histoire que vous souhaitez restaurer",
+  "change_backup_folder": "Changer de dossier",
+  "backup_folder_not_found_message": "Le dossier de sauvegarde est introuvable. Vous souhaitez en trouver ou en créer un nouveau ? Remarque : Il est recommandé de sauvegarder vos fichiers sur un disque externe si possible.\n\n",
+  "overwrite_backup_title": "Ecraser les fichiers de sauvegarde ?",
+  "overwrite_backup_message": "Un ou plusieurs des récits de sauvegarde sélectionnés existent déjà dans le dossier de copie. Voulez-vous écraser les fichiers de l'histoire ?",
+  "overwrite_backup_message_single_file": "L'histoire de sauvegarde sélectionnée existe déjà dans le dossier de copie. Voulez-vous écraser les fichiers de l'histoire ?",
+  "overwrite_story_title": "Remplacer l'histoire ?",
+  "overwrite_story_message": "L'histoire sélectionnée à restaurer existe déjà dans le dossier de l'espace de travail. Voulez-vous écraser les fichiers de l'histoire ?",
+  "original_story_time_label": "Fichier d'origine : ",
+  "replace_story_time_label": "Remplacer par: ",
+  "invalid_story_title": "Histoire invalide",
+  "invalid_story_message": "TL'histoire sélectionnée n'est pas une histoire valide. Veuillez en sélectionner un autre.",
+  "read_only_title": "Lecture seulement",
+  "read_only_message": "Impossible d'ouvrir l'histoire car elle est en lecture seule. Y a-t-il un problème avec le stockage externe (carte SD) de votre appareil ? Essayez de redémarrer votre appareil.",
   "wsbt_alert_title": "Compléter la Phase brouillon",
   "wsbt_alert_text": "Veuillez enregistrer une traduction de chaque diapo.",
-
   "backTranslation_draft_no_picture": "L'image n'a pas été retruvée",
   "backTranslation_no_draft_recording_available": "Le brouillon d'enregistrement n'est pas disponible!",
   "backTranslation_playback_draft_recording": "Jouant l'enregistrement de contre-traduction!",
@@ -227,7 +197,6 @@
   "backTranslation_record_file_backT_name": "Contre-traduction %1$d",
   "backTranslation_hint": "Si demandé, rédigez ici une contre-traduction....",
   "transcript_hint": "Si demandé, rédigez ici une contre-traduction.",
-
   "remote_check_title": "Vérificationi à distance",
   "messaging_bar_title": "Messages pour diapos",
   "message_hint": "Rédigez un message",
@@ -235,14 +204,11 @@
   "remote_check_msg_sent": "Message envoyé!",
   "remote_check_msg_no_connection": "Veuillez vérifier la connection à l'Internet, puis réessayez.",
   "remote_check_msg_failed": "La messagerie ne fonctionne pas. Réessayez plus tard.",
-
   "recording_toolbar_no_recording": "Aucun enregistrement n'est disponible!",
   "recording_toolbar_error_recording": "Erreur d'enregistrement. Enregistrez de nouveau!",
   "recording_toolbar_disable_animation": "DISABLE_ANIMATIONS_FOR_TESTING",
-
   "delete_audio_title": "Supprimer le fichier audio?",
   "delete_audio_message": "Désirez-vous supprimer ce ficiher audio?",
-
   "export_title_header": "Texte dans le nom de fichier",
   "Text_In_Filename_Placeholder": "Saisir ici le titre de votre petite histoire",
   "export_options_header": "Options",
@@ -253,21 +219,16 @@
   "export_include_KBFX": "Inclure une animation d'image (Mv)",
   "export_dumbphone": "(3gp) est pour ",
   "export_smartphone": "(mp4) est pour ",
-
   "export_local_credits_unchanged": "Éditer les crédits locaux",
   "local_credits_check_mark_description": "Une coche indique que les crédits locaux ont été mis à jour",
   "export_no_filename": "Saisir un titre pour la petite histoire, ci-dessus",
   "export_local_song_unrecorded": "Enregistrez d'abord la chanson locale.",
-
   "export_location_exists_title": "Replacer ce fichier?",
   "export_location_exists_message": "Le fichier spécifié existe déjà. Voulez-vous le remplacer?",
-
   "export_start": "Créer une vidéo",
   "export_cancel": "Annuler",
   "export_cancel_comment": "Ne quittez pas cet écran tant que la vidéo n'est pas terminée.",
-
   "title_activity_splash_screen": "Story Publisher Adv",
-
   "LC_obsolete_starting_text": "Langue:\nTraduit par:\nNouveaux crédits d'image:\nNarrateur / Voix par:\nChanson locale par:",
   "LC_starting_text": "Contact local (téléphone/curriel):\nLangue :\nTraduit par:\nNouveaux crédits d'image :\nNarration / Voix par :\nChanson locale par:",
   "LC_prompt": "Les crédits locaux seront ajoutés pendant le doublage vocal.",
@@ -275,19 +236,15 @@
   "license_attribution": "Cette vidéo est sous licence Creative Commons Attribution-BY-SA-ShareAlike 4.0 International ©",
   "local_credits_changed": "Crédits locaux changés!",
   "local_credits_unchanged": "Crédits locaux inchangés!",
-
   "LS_prompt": "Utilisez cette diapositive pour composer et enregistrer une chanson pour le récit biblique ! Ou posez des questions pour aider les gens à réfléchir à l'histoire ! Vous pouvez choisir de l'inclure ou non lorsque vous créez une vidéo.",
-
   "LWC_PLAYBACK": "Repassage LWC",
   "DRAFT_RECORDING": "Brouillon d'enregistrement",
   "DRAFT_PLAYBACK": "Repassage de brouillon",
   "COMMENT_PLAYBACK": "Repassage de commentaire",
   "COMMENT_RECORDING": "Enregistrement de commentaire",
-
   "no_videos": "Aucune vidéo à partager",
   "send_video": "Envoyer la video:",
   "file_view": "Affichage de fichier:",
-
   "menu_search": "Chercher",
   "update_registration": "Mise à jour d'inscription",
   "scanning_sp_templates": "Veuillez attendre que SP relise les modèles",
@@ -298,11 +255,9 @@
   "spadv_website": "SPadv - site de toile",
   "video_share": "Copier/partager des fichiers vidéo",
   "backup_restore": "Sauvegarde des données de traduction",
-
   "all_stories_tab": "Toutes les histoires",
   "in_progress_tab": "En cours",
   "completed_tab": "Complété",
-
   "already_uploaded": "L'enregistrement sélectionné est dèjà mis en ligne",
   "uploading_audio": "Mettant en ligne l'audio",
   "uploading_wordlink": "Mettant en ligne Word Link ",
@@ -317,27 +272,26 @@
   "no_uploads_done": "Il n'y a pas encore eu de mise en ligne",
   "invalid_response": "Réponse non valide. La mise en ligne de l'audio a échouée",
   "connect_failed": "Échec de connexion au serveur",
-
   "film_toolbar": "Film",
   "nt_toolbar": "NT",
   "ot_toolbar": "AT",
   "other_toolbar": "Autre",
-
   "about": "Au sujet de",
   "license": "License",
   "about_title": "Au sujet de Story Publisher Adv (SPadv)",
   "app_version": "vérsion d'appli: %1$s",
   "prefer_bloom_templates": "n'utiise que les modèles .bloom et .bloomSource",
   "license_body": "Le logiciel Story Publisher Adv (SPadv) est sous copyright © 2022, Tyndale Bible Translators et Robin Rempel. Adapté et construit sur l'original, Story Producer (version 3.0.6) sous copyright © 2020, SIL International et Cedarville University. \n\n Il est publié sous la licence suivante : L'autorisation est accordée, gratuitement, à toute personne obtenant légalement une copie de ce logiciel et des fichiers de documentation associés (le « Logiciel »), d'utiliser et de redistribuer le logiciel, de construire et distribuer des vidéos à partir de données textuelles et audiovisuelles, à condition qu'ils soient le propriétaire des données ou qu'ils aient l'autorisation de les distribuer. \n\n Le Logiciel est protégé par les dispositions des traités internationaux sur le droit d'auteur. Nul ne peut supprimer tout droit d'auteur ou autre avis de propriété du logiciel, ni désosser, décompiler ou désassembler le logiciel. \n\n Le logiciel est fourni \"tel quel\", sans garantie d'aucune sorte, expresse ou implicite, y compris, mais sans s'y limiter, les garanties de qualité marchande, d'adéquation à un usage particulier et d'absence de contrefaçon. En aucun cas, les auteurs ou les détenteurs des droits d'auteur ne pourront être tenus responsables de toute réclamation, dommage ou autre responsabilité, que ce soit dans le cadre d'une action ou d'un contrat, délictuelle ou autre, découlant de, de ou en relation avec le logiciel ou l'utilisation ou d'autres transactions dans le Logiciel. \n\n Les données sont collectées chaque fois que l'utilisateur soumet des informations d'inscription. Toutes les informations que l'utilisateur saisit dans les champs d'inscription, ainsi que le type de téléphone, sont collectées et utilisées par le consultant à distance pour aider et communiquer avec l'utilisateur.",
-
   "logging_slide_log_view_title": "Historique de la diapo #%1$d",
   "logging_item_date": "Date",
   "logging_item_type": "Type",
-
   "logging_numSlides": [
     "Diapositive",
     "Diapositives"
   ],
-
-  "overwrite": "Écraser"
+  "overwrite": "Écraser",
+  "help_me": "Help me",
+  "create_template_mode": "Create Template mode",
+  "templates_created": "Templates I have created",
+  "no_templates": "You have not created any templates"
 }
