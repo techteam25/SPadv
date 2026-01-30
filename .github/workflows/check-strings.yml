@@ -1,3 +1,5 @@
+# Sync step uses Google Cloud Translation API. Add repo secret:
+#   GOOGLE_TRANSLATE_API_KEY = your API key (Settings → Secrets and variables → Actions)
 name: Check strings.json keys
 
 on:
@@ -6,11 +8,16 @@ on:
   pull_request:
     branches: [main, develop]
 
+permissions:
+  contents: write
+
 jobs:
   check-keys:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Node
         uses: actions/setup-node@v4
@@ -18,4 +25,20 @@ jobs:
           node-version: '20'
 
       - name: Check locale keys
+        id: check
         run: node scripts/check-strings-keys.mjs
+        continue-on-error: true
+
+      - name: Sync missing keys
+        if: steps.check.outcome == 'failure'
+        env:
+          GOOGLE_TRANSLATE_API_KEY: ${{ secrets.GOOGLE_TRANSLATE_API_KEY }}
+        run: node scripts/sync-strings-keys.mjs
+
+      - name: Commit and push if fixed
+        if: steps.check.outcome == 'failure'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add app/src/main/assets/
+          git diff --staged --quiet || (git commit -m "chore(i18n): add missing keys from en/strings.json" && git push)
