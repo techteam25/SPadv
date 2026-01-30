@@ -16,3 +16,6 @@ app/local.properties
 
 # Local temp / scratch (e.g. tutorials, drafts)
 /temp
+
+# Local env (e.g. GOOGLE_TRANSLATE_API_KEY for sync script) — do not commit
+.env
