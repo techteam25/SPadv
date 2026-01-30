@@ -1,6 +1,5 @@
 {
   "app_name": "Story Publisher Adv",
-
   "no": "Tidak",
   "yes": "Ya",
   "ok": "OK",
@@ -8,31 +7,24 @@
   "cancel": "Batalkan",
   "help": "Bantuan",
   "search": "Pencarian",
-
   "submit": "Kirimkan",
   "submit_via": "Kirimkan Melalui...",
   "save": "Simpan",
   "delete": "Hapus",
   "enter_text": "Masukkan Teks",
-
   "play": "Putar",
   "share": "Bagikan",
   "sound_off": "Suara Mati",
   "sound_on": "Suara Aktif",
-
   "question_mark": "Apa ini?",
-
   "SECONDS_ABBREVIATION": "det",
   "MINUTES_ABBREVIATION": "min",
-
   "story_picture": "Gambar Cerita",
   "stage_locked": "Tahap Terkunci",
   "edit_image": "Ubah Gambar",
   "edit_text": "Ubah Teks",
-
   "exit_application": "Keluar dari Aplikasi?",
   "quit_question": "Apakah Anda yakin ingin berhenti?",
-  
   "registration_title": "Registrasi",
   "learn_title": "Mempelajari",
   "translate_revise_title": "Menerjemahkan+Revisi",
@@ -45,7 +37,6 @@
   "back_translation_title": "Menerjemahkan Kembali",
   "title_activity_story_templates": "Templat Cerita",
   "title_activity_wordlink_list": "Daftar Tautan Kata",
-
   "registration_language_header": "Informasi Bahasa",
   "registration_translator_header": "Informasi Penerjemah",
   "registration_accuracy_check_header": "Informasi Pemeriksa Akurasi",
@@ -67,11 +58,9 @@
   "communication_preference_hint": "Preferensi Komunikasi:",
   "location_type_hint": "Tipe Lokasi: ",
   "bypass_button_text": "Lewati Registrasi",
-
   "camera_select_from": "Pilih dari:",
   "camera_revert_title": "Kembali pada Gambar Asli?",
   "camera_revert_message": "Apakah Anda ingin Kembali pada Gambar Asli?",
-
   "welcome_to_story_producer": "Selamat Datang di Story Publisher Adv (Penerbit Cerita)",
   "use_internal_demo": "Gunakan Demo Internal",
   "please_create_and_then_select_folder": "Silahkan Buat lalu Pilih Folder Baru yang Diperlukan untuk Menjalankan Demo.",
@@ -89,7 +78,6 @@
   "registration_SPadv_email": "",
   "registration_robin_rempel_email": "SPapp.training@gmail.com",
   "rename_title": "Pilih nama baru",
-
   "rename_title_wordlinks": "Ketik Terjemahan Balik atau Eja Namanya.",
   "recordings_title": "Rekaman",
   "backTranslation_recordings_title": "Rekaman Terjemahan Balik",
@@ -104,23 +92,18 @@
   "workspace_selection_help": "<font color=\"gray\"> Beri tahu aplikasi SPadv tempat menemukan templat cerita.</font><br><br> Layar berikutnya akan menjadi 'folder picker'.<br> Arahkan ke <font color=\"green\"> SP Workspace</font> folder (on the <font color=\"green\"> SD Card or memori internal</font>), kemudian ketuk <b>PILIH</b> di bawah. ",
   "only_demo_present": " Untuk mengunduh lebih banyak templat cerita atau mengakses opsi lain, buka menu utama (ketuk ikon 3 baris pojok kiri atas). Harap lengkapi dan kirimkan Pendaftaran untuk membuatnya 'menyembunyikan'. ",
   "welcome_screen_demo_error": "Fungsi Demo Segera Hadir!",
-
   "orthography_list_none": "None",
   "orthography_list_trial": "Trial",
   "orthography_list_stable": "Stable",
-
   "communication_list_phone": "Phone",
   "communication_list_email": "E-mail",
   "communication_list_whatsapp": "WhatsApp",
   "communication_list_facebook": "Facebook",
-
   "location_type_list_local": "Local",
   "location_type_list_remote": "Remote",
-
   "nav_open": "Options",
   "nav_close": "Close",
   "PhoneId": "PhoneId",
-
   "send_message_down": "Pengiriman pesan tidak tersedia saat ini. Coba lagi nanti.",
   "audio_pre_send": "Mengirimkan Audio",
   "audio_Sent": "Pengiriman File Audio Sukses",
@@ -137,22 +120,17 @@
   "url_register_phone": "/API/RegisterPhone.php",
   "url_update_fb_token": "/API/UpdateFBToken.php",
   "api_token": "XUKYjBHCsD6OVla8dYAt298D9zkaKSqd",
-
   "fill_with_audio_comment": "Isi dengan Komentar Audio",
-
   "template_space_title": "Peringatan: Ruang tersedia",
   "template_space_message": "Yang terbaik adalah menyediakan ruang 1GB untuk setiap templat cerita yang akan Anda kerjakan. Jika Anda memiliki ruang kurang dari itu, aplikasi mungkin tidak dapat memproses pekerjaan Anda dan mengekspor video Anda.\n\nRuang yang tersedia: ",
   "space_less_than_one_meg": "Kurang dari 1MB",
   "space_mb": "MB",
   "space_gb": "GB",
-       
   "learn_phase_practice": "Ceritakan kembali dalam bahasamu!",
   "learn_phase_overwrite": "Yakin ingin menimpa rekaman Anda saat ini?",
-
   "translate_revise_playback_no_lwc_audio": "Tidak dapat menemukan audio narasi",
   "translate_revise_playback_lwc_audio": "Memutar audio narasi",
   "translate_revise_play_narration_audio": "Putar audio narasi",
-
   "wordlink_submit_backtranslation_hint": "kata demi kata terjemahan balik / transliterasi",
   "wordlink_close": "Tutup",
   "wordlink_notes": "CATATAN ARTI. DEFINISI:",
@@ -166,14 +144,11 @@
   "wordlinks_json_read_error": "Kesalahan membaca tautan kata file JSON",
   "wordlinks_no_csv_file": "Kesalahan membaca tautan kata file",
   "wordlinks_multiple_csv_files": "Terdeteksi Beberapa tautan kata file CSV.\nUsing:\t",
-
   "voice_studio_edit_text_hint": "Tulis teks cerita untuk video dengan disertai teks.",
   "voice_studio_edit_title_text_hint": "Tulis judul cerita yang akan ditampilkan untuk semua video yang dibuat.",
-
   "draft_playback_no_lwc_audio": "Tidak dapat menemukan audio narasi",
   "draft_playback_lwc_audio": "Memutar narasi audio",
   "draft_play_narration_audio": "Putar narasi audio",
-
   "delete_video_title": "Hapus file video?",
   "delete_video_message": "Apakah anda ingin menghapus video ini?",
   "video_copy": "Buka folder video",
@@ -181,42 +156,37 @@
   "overwrite_video_title": "Timpa File?",
   "overwrite_video_message": "Satu atau lebih file video yang dipilih sudah ada di folder salin. Apakah Anda ingin menimpa file?",
   "use_copy_folder_message": "Salin file ke folder:\n\n",
-  "change_copy_folder": "Ubah map",    
+  "change_copy_folder": "Ubah map",
   "copy_folder_not_found_message": "Folder salinan tidak ditemukan. Apakah Anda ingin menentukan yang baru?\n\n",
   "export_dumbphone_cb": "3gp",
   "export_smartphone_cb": "mp4",
   "select_all_text": "Pilih Semua:",
-
   "sdcard": "kartu SD",
   "internal": "intern",
-  "external": "luar",  
-
-   "backup_menu_item": "Cadangan",
-   "restore_menu_item": "Memulihkan",    
-   "delete_menu_item": "Menghapus",  
-
-   "delete_stories_title": "Hapus Cerita?",
-   "delete_stories_message": "Apakah Anda ingin menghapus cerita yang dipilih?",
-   "backup_warning": "PERINGATAN: Satu atau lebih cerita yang dipilih untuk dihapus tidak dicadangkan di folder cadangan.",
-   "use_backup_folder_message": "Cadangkan cerita yang dipilih ke folder:\n\n",
-   "restore_story_message": "Pilih cerita yang ingin Anda pulihkan",
-   "change_backup_folder": "Ubah map",    
-   "backup_folder_not_found_message": "Folder cadangan tidak ditemukan. Apakah Anda ingin mencari atau membuat yang baru? Catatan: Disarankan untuk mencadangkan file Anda ke drive eksternal jika memungkinkan.\n\n",   
-   "overwrite_backup_title": "Timpa File Cadangan?",
-   "overwrite_backup_message": "Satu atau lebih cerita cadangan yang dipilih sudah ada di folder salin. Apakah Anda ingin menimpa file cerita?",
-   "overwrite_backup_message_single_file": "Cerita cadangan yang dipilih sudah ada di folder salin. Apakah Anda ingin menimpa file cerita?",
-   "overwrite_story_title": "Timpa Cerita?",
-   "overwrite_story_message": "Cerita yang dipilih untuk dipulihkan sudah ada di folder ruang kerja. Apakah Anda ingin menimpa file cerita?",
-   "original_story_time_label": "Berkas asli: ",
-   "replace_story_time_label": "Ubah dengan: ",
-   "invalid_story_title": "Cerita Tidak Valid",
-   "invalid_story_message": "Cerita yang dipilih bukanlah cerita yang valid. Silakan pilih yang lain.",
-   "read_only_title" : "Hanya Baca",
-   "read_only_message" : "Tidak dapat membuka cerita karena hanya dapat dibaca. Apakah ada masalah dengan penyimpanan eksternal (kartu SD) pada perangkat Anda? Coba reboot perangkat Anda.",
-
+  "external": "luar",
+  "backup_menu_item": "Cadangan",
+  "restore_menu_item": "Memulihkan",
+  "delete_menu_item": "Menghapus",
+  "delete_stories_title": "Hapus Cerita?",
+  "delete_stories_message": "Apakah Anda ingin menghapus cerita yang dipilih?",
+  "backup_warning": "PERINGATAN: Satu atau lebih cerita yang dipilih untuk dihapus tidak dicadangkan di folder cadangan.",
+  "use_backup_folder_message": "Cadangkan cerita yang dipilih ke folder:\n\n",
+  "restore_story_message": "Pilih cerita yang ingin Anda pulihkan",
+  "change_backup_folder": "Ubah map",
+  "backup_folder_not_found_message": "Folder cadangan tidak ditemukan. Apakah Anda ingin mencari atau membuat yang baru? Catatan: Disarankan untuk mencadangkan file Anda ke drive eksternal jika memungkinkan.\n\n",
+  "overwrite_backup_title": "Timpa File Cadangan?",
+  "overwrite_backup_message": "Satu atau lebih cerita cadangan yang dipilih sudah ada di folder salin. Apakah Anda ingin menimpa file cerita?",
+  "overwrite_backup_message_single_file": "Cerita cadangan yang dipilih sudah ada di folder salin. Apakah Anda ingin menimpa file cerita?",
+  "overwrite_story_title": "Timpa Cerita?",
+  "overwrite_story_message": "Cerita yang dipilih untuk dipulihkan sudah ada di folder ruang kerja. Apakah Anda ingin menimpa file cerita?",
+  "original_story_time_label": "Berkas asli: ",
+  "replace_story_time_label": "Ubah dengan: ",
+  "invalid_story_title": "Cerita Tidak Valid",
+  "invalid_story_message": "Cerita yang dipilih bukanlah cerita yang valid. Silakan pilih yang lain.",
+  "read_only_title": "Hanya Baca",
+  "read_only_message": "Tidak dapat membuka cerita karena hanya dapat dibaca. Apakah ada masalah dengan penyimpanan eksternal (kartu SD) pada perangkat Anda? Coba reboot perangkat Anda.",
   "wsbt_alert_title": "Selesaikan Fase Draf",
   "wsbt_alert_text": "Harap rekam terjemahan untuk setiap slide.",
-
   "backTranslation_draft_no_picture": "Tidak Dapat Menemukan Gambar",
   "backTranslation_no_draft_recording_available": "Draf Perekaman Tidak Tersedia!",
   "backTranslation_playback_draft_recording": "Memutar ulang draf rekaman!",
@@ -227,7 +197,6 @@
   "backTranslation_record_file_backT_name": "Terjemahan Balik %1$d",
   "backTranslation_hint": "Jika diminta, tulis terjemahan baliknya di sini....",
   "transcript_hint": "Jika diminta, tulis terjemahan baliknya di sini.",
-
   "remote_check_title": "Pemeriksaan Remote",
   "messaging_bar_title": "Pesan untuk Slide",
   "message_hint": "Masukkan Pesan",
@@ -235,14 +204,11 @@
   "remote_check_msg_sent": "Pesan Terkirim!",
   "remote_check_msg_no_connection": "Silakan periksa koneksi internet Anda dan coba lagi.",
   "remote_check_msg_failed": "Layanan pesan mati. Coba lagi nanti.",
-
   "recording_toolbar_no_recording": "Tidak Ada Rekaman Tersedia!",
   "recording_toolbar_error_recording": "Terjadi Kesalahan Perekamanan, rekam lagi!",
   "recording_toolbar_disable_animation": "NONAKTIFKAN_ANIMASI_UNTUK_PENGUJIAN",
-
   "delete_audio_title": "Hapus File Audio?",
   "delete_audio_message": "Apakah Anda ingin menghapus file audio ini?",
-
   "export_title_header": "Teks dalam Filename",
   "Text_In_Filename_Placeholder": "Ketik Judul Cerita Lokal Anda Di Sini",
   "export_options_header": "Pilihan",
@@ -253,21 +219,16 @@
   "export_include_KBFX": "Aktifkan Gerakan Gambar (Mv)",
   "export_dumbphone": "(3gp) untuk ",
   "export_smartphone": "(mp4) untuk ",
-
   "export_local_credits_unchanged": "Edit Kredit Lokal",
   "local_credits_check_mark_description": "tanda centang menunjukkan jika kredit lokal telah diperbarui",
   "export_no_filename": "Ketik Judul Cerita Pendek, di atas",
   "export_local_song_unrecorded": "Rekam lagu daerah terlebih dahulu.",
-
   "export_location_exists_title": "Ganti file?",
   "export_location_exists_message": "File yang ditentukan sudah ada. Apakah Anda ingin menggantinya?",
-
   "export_start": "Buat Video",
   "export_cancel": "Batalkan",
   "export_cancel_comment": "Jangan tinggalkan layar ini hingga video selesai.",
-
   "title_activity_splash_screen": "Story Publisher Advantage",
-
   "LC_obsolete_starting_text": "Bahasa:\nDiterjemahkan oleh:\nKredit gambar baru:\nNarasi / Pengisi Suara:\nLagu Daerah oleh:",
   "LC_starting_text": "Kontak Lokal (telepon/email):\nBahasa:\nDiterjemahakan oleh:\nKredit Gambar Baru:\nNarasi / Pengisi Suara:\nLagu Daerah oleh:",
   "LC_prompt": "Kredit Lokal akan ditambahkan selama akting suara.",
@@ -275,19 +236,15 @@
   "license_attribution": "Video ini dilisensikan di bawah Creative Commons Attribution-BY-SA-ShareAlike 4.0 International License ©",
   "local_credits_changed": "Kredit Lokal Berubah!",
   "local_credits_unchanged": "Kredit Lokal Tidak Berubah!",
-
   "LS_prompt": "Gunakan slide ini untuk membuat dan merekam lagu untuk cerita Alkitab! Atau ajukan pertanyaan untuk membantu orang berpikir tentang ceritanya! Anda dapat memilih untuk memasukkannya atau tidak memasukkannya saat Anda membuat video.",
-
   "LWC_PLAYBACK": "Pemutaran LWC",
   "DRAFT_RECORDING": "Draf Rekaman",
   "DRAFT_PLAYBACK": "Pemutaran Draf",
   "COMMENT_PLAYBACK": "Pemutaran Komentar",
   "COMMENT_RECORDING": "Rekaman Komentar",
-
   "no_videos": "Tidak Ada Video untuk Dibagikan",
   "send_video": "Kirim Video:",
   "file_view": "Tampilan file:",
-
   "menu_search": "Pencarian",
   "update_registration": "Perbarui Pendaftaran",
   "scanning_sp_templates": "Harap tunggu SP untuk memindai template",
@@ -298,11 +255,9 @@
   "spadv_website": "SPadv - website",
   "video_share": "Salin/Bagikan File Video",
   "backup_restore": "Cadangan Data Terjemahan",
-
   "all_stories_tab": "Semua Cerita",
   "in_progress_tab": "Dalam Proses",
   "completed_tab": "Lengkap",
-
   "already_uploaded": "Rekaman yang dipilih sudah diunggah",
   "uploading_audio": "Mengunggah Audio",
   "uploading_wordlink": "Mengunggah Tautan Kata ",
@@ -317,27 +272,26 @@
   "no_uploads_done": "Belum ada unggahan",
   "invalid_response": "Respons tidak valid. Pengunggahan audio gagal",
   "connect_failed": "Gagal terhubung ke server",
-
   "film_toolbar": "Film",
   "nt_toolbar": "NT",
   "ot_toolbar": "OT",
   "other_toolbar": "Lainnya",
-
   "about": "Tentang",
   "license": "Lisensi",
   "about_title": "Tentang Story Publisher Adv (SPadv)",
   "app_version": "Versi App: %1$s",
   "prefer_bloom_templates": "Hanya Gunakan Template .bloom dan .bloomSource ",
   "license_body": "The Story Publisher Adv (Story Publisher Advantage) (SPadv) software is jointly copyrighted © 2022, Tyndale Bible Translators and Robin Rempel. Adapted from and built upon original, Story Producer (version 3.0.6) jointly copyrighted © 2020, SIL International and Cedarville University \n\n It is released under the following license: Permission is hereby granted, free of charge, to any person lawfully obtaining a copy of this software and associated documentation files (the \"Software\"), to use and redistribute the software, to build and distribute videos from text and audio-visual data, provided that they are the owner of the data or have permission to distribute it. \n\n The Software is protected by international copyright treaty provisions. No person may remove any copyright or other proprietary notice from the software nor reverse engineer, decompile, or disassemble the software. \n\n The software is provided \"as is\", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement. In no event shall the authors or copyright holders be liable for any claim, damages or other liability, whether in an action or contract, tort or otherwise, arising from, out of or in connection with the software or the use or other dealings in the software. \n\n Data is collected whenever the user submits registration info. All the information that the user types into the registration fields, plus phone type, is collected and used by the remote consultant in assisting and communicating with the user.",
-
   "logging_slide_log_view_title": "Log untuk Slide #%1$d",
   "logging_item_date": "Tanggal",
   "logging_item_type": "Tipe",
-
   "logging_numSlides": [
     "Slide",
     "Slides"
   ],
-
-  "overwrite": "Timpa"
+  "overwrite": "Timpa",
+  "help_me": "Help me",
+  "create_template_mode": "Create Template mode",
+  "templates_created": "Templates I have created",
+  "no_templates": "You have not created any templates"
 }
