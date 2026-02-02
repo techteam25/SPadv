@@ -486,7 +486,7 @@ fun deleteFile(context: Context, uri : Uri) : Boolean {
 fun deleteFolderInternal(context : Context, uri : Uri, baseDirUri : Uri, relPath : String) : Boolean {
     if (fileExists(context, uri)) {
 
-        if (isDirectory(context, uri)) {
+        if (isDirectory(context, uri, "")) {
 
             val children = getFolderChildren(context, baseDirUri, relPath)
             for (child in children) {
@@ -513,7 +513,7 @@ fun copyFolderInternal(context : Context, srcUri : Uri, dstUri : Uri, baseSrcUri
         return false  // if the dest directory doesn;t exist, stop right now
     }
 
-    if (fileExists(context, srcUri) && isDirectory(context, srcUri)) {
+    if (fileExists(context, srcUri) && isDirectory(context, srcUri, "")) {
 
         val lastSegment = lastSegmentName(srcUri)
         val dstDirUri = Uri.parse(dstUri.toString() + Uri.encode("/$lastSegment"))
@@ -528,7 +528,7 @@ fun copyFolderInternal(context : Context, srcUri : Uri, dstUri : Uri, baseSrcUri
             var relPath2 = relPath + "/" + child
             val newUri = Uri.parse(baseSrcUri.toString() + Uri.encode("/${relPath2}"))
 
-            if (isDirectory(context, newUri)) {
+            if (isDirectory(context, newUri, "")) {
                 // if this is another directory
                 // create a new directory uri and copy it
                 copyFolderInternal(context, newUri, dstDirUri, baseSrcUri, relPath2)
@@ -588,7 +588,7 @@ fun createFolder(context : Context, dirUri : Uri, relPath : String, bPathFile : 
             //TODO make this faster.
             val newUri = Uri.parse(uri.toString() + Uri.encode("/${segments[i]}"))
 
-            if (!isDirectory(context, newUri)) {
+            if (!isDirectory(context, newUri, "")) {
                 try {
                     DocumentsContract.createDocument(context.contentResolver, uri,
                             DocumentsContract.Document.MIME_TYPE_DIR, segments[i])
@@ -710,7 +710,7 @@ fun lastSegmentName(uri : Uri) : String {
     return lastSegment!!
 }
 
-fun isDirectory(context : Context, uri : Uri) : Boolean {
+fun isDirectory(context: Context, uri: Uri, currentRelInputPath: String) : Boolean {
     return getFileType(context, uri)?.contains(DocumentsContract.Document.MIME_TYPE_DIR)
             ?: false
 }

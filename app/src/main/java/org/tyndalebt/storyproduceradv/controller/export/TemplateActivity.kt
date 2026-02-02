@@ -209,7 +209,7 @@ class TemplateActivity : MainBaseActivity()  {
         val destUri = Uri.parse(Workspace.workdocfile.uri.toString() + Uri.encode("/$destFolder"))
         val srcUri = Uri.parse(Workspace.workdocfile.uri.toString() + Uri.encode("/$srcFolder"))
         val baseSrcUri = Workspace.workdocfile.uri
-        if (fileExists(this, srcUri) && isDirectory(this, srcUri)) {
+        if (fileExists(this, srcUri) && isDirectory(this, srcUri, "")) {
 
             if (!fileExists(this, destUri)) {
                 // create the destination folder
@@ -220,7 +220,7 @@ class TemplateActivity : MainBaseActivity()  {
                 var relPath2 = "$srcFolder/$child"
                 val newUri = Uri.parse(baseSrcUri.toString() + Uri.encode("/${relPath2}"))
 
-                if (isDirectory(this, newUri)) {
+                if (isDirectory(this, newUri, "")) {
                     // if this is another directory
                     // create a new directory uri and copy it
                     //copyFolderInternal(this, newUri, destUri, baseSrcUri, relPath2)
