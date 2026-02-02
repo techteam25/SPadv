@@ -241,7 +241,7 @@ class AccuracyCheckFrag : SlidePhaseFrag() {
             return
         }
         val password = EditText(context)
-        password.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+        password.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
         password.id = org.tyndalebt.storyproduceradv.R.id.password_text_field;
 
         // Programmatically set layout properties for edit text field

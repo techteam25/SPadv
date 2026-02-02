@@ -237,25 +237,36 @@ fun isZipped(fileName: String?): Boolean {
     } == true
 }
 
-fun zipTemplateCommon(context: Context, documentUri: Uri, relInputPath: String, zos:ZipOutputStream, relZipPath: String) {
+fun zipTemplateCommon(context: Context, documentUri: Uri, relInputPath: String, zos: ZipOutputStream, relZipPath: String) {
     val children = getFolderChildren(context, documentUri, relInputPath)
-    try {
-        children.forEach { file ->
-            val relFile = "$relInputPath/$file"
-            val inputPath = getAbsolutePathFromDocumentUri(context, documentUri) + relFile
-            val f = File(inputPath)
-            if (f.isDirectory) {
-                val ze = ZipEntry("$relZipPath$file/")
+
+    children.forEach { fileName ->
+        val currentRelInputPath = if (relInputPath.isEmpty()) fileName else "$relInputPath/$fileName"
+
+        // Logic to determine if we should treat this as a folder or a file
+        val isTargetFolder = (fileName == "audio" || fileName == "project") && relZipPath.isEmpty()
+
+        if (isTargetFolder) {
+            // 1. Create a directory entry (must end with '/')
+            val zipDirEntry = if (relZipPath.isEmpty()) "$fileName/" else "$relZipPath$fileName/"
+            zos.putNextEntry(ZipEntry(zipDirEntry))
+            zos.closeEntry()
+
+            // 2. RECURSE: Dive into the folder to get its contents
+            zipTemplateCommon(context, documentUri, currentRelInputPath, zos, zipDirEntry)
+        } else {
+            // 3. Process as a file: applies to root files AND files inside audio/project
+            val currentRelZipPath = if (relZipPath.isEmpty()) fileName else "$relZipPath$fileName"
+            try {
+                val ze = ZipEntry(currentRelZipPath)
                 zos.putNextEntry(ze)
-                zipTemplateCommon(context, documentUri,"$relInputPath/$file", zos, "$relZipPath$file/")
-            } else {
-                val ze = ZipEntry(relZipPath + File(file).name)
-                zos.putNextEntry(ze)
-                copySharedToZip(context, relFile, zos)
+                copySharedToZip(context, currentRelInputPath, zos)
+                zos.closeEntry()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                zos.closeEntry()
             }
         }
-    } catch (e: Exception) {
-        e.printStackTrace()
     }
 }
 

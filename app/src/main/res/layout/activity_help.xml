@@ -83,13 +83,13 @@
                 android:id="@+id/password_text_field"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.85"
-                android:inputType="text"
+                android:layout_gravity="left|center_vertical"
+                android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="10dp"
-                android:layout_marginLeft="10dp"
-                android:visibility="invisible"
-                android:layout_gravity="left|center_vertical" />
+                android:layout_weight="0.85"
+                android:inputType="text"
+                android:visibility="invisible" />
 
         </LinearLayout>
 
