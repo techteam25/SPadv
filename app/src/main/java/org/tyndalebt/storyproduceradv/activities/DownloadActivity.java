@@ -3,6 +3,8 @@ package org.tyndalebt.storyproduceradv.activities;
 import android.os.AsyncTask;
 import 	android.os.storage.StorageManager;
 import 	android.os.storage.StorageVolume;
+
+import java.lang.reflect.Method;
 import java.util.List;
 
 import android.app.AlertDialog;
@@ -475,45 +477,57 @@ public class DownloadActivity extends BaseActivity {
         try {
             StorageManager storage = getSystemService(StorageManager.class);
             List<StorageVolume> volumes = storage.getStorageVolumes();
-            if ((volumes != null) && (volumes.size() > 0)) {
+
+            if (volumes != null && !volumes.isEmpty()) {
                 int volumeNo = 0;
                 if (volumes.size() > 1) {
-                    // which to use?
-                    // is workdocfile in the primary memory or on the SD?
                     volumeNo = -1;
                     String segment = Workspace.INSTANCE.getWorkDocFile().getUri().getLastPathSegment();
-                    boolean isPrimary = segment.indexOf("primary") == 0;
-                    for (int i=0; i < volumes.size(); i++) {
-                        if (isPrimary && volumes.get(i).isPrimary()) {
+                    boolean isPrimary = segment != null && segment.startsWith("primary");
+
+                    for (int i = 0; i < volumes.size(); i++) {
+                        StorageVolume vol = volumes.get(i);
+                        if (isPrimary && vol.isPrimary()) {
                             volumeNo = i;
                             break;
                         }
-                        if (segment.indexOf(volumes.get(i).getDirectory().getName() +':') == 0) {
+
+                        // Fallback for non-primary volumes (SD cards)
+                        File dir = getVolumeDirectory(vol);
+                        if (dir != null && segment.startsWith(dir.getName() + ":")) {
                             volumeNo = i;
                             break;
                         }
                     }
 
-                    if (volumeNo < 0) {
-                        return null;
-                    }
+                    if (volumeNo < 0) return null;
                 }
 
-                File file = null;
-                try {
-                    file = volumes.get(volumeNo).getDirectory();
-                    return file;
-                } catch (Throwable ex) {
-                    // StorageVolume.getDirectory() does not exist in Android 10 and earlier.
-                    // disable the feature in that case
-                    return null;
-                }
+                return getVolumeDirectory(volumes.get(volumeNo));
             }
-        }
-        catch(Throwable ex){
-            //ex.printStackTrace();
+        } catch (Exception e) {
+            // Log error if necessary
         }
         return null;
+    }
+
+    /**
+     * Helper to safely get the File directory from a StorageVolume across API levels.
+     */
+    private File getVolumeDirectory(StorageVolume volume) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+            // Use official API for Android 11+
+            return volume.getDirectory();
+        } else {
+            // Use Reflection for API 24-29 to call the hidden getPath() method
+            try {
+                Method getPathMethod = volume.getClass().getMethod("getPath");
+                String path = (String) getPathMethod.invoke(volume);
+                return (path != null) ? new File(path) : null;
+            } catch (Exception e) {
+                return null;
+            }
+        }
     }
 
     public long getAvailableSpace(File dir) {

@@ -10,7 +10,11 @@
             "roman": "yes",
             "displayname": "Bislama"
         },
-        {
+      {
+        "filename": "Chinese",
+        "roman": "no",
+        "displayname": "Chinese / 普通话"
+      },        {
             "filename": "English",
             "roman": "yes",
             "displayname": "English"
@@ -28,12 +32,12 @@
         {
             "filename": "Hindi",
             "roman": "no",
-            "displayname": "हिंदी"
+            "displayname": "Hindi / हिंदी"
         },
         {
             "filename": "Khmer",
             "roman": "no",
-            "displayname": "ខ្មែរ"
+            "displayname": "Khmer / ខ្មែរ"
         },
         {
             "filename": "Swahili",
@@ -43,22 +47,27 @@
         {
             "filename": "Nepali",
             "roman": "no",
-            "displayname": "नेपाली"
+            "displayname": "Nepali / ेपाली"
         },
+      {
+        "filename": "Odia",
+        "roman": "no",
+        "displayname": "Odia / ଓଡ଼ିଆ"
+      },
+      {
+        "filename": "Portuguese",
+        "roman": "yes",
+        "displayname": "Português"
+      },
         {
             "filename": "Punjabi",
             "roman": "no",
-            "displayname": "پنجابی"
-        },
-        {
-            "filename": "Portuguese",
-            "roman": "yes",
-            "displayname": "Português"
+            "displayname": "Punjabi / پنجابی"
         },
         {
             "filename": "Telugu",
             "roman": "no",
-            "displayname": "తెలుగు"
+            "displayname": "Telugu / తెలుగు"
         },
         {
             "filename": "Tok Pisin",
@@ -68,17 +77,7 @@
         {
             "filename": "Urdu",
             "roman": "no",
-            "displayname": "اردو"
-        },
-        {
-            "filename": "Chinese",
-            "roman": "no",
-            "displayname": "普通话"
-        },
-        {
-            "filename": "Odia",
-            "roman": "no",
-            "displayname": "ଓଡ଼ିଆ"
+            "displayname": "Urdu / اردو"
         }
     ]
 }
