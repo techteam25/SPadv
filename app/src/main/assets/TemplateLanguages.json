@@ -13,7 +13,7 @@
       {
         "filename": "Chinese",
         "roman": "no",
-        "displayname": "Chinese / 普通话"
+        "displayname": "普通话"
       },        {
             "filename": "English",
             "roman": "yes",
@@ -32,12 +32,12 @@
         {
             "filename": "Hindi",
             "roman": "no",
-            "displayname": "Hindi / हिंदी"
+            "displayname": "हिंदी"
         },
         {
             "filename": "Khmer",
             "roman": "no",
-            "displayname": "Khmer / ខ្មែរ"
+            "displayname": "ខ្មែរ"
         },
         {
             "filename": "Swahili",
@@ -47,12 +47,12 @@
         {
             "filename": "Nepali",
             "roman": "no",
-            "displayname": "Nepali / ेपाली"
+            "displayname": "ेपाली"
         },
       {
         "filename": "Odia",
         "roman": "no",
-        "displayname": "Odia / ଓଡ଼ିଆ"
+        "displayname": "ଓଡ଼ିଆ"
       },
       {
         "filename": "Portuguese",
@@ -62,12 +62,12 @@
         {
             "filename": "Punjabi",
             "roman": "no",
-            "displayname": "Punjabi / پنجابی"
+            "displayname": "پنجابی"
         },
         {
             "filename": "Telugu",
             "roman": "no",
-            "displayname": "Telugu / తెలుగు"
+            "displayname": "తెలుగు"
         },
         {
             "filename": "Tok Pisin",
@@ -77,7 +77,7 @@
         {
             "filename": "Urdu",
             "roman": "no",
-            "displayname": "Urdu / اردو"
+            "displayname": "اردو"
         }
     ]
 }
