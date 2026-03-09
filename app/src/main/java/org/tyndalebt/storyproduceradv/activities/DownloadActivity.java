@@ -553,7 +553,8 @@ public class DownloadActivity extends BaseActivity {
                  if(f.isFile()){
                     String name=f.getName();
                     if(name.endsWith(".bloomSource")
-                            || name.endsWith(".bloom"))
+                            || name.endsWith(".bloom")
+                            || name.endsWith(".zip"))
                         storyFiles.add(f);
                 }
             }
