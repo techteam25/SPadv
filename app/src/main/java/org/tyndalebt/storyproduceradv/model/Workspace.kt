@@ -859,6 +859,8 @@ object Workspace {
             Lang = "tel"
         } else if (pChosenLanguage == "Urdu") {
             Lang = "urd"
+        } else if (pChosenLanguage == "Odia") {
+            Lang = "odi"
         } else if (pChosenLanguage == "Punjabi") {
             Lang = "pan"
         } else if (pChosenLanguage == "Nepali") {

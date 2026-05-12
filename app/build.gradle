@@ -18,8 +18,8 @@ android {
         applicationId "org.tyndalebt.storyproduceradv"
         minSdkVersion 24
         targetSdkVersion 35
-        versionCode 76
-        versionName '3.04'
+        versionCode 78
+        versionName '3.06'
         vectorDrawables.useSupportLibrary = true
 
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
@@ -163,7 +163,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics:17.6.0'
     implementation 'com.google.firebase:firebase-crashlytics:17.2.2'
     implementation 'com.github.codekidX:storage-chooser:2.0.3'
-    implementation 'com.squareup.moshi:moshi:1.14.0'
+    implementation 'com.squareup.moshi:moshi:1.15.0'
     implementation 'com.opencsv:opencsv:4.3.2'
     implementation 'org.jsoup:jsoup:1.11.3'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
@@ -193,7 +193,7 @@ dependencies {
     // Temporarily commented out - kapt failing with Java 17
     // kapt 'com.squareup.moshi:moshi-kotlin-codegen:1.14.0'
     // Using reflection-based Moshi instead
-    implementation 'com.squareup.moshi:moshi-kotlin:1.14.0'
+    implementation 'com.squareup.moshi:moshi-kotlin:1.15.0'
     testImplementation 'junit:junit:4.12'
     testImplementation 'androidx.test:core:1.2.0'
     testImplementation 'org.robolectric:robolectric:4.5.1'

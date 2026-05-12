@@ -43,6 +43,7 @@ val la_Khmer = "Khmer"
 val la_Nepali = "Nepali"
 val la_Telugu = "Telugu"
 val la_Urdu = "Urdu"
+val la_Odia = "Odia"
 val la_Punjabi = "Punjabi"
 
 fun parseBloomHTML(context: Context, storyPath: DocumentFile): Story? {
@@ -64,6 +65,7 @@ fun parseBloomHTML(context: Context, storyPath: DocumentFile): Story? {
     languageStringsMap[la_Nepali] = prompt_en
     languageStringsMap[la_Telugu] = prompt_en
     languageStringsMap[la_Urdu] = prompt_en
+    languageStringsMap[la_Odia] = prompt_en
     languageStringsMap[la_Punjabi] = prompt_en
 
     for (f in childDocs) {
