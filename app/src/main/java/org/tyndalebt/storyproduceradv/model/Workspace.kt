@@ -837,14 +837,14 @@ object Workspace {
 
     fun getLanguageCode(pChosenLanguage: String): String {
         var Lang: String
-        if (pChosenLanguage == "Bislama") {
+        if (pChosenLanguage == "Indonesian") {
+            Lang = "id"
+        } else if (pChosenLanguage == "Bislama") {
             Lang = "bis"
         } else if (pChosenLanguage == "French") {
             Lang = "fr"
         } else if (pChosenLanguage == "Hindi") {
             Lang = "hi"
-        } else if (pChosenLanguage == "Indonesian") {
-            Lang = "id"
         } else if (pChosenLanguage == "Khmer") {
             Lang = "khm"
         } else if (pChosenLanguage == "Portuguese") {

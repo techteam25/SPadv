@@ -18,8 +18,8 @@ android {
         applicationId "org.tyndalebt.storyproduceradv"
         minSdkVersion 24
         targetSdkVersion 35
-        versionCode 78
-        versionName '3.06'
+        versionCode 80
+        versionName '3.08'
         vectorDrawables.useSupportLibrary = true
 
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'

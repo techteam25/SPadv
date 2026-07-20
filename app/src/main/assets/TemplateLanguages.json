@@ -14,7 +14,8 @@
         "filename": "Chinese",
         "roman": "no",
         "displayname": "普通话"
-      },        {
+      },
+      {
             "filename": "English",
             "roman": "yes",
             "displayname": "English"
