@@ -7,8 +7,8 @@ def keystorePropertiesFile = new File(rootProject.projectDir, 'keystore.properti
 
 android {
     namespace 'org.tyndalebt.storyproduceradv'
-    compileSdkVersion 35
-    buildToolsVersion '35.0.0'
+    compileSdkVersion 36
+    buildToolsVersion '36.0.0'
     
     buildFeatures {
         buildConfig = true
@@ -17,9 +17,9 @@ android {
     defaultConfig {
         applicationId "org.tyndalebt.storyproduceradv"
         minSdkVersion 24
-        targetSdkVersion 35
-        versionCode 80
-        versionName '3.08'
+        targetSdkVersion 36
+        versionCode 81
+        versionName '3.09'
         vectorDrawables.useSupportLibrary = true
 
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
