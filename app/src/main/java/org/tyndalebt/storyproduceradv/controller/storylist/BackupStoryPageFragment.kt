@@ -497,7 +497,8 @@ class BackupStoryPageFragment : StoryPageFragment() {
     fun deleteStories(dirUri: Uri) {
         if (isSelectionModeInternal()) {
             val adapt = adapter as ListAdapter
-            for (position in 0 until adapt!!.count) {
+            // for (position in 0 until adapt!!.count) {
+             for (position in (adapt!!.count - 1) downTo 0) {
                 val holder = adapt!!.getFileHolderAt(position)
                 if (holder!!.selected) {
                     val storyName = CurrentStoryList[position].title
